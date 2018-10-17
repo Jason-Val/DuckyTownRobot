@@ -2,7 +2,10 @@
 
 import serial
 import sys
-port = "/dev/ttyACM1"
+port_ext = "ACM0"
+if len(sys.argv) > 1:
+    port_ext = sys.argv[1]
+port = "/dev/tty" + port_ext
 rate = 9600
 
 s1 = serial.Serial(port,rate)
