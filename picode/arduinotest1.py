@@ -13,6 +13,7 @@ s1.flushInput()
 
 print("begin waiting")
 s1.read_until()
+s1.write("1".encode('utf-8'))
 print("Enter a number to square")
 x = input()
 
