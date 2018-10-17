@@ -32,16 +32,25 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available()) {
+  if (Serial.available() {
     mode = Serial.parseInt();
   }
   switch (mode) {
     case 0:
       ping_loop();
       break;
+    case 1:
+      compute_square();
     default:
       Serial.println("Unrecognized mode");
       break;
+  }
+}
+
+void compute_square() {
+  if (Serial.available()) {
+    float x = Serial.parseFloat();
+    Serial.println(x*x);
   }
 }
 
