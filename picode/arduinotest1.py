@@ -9,11 +9,12 @@ port = "/dev/tty" + port_ext
 rate = 9600
 
 s1 = serial.Serial(port,rate)
-s1.flushInput()
+s1.reset_input_buffer()
 
 print("begin waiting")
 s1.read_until()
 s1.write("1".encode('utf-8'))
+s1.reset_input_buffer()
 print("Enter a number to square")
 x = input()
 

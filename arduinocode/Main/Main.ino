@@ -34,6 +34,8 @@ void setup() {
 void loop() {
   if (Serial.available()) {
     mode = Serial.parseInt();
+    Serial.flush();
+    Serial.println("flushed");
   }
   switch (mode) {
     case 0:
