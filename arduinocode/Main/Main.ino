@@ -28,28 +28,29 @@ int mode = -1;
 void setup() {
   // initialize serial communication:
   Serial.begin(9600);
-  Serial.println("ready to listen");
 }
 
 void loop() {
   if (Serial.available()) {
-    mode = Serial.parseInt();
-    Serial.flush();
-    Serial.println("flushed");
-  }
-  switch (mode) {
-    case 0:
-      ping_loop();
-      break;
-    case 1:
-      compute_square();
-    default:
-      Serial.println("Unrecognized mode");
-      break;
+    int mode = Serial.parseInt();
+    switch (mode) {
+      case 0:
+        ping_loop();
+        break;
+      case 1:
+        compute_square();
+        break;
+      default:
+        Serial.println("Unrecognized mode " + String(mode));
+        break;
+    }
   }
 }
 
 void compute_square() {
+  while (!Serial.available()) {
+    
+  }
   if (Serial.available()) {
     float x = Serial.parseFloat();
     Serial.println(x*x);
