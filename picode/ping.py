@@ -14,4 +14,4 @@ s1.read_until()
 s1.write("0".encode('utf-8'))
 
 while (True):
-    print(s1.read_until().decode("utf-8"))
+    print(s1.read_until())

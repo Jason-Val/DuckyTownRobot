@@ -32,7 +32,7 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available() {
+  if (Serial.available()) {
     mode = Serial.parseInt();
   }
   switch (mode) {
