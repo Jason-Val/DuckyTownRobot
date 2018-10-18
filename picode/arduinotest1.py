@@ -13,7 +13,7 @@ s1.reset_input_buffer()
 
 print("begin waiting")
 s1.read_until()
-s1.write("1".encode('utf-8'))
+s1.write("10".encode('utf-8'))
 while (True):
     msg = s1.read_until().decode('utf-8')
     print(msg)
