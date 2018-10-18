@@ -1,12 +1,11 @@
 volatile long enc_count = 0;
 
-void loop() {
+void ir_loop() {
   Serial.println(enc_count);
 }
- 
-void setup() {
+
+void ir_setup() {
     Serial.begin(9600);
-    // all your normal setup code
     attachInterrupt(0,encoder_isr,CHANGE);
     attachInterrupt(1,encoder_isr,CHANGE);
 }
