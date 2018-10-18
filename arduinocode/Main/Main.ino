@@ -35,7 +35,6 @@ void ping_loop();
 void setup() {
   // initialize serial communication:
   Serial.begin(9600);
-  Serial.println("ready to listen");
 }
 
 void loop() {
