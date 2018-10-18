@@ -10,7 +10,6 @@ rate = 9600
 s1 = serial.Serial(port,rate)
 s1.reset_input_buffer()
 
-s1.write("1".encode('utf-8'))
-s1.flush()
-
-input()
+while (True):
+    s1.write("2".encode('utf-8'))
+    print(s1.read_until())

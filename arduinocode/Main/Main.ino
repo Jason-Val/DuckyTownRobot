@@ -51,6 +51,9 @@ void loop() {
       motor_setup();
       motor_loop();
       break;
+    case 2:
+      ir_setup();
+      ir_loop();
     case 10:
       compute_square_setup();
       compute_square_loop();

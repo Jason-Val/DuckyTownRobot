@@ -21,6 +21,7 @@ void motor_setup()
 
 void motor_loop()
 {
+  
   for (int i = 0; i <= 400; i++)
   {
     md.setM1Speed(i);
@@ -63,8 +64,8 @@ void motor_loop()
     stopIfFault();
     if (abs(i)%200 == 100)
     {
-      Serial.print("M2 current: ");
-      Serial.println(md.getM2CurrentMilliamps());
+      //Serial.print("M2 current: ");
+      //Serial.println(md.getM2CurrentMilliamps());
     }
     delay(2);
   }
@@ -92,5 +93,4 @@ void motor_loop()
     }
     delay(2);
   }
-  Serial.flush();
 }
