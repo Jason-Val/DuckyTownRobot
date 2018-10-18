@@ -12,9 +12,8 @@ s1 = serial.Serial(port,rate)
 s1.reset_input_buffer()
 
 s1.write("10".encode('utf-8'))
-s1.reset_input_buffer()
 print("Enter a number to square")
+s1.reset_input_buffer()
 x = input()
-
 s1.write(str(x).encode('utf-8'))
 print(s1.read_until().decode("utf-8"))

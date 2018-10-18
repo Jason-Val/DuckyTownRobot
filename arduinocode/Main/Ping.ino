@@ -47,6 +47,7 @@ void ping_loop() {
   Serial.print(cm);
   Serial.print("cm");
   Serial.println();
+  Serial.flush();
 
   delay(100);
 }

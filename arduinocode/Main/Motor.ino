@@ -6,14 +6,15 @@ void stopIfFault()
 {
   if (md.getFault())
   {
-    Serial.println("fault");
+    //Serial.println("fault");
+    //Serial.flush();
     while(1);
   }
 }
 
 void motor_setup()
 {
-  Serial.begin(115200);
+  //Serial.begin(9600);
   //Serial.println("Dual MC33926 Motor Shield");
   md.init();
 }
@@ -26,8 +27,8 @@ void motor_loop()
     stopIfFault();
     if (abs(i)%200 == 100)
     {
-      Serial.print("M1 current: ");
-      Serial.println(md.getM1CurrentMilliamps());
+      //Serial.print("M1 current: ");
+      //Serial.println(md.getM1CurrentMilliamps());
     }
     delay(2);
   }
@@ -38,8 +39,8 @@ void motor_loop()
     stopIfFault();
     if (abs(i)%200 == 100)
     {
-      Serial.print("M1 current: ");
-      Serial.println(md.getM1CurrentMilliamps());
+      //Serial.print("M1 current: ");
+      //Serial.println(md.getM1CurrentMilliamps());
     }
     delay(2);
   }
@@ -50,8 +51,8 @@ void motor_loop()
     stopIfFault();
     if (abs(i)%200 == 100)
     {
-      Serial.print("M1 current: ");
-      Serial.println(md.getM1CurrentMilliamps());
+      //Serial.print("M1 current: ");
+      //Serial.println(md.getM1CurrentMilliamps());
     }
     delay(2);
   }
@@ -74,8 +75,8 @@ void motor_loop()
     stopIfFault();
     if (abs(i)%200 == 100)
     {
-      Serial.print("M2 current: ");
-      Serial.println(md.getM2CurrentMilliamps());
+      //Serial.print("M2 current: ");
+      //Serial.println(md.getM2CurrentMilliamps());
     }
     delay(2);
   }
@@ -86,9 +87,10 @@ void motor_loop()
     stopIfFault();
     if (abs(i)%200 == 100)
     {
-      Serial.print("M2 current: ");
-      Serial.println(md.getM2CurrentMilliamps());
+      //Serial.print("M2 current: ");
+      //Serial.println(md.getM2CurrentMilliamps());
     }
     delay(2);
   }
+  Serial.flush();
 }

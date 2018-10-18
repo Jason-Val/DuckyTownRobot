@@ -23,7 +23,6 @@
 
 // this constant won't change. It's the pin number of the sensor's output:
 const int pingPin = 7;
-int mode = -1;
 
 void compute_square_setup();
 void compute_square_loop();
@@ -38,10 +37,10 @@ void setup() {
 }
 
 void loop() {
+  int mode = -1;
   if (Serial.available()) {
     mode = Serial.parseInt();
     Serial.flush();
-    Serial.println("flushed");
   }
   switch (mode) {
     case 0:
@@ -57,7 +56,7 @@ void loop() {
       compute_square_loop();
       break;
     default:
-      Serial.println("Unrecognized mode");
+      //Serial.println("Unrecognized mode");
       break;
   }
 }
