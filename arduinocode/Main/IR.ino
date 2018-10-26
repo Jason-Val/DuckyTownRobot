@@ -1,11 +1,6 @@
 volatile long enc_count = 0;
 
-void ir_loop() {
-  Serial.println(enc_count);
-}
-
 void ir_setup() {
-    Serial.begin(9600);
     attachInterrupt(0,encoder_isr,CHANGE);
     attachInterrupt(1,encoder_isr,CHANGE);
 }
@@ -18,4 +13,6 @@ void encoder_isr() {
     enc_val = enc_val | ((PIND & 0b1100) >> 2);
  
     enc_count = enc_count + lookup_table[enc_val & 0b1111];
+    Serial.print("encoder ");
+    Serial.print(enc_count);
 }

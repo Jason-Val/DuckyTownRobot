@@ -4,10 +4,13 @@ void compute_square_loop();
 void motor_setup();
 void set_motor();
 void ping_loop();
+void ir_setup();
 
 void setup() {
   // initialize serial communication:
   Serial.begin(9600);
+  motor_setup();
+  ir_setup();
 }
 
 void loop() {
