@@ -10,7 +10,6 @@ void setup() {
   Serial.begin(9600);
 }
 
-
 void loop() {
   motor_setup();
   int mode = -1;

@@ -5,7 +5,6 @@ DualMC33926MotorShield md;
 
 
 //https://arduino.stackexchange.com/questions/1013/how-do-i-split-an-incoming-string
-// Calculate based on max input size expected for one command
 #define INPUT_SIZE 9
 
 void stopIfFault()
@@ -33,8 +32,8 @@ void set_motor()
   md.setM2Speed(rspeed);
 }
 
-
 void motor_setup()
 {
   md.init();
 }
+
