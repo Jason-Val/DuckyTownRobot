@@ -1,6 +1,4 @@
-void ping_setup() {
-  Serial.begin(9600);
-}
+const int pingPin = 7;
 
 long microsecondsToInches(long microseconds) {
   // According to Parallax's datasheet for the PING))), there are 73.746
@@ -48,6 +46,4 @@ void ping_loop() {
   Serial.print("cm");
   Serial.println();
   Serial.flush();
-
-  delay(100);
 }

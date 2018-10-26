@@ -1,6 +1,12 @@
 #include "DualMC33926MotorShield.h"
+#include <string.h>
 
 DualMC33926MotorShield md;
+
+
+//https://arduino.stackexchange.com/questions/1013/how-do-i-split-an-incoming-string
+// Calculate based on max input size expected for one command
+#define INPUT_SIZE 9
 
 void stopIfFault()
 {
@@ -12,85 +18,23 @@ void stopIfFault()
   }
 }
 
-void motor_setup()
+void set_motor()
 {
-  //Serial.begin(9600);
-  //Serial.println("Dual MC33926 Motor Shield");
-  md.init();
+  // Get next command from Serial (add 1 for final 0)
+  char input[INPUT_SIZE + 1];
+  byte size = Serial.readBytes(input, INPUT_SIZE);
+  // Add the final 0 to end the C string
+  input[size] = 0;
+  
+  int lspeed = atoi(strtok(input, " "));
+  int rspeed = atoi(strtok(NULL, " "));
+
+  md.setM1Speed(lspeed);
+  md.setM2Speed(rspeed);
 }
 
-void motor_loop()
-{
-  for (int i = 0; i <= 400; i++)
-  {
-    md.setM1Speed(i);
-    stopIfFault();
-    if (abs(i)%200 == 100)
-    {
-      //Serial.print("M1 current: ");
-      //Serial.println(md.getM1CurrentMilliamps());
-    }
-    delay(2);
-  }
-  
-  for (int i = 400; i >= -400; i--)
-  {
-    md.setM1Speed(i);
-    stopIfFault();
-    if (abs(i)%200 == 100)
-    {
-      //Serial.print("M1 current: ");
-      //Serial.println(md.getM1CurrentMilliamps());
-    }
-    delay(2);
-  }
-  
-  for (int i = -400; i <= 0; i++)
-  {
-    md.setM1Speed(i);
-    stopIfFault();
-    if (abs(i)%200 == 100)
-    {
-      //Serial.print("M1 current: ");
-      //Serial.println(md.getM1CurrentMilliamps());
-    }
-    delay(2);
-  }
 
-  for (int i = 0; i <= 400; i++)
-  {
-    md.setM2Speed(i);
-    stopIfFault();
-    if (abs(i)%200 == 100)
-    {
-      Serial.print("M2 current: ");
-      Serial.println(md.getM2CurrentMilliamps());
-    }
-    delay(2);
-  }
-  
-  for (int i = 400; i >= -400; i--)
-  {
-    md.setM2Speed(i);
-    stopIfFault();
-    if (abs(i)%200 == 100)
-    {
-      //Serial.print("M2 current: ");
-      //Serial.println(md.getM2CurrentMilliamps());
-    }
-    delay(2);
-  }
-  
-  for (int i = -400; i <= 0; i++)
-  {
-    md.setM2Speed(i);
-    stopIfFault();
-    if (abs(i)%200 == 100)
-    {
-      //Serial.print("M2 current: ");
-      //Serial.println(md.getM2CurrentMilliamps());
-    }
-    delay(2);
-  }
-  Serial.flush();
+void motor_setup()
+{
+  md.init();
 }
