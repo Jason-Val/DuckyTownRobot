@@ -45,11 +45,9 @@ def __main__():
     if len(sys.argv) > 1:
         port_ext = sys.argv[1]
     port = "/dev/tty" + port_ext
-    rate = 9600
     
-    s1 = serial.Serial(port,rate)
-    s1 = None
-    
+    r = robot(port)
+        
     #distance to drive in meters
     distance = 0.4
     #speed in meters per second
@@ -58,7 +56,7 @@ def __main__():
     rotate_speed = 1/8
     
     for i in range(4):
-        drive_straight(s1, distance, speed)
-        rotate(s1, math.pi, rotate_speed)
+        r.drive_straight(distance, speed)
+        r.rotate(math.pi, rotate_speed)
     
 __main__()
