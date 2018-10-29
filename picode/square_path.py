@@ -1,6 +1,6 @@
 #!/user/bin/env python
 
-#import serial
+import serial
 import sys
 import math
 import time
