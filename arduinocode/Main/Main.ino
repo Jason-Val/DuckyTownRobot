@@ -28,6 +28,8 @@ void loop() {
       case 1:
         set_motor();
         break;
+      case 2:
+        Serial.println("test");
       default:
         break;
     }
