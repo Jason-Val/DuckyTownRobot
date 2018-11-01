@@ -5,6 +5,7 @@ void motor_setup();
 void set_motor();
 void ping_loop();
 void ir_setup();
+void get_current();
 
 void setup() {
   // initialize serial communication:
@@ -20,7 +21,7 @@ void loop() {
     char input[1];
     Serial.readBytes(input, 1);
     mode = atoi(input);
-    
+
     switch (mode) {
       case 0:
         ping_loop();

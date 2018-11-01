@@ -14,5 +14,5 @@ void encoder_isr() {
  
     enc_count = enc_count + lookup_table[enc_val & 0b1111];
     Serial.print("encoder ");
-    Serial.print(enc_count);
+    Serial.println(enc_count);
 }
