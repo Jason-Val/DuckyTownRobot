@@ -34,9 +34,8 @@ void right_encoder_isr() {
     enc_val_r = enc_val_r | ((PIND & 0b00001100) >> 2);
     right_count = right_count + lookup_table_r[enc_val_r & 0b1111];
 
-    Serial.println("Right: " + String(right_count));
-    Serial.println("Left: " + String(left_count));
-    Serial.println();
+    Serial.println("2 " + String(left_count) + " " + String(right_count));
+    Serial.flush();
 }
 
 void left_encoder_isr() {
@@ -47,7 +46,6 @@ void left_encoder_isr() {
 //    Serial.println(enc_val_l);
     left_count = left_count + lookup_table_l[enc_val_l & 0b1111];
 
-    Serial.println("Right: " + String(right_count));
-    Serial.println("Left: " + String(left_count));
-    Serial.println();
+    Serial.println("2 " + String(left_count) + " " + String(right_count));
+    Serial.flush();
 }

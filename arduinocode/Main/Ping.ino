@@ -40,10 +40,9 @@ void ping_loop() {
   inches = microsecondsToInches(duration);
   cm = microsecondsToCentimeters(duration);
 
+  Serial.print("0 ");
   Serial.print(inches);
-  Serial.print("in, ");
-  Serial.print(cm);
-  Serial.print("cm");
-  Serial.println();
+  Serial.print(" ");
+  Serial.println(cm);
   Serial.flush();
 }

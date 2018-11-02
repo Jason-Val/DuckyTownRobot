@@ -33,7 +33,8 @@ class robot:
         
     def get_actual_translation(self, i):
         msg = self.s.read_until().decode('utf-8')
-        l_count, r_count = map(int, msg.split(" "))
+        print(msg)
+        _, l_count, r_count = map(int, msg.split(" "))
         l_distance = l_count*self.wheel_circumference/self.encoder_segments
         r_distance = r_count*self.wheel_circumference/self.encoder_segments
         return (l_distance, r_distance)
