@@ -21,10 +21,6 @@ void ir_setup() {
   attachPinChangeInterrupt(PinMotor2Sensor2, left_encoder_isr, CHANGE);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
 void right_encoder_isr() {
   static int8_t lookup_table_r[] = {0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0};
   static uint8_t enc_val_r = 0;
