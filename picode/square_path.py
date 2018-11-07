@@ -109,6 +109,9 @@ class robot:
         while (time.time() - start < t):
             pass
         
+    def activate_motors(self, left, right):
+        self._send_to_arduino("1 {0} {1}".format(left, right))
+        
     def _send_to_arduino(self,cmd):
         self.s.write((cmd + ".").encode('utf-8'))
         self.s.flush()
