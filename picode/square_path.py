@@ -23,7 +23,7 @@ class robot:
         self.wheelbase = 0.157
         self.wheel_circumference = 2*math.pi*0.033
         self.encoder_segments = 32
-        self.s = serial.Serial(port,9600)
+        self.s = serial.Serial(port,115200,timeout=1)
         self.loc = [0, 0, 0]
         self.heading = 0
         self.next_loc = [0, 0]
@@ -32,8 +32,12 @@ class robot:
         self.r_rpm = 0
         
     def get_actual_translation(self):
+        self._send_to_arduino("2")
         msg = self.s.read_until().decode('utf-8')
-        print(msg)
+        print("message is " + str(msg))
+        if msg == '':
+            return None
+        #print(msg)
         _, l_count, r_count = map(int, msg.split(" "))
         l_distance = l_count*self.wheel_circumference/self.encoder_segments
         r_distance = r_count*self.wheel_circumference/self.encoder_segments
@@ -46,17 +50,20 @@ class robot:
         for i in range(len(pwm_list)):
             print("test pwm {}".format(pwm_list[i]))
             pwm = pwm_list[i]
-            l_trans = 0
-            r_trans = 0
-            self._send_to_arduino("1 {0} {0}".format(pwm))
+            self.activate_motors(pwm, pwm)
+            time.sleep(2)
+            print("start sleeping...")
+            l_trans_start, r_trans_start = self.get_actual_translation()
             start_time = time.time()
-            t = start_time
-            while (t < start_time + time_per_speed):
-                l_trans, r_trans = self.get_actual_translation()
-                t = time.time()
+            time.sleep(time_per_speed)
+            print("end sleeping")
+            l_trans, r_trans = self.get_actual_translation()
+            t = time.time()
+            
             velocities[i][0] = (l_trans - l_trans_start)/(t - start_time)
             velocities[i][1] = (r_trans - r_trans_start)/(t - start_time)
-        self._send_to_arduino("1 0 0")
+
+        self.activate_motors(pwm, pwm)
         return velocities
         
     def read_out_location(self, lpwm, rpwm, t):
@@ -110,10 +117,11 @@ class robot:
             pass
         
     def activate_motors(self, left, right):
-        self._send_to_arduino("1 {0} {1}".format(left, right))
+        self.s.write("1 {0} {1}.".format(left, right).encode('utf-8'))
+        self.s.flush()
         
     def _send_to_arduino(self,cmd):
-        self.s.write((cmd + ".").encode('utf-8'))
+        self.s.write(cmd.encode('utf-8'))
         self.s.flush()
         
     def _speed_to_rpm(self, speed):
@@ -130,8 +138,8 @@ def __main__():
         port_ext = sys.argv[1]
     port = "/dev/tty" + port_ext
     
-    #r = robot("\\.\COM3")
-    r = robot(port)
+    r = robot("\\.\COM3")
+    #r = robot(port)
     time.sleep(2)
     #distance to drive in meters
     distance = 0.4
@@ -142,8 +150,13 @@ def __main__():
     
     pwm_high = [x for x in range(50, 401, 50)]
     pwm_low = [x for x in range(-400, -49, 50)]
-    v_high = r.plot_pwm_vs_velocity(1, pwm_high)
-    v_low = r.plot_pwm_vs_velocity(1, pwm_low)
+    v_high = r.plot_pwm_vs_velocity(3, pwm_high)
+    
+    print("done!!!")
+    
+    #time.sleep(2)
+    
+    v_low = r.plot_pwm_vs_velocity(3, pwm_low)
     r.stop()
     
     v_l = []

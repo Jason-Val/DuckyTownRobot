@@ -5,11 +5,12 @@ void motor_setup();
 void set_motor();
 void ping_loop();
 void ir_setup();
+void get_ir();
 void get_current();
 
 void setup() {
   // initialize serial communication:
-  Serial.begin(9600);
+  Serial.begin(115200);
   motor_setup();
   ir_setup();
 }
@@ -29,6 +30,8 @@ void loop() {
       case 1:
         set_motor();
         break;
+      case 2:
+        get_ir();
       default:
         break;
     }

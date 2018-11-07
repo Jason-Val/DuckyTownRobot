@@ -28,7 +28,6 @@ void set_motor()
   
   int lspeed = atoi(strtok(input, " "));
   int rspeed = atoi(strtok(NULL, " "));
-
   md.setSpeeds(lspeed, rspeed);
 }
 
