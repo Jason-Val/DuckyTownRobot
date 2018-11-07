@@ -73,25 +73,25 @@ def getTurnCmdFromXAvg(x_avg, x_min, x_max, percents=[]):
 
 	if(perc < percents[0]):
 		#Hard Left
-		return (100, 210)
+		return (75, 150)
 	elif(perc < percents[1]):
 		#Left
-		return (150, 230)
+		return (110, 150)
 	elif(perc < percents[2]):
 		#Soft Left
-		return (180, 210)
+		return (130, 150)
 	elif(perc < percents[3]):
 		#Straight
-		return (200,200)
+		return (130,130)
 	elif(perc < percents[4]):
 		#Soft Right
-		return (210, 180)
+		return (150, 130)
 	elif(perc < percents[5]):
 		#Right
-		return (230, 150)
+		return (150, 110)
 	else:
 		#Hard Right
-		return(210, 100)
+		return(150, 75)
 
 def send_to_arduino(s, cmd):
 	s.write((cmd + ".").encode('utf-8'))
