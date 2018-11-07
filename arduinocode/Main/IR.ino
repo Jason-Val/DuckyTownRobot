@@ -1,10 +1,11 @@
 volatile long enc_count = 0;
 
+/*
 void ir_setup() {
     attachInterrupt(0,encoder_isr,CHANGE);
     attachInterrupt(1,encoder_isr,CHANGE);
 }
-
+*/
 void encoder_isr() {
     static int8_t lookup_table[] = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0};
     static uint8_t enc_val = 0;

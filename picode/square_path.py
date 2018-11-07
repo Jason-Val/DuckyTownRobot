@@ -22,16 +22,16 @@ class robot:
     def __init__(self, port = "/dev/ttyACM0"):
         self.wheelbase = 0.157
         self.wheel_circumference = 2*math.pi*0.033
-        self.encoder_segments = 16
+        self.encoder_segments = 32
         self.s = serial.Serial(port,9600)
-        self.loc = [0, 0]
+        self.loc = [0, 0, 0]
         self.heading = 0
         self.next_loc = [0, 0]
         self.next_heading = [0, 0]
         self.l_rpm = 0
         self.r_rpm = 0
         
-    def get_actual_translation(self, i):
+    def get_actual_translation(self):
         msg = self.s.read_until().decode('utf-8')
         print(msg)
         _, l_count, r_count = map(int, msg.split(" "))
@@ -39,7 +39,7 @@ class robot:
         r_distance = r_count*self.wheel_circumference/self.encoder_segments
         return (l_distance, r_distance)
         
-    def test_straight_line(self, time_per_speed, pwm_list):
+    def plot_pwm_vs_velocity(self, time_per_speed, pwm_list):
         velocities = [[None, None] for x in pwm_list]
         l_trans_start = 0
         r_trans_start = 0
@@ -52,17 +52,29 @@ class robot:
             start_time = time.time()
             t = start_time
             while (t < start_time + time_per_speed):
-                l_trans, r_trans = self.get_actual_translation(i)
+                l_trans, r_trans = self.get_actual_translation()
                 t = time.time()
             velocities[i][0] = (l_trans - l_trans_start)/(t - start_time)
             velocities[i][1] = (r_trans - r_trans_start)/(t - start_time)
         self._send_to_arduino("1 0 0")
         return velocities
         
+    def read_out_location(self, lpwm, rpwm, t):
+        self._send_to_arduino("1 {0} {1}".format(lpwm, rpwm))
+        t_init = time.time()
+        while (time.time() - t_init < t):
+            l_trans, r_trans = self.get_actual_translation()
+            delta_x = (l_trans + r_trans)/2
+            heading = math.atan2((r_trans - l_trans)/2, self.wheelbase/2)
+            self.loc = [delta_x*math.cos(heading), delta_x*math.sin(heading), heading]
+            print(self.loc)
+            
+    """
     def loop_pd():
         read_or_timeout() #updates loc[], heading
-        adjustment[L, R] = pd(self.loc, self.heading, self.next_loc, self.next_heading)
+        adjustment[L, R] = pd(self.loc, self.next_loc, self.next_heading)
         command(adjustment[0] + self.l_rpm)
+    """
         
     def drive_straight(self, distance, speed):
         print("***Drive Straight***")
@@ -115,7 +127,8 @@ def __main__():
         port_ext = sys.argv[1]
     port = "/dev/tty" + port_ext
     
-    r = robot("\\.\COM3")
+    #r = robot("\\.\COM3")
+    r = robot(port)
     time.sleep(2)
     #distance to drive in meters
     distance = 0.4
@@ -126,8 +139,8 @@ def __main__():
     
     pwm_high = [x for x in range(50, 401, 50)]
     pwm_low = [x for x in range(-400, -49, 50)]
-    v_high = r.test_straight_line(1, pwm_high)
-    v_low = r.test_straight_line(1, pwm_low)
+    v_high = r.plot_pwm_vs_velocity(1, pwm_high)
+    v_low = r.plot_pwm_vs_velocity(1, pwm_low)
     r.stop()
     
     v_l = []
