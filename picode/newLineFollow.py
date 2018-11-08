@@ -7,6 +7,9 @@ from PIL import Image
 
 s = serial.Serial("/dev/ttyACM0", 115200)
 img = None
+x_max = 0
+y_max = 0
+
 left_motor = 0
 right_motor = 0
 
@@ -72,7 +75,8 @@ def fullProcess():
 	left = (0,120)
 	straight = (120,120)
 
-	x_max, y_max = img.size
+	global x_max
+	global y_max
 	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
 	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
 	white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
@@ -131,6 +135,9 @@ def run_image_updater():
 			camera.capture(stream, format='jpeg')
 			stream.seek(0)
 			im = Image.open(stream)
+			global x_max
+			global y_max
+			x_max, y_max = im.size
 			pix = im.load()
 			img = pix
 
