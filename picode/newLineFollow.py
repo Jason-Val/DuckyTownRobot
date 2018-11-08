@@ -123,6 +123,7 @@ def run_image_updater(img):
 		camera.start_preview()
 		time.sleep(2)
 		while(True):
+			print(img)
 			stream = io.BytesIO()
 			camera.capture(stream, format='jpeg')
 			stream.seek(0)
@@ -132,8 +133,10 @@ def run_image_updater(img):
 
 def run_image_recognition(img):
 	while(img == None):
+		print("zzz")
 		time.sleep(0.5)
 	while(True):
+		print("Running")
 		left_motor, right_motor = fullProcess(img)
 		activate_motors(s, left_motor, right_motor)
 
