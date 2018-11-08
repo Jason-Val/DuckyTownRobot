@@ -48,6 +48,8 @@ class robot:
         l_trans_start = 0
         r_trans_start = 0
         for i in range(len(pwm_list)):
+            self.activate_motors(0, 0)
+            time.sleep(3)
             print("test pwm {}".format(pwm_list[i]))
             pwm = pwm_list[i]
             self.activate_motors(pwm, pwm)
@@ -156,7 +158,7 @@ def __main__():
     
     #time.sleep(2)
     
-    v_low = r.plot_pwm_vs_velocity(3, pwm_low)
+    v_low = r.plot_pwm_vs_velocity(2, pwm_low)
     r.stop()
     
     v_l = []
