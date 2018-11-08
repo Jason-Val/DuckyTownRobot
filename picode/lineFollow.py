@@ -100,49 +100,49 @@ def send_to_arduino(s, cmd):
 def activate_motors(serial, left, right):
 	send_to_arduino(serial, "1 {0} {1}".format(left, right))
 
-
-
 s = serial.Serial("/dev/ttyACM0", 9600)
 
-while(True):
-	stream = io.BytesIO()
-	with picamera.PiCamera() as camera:
-	    camera.start_preview()
-	    time.sleep(2)
-	    camera.capture(stream, format='jpeg')
-	# "Rewind" the stream to the beginning so we can read its content
-	stream.seek(0)
-	im = Image.open(stream)
+stream = io.BytesIO()
+with picamera.PiCamera() as camera:
+	camera.start_preview()
+	time.sleep(2)
+	camera.capture(stream, format='jpeg')
 
-	pix = im.load()
-	x, y = im.size
+	while(True):
+		
+		# "Rewind" the stream to the beginning so we can read its content
+		stream.seek(0)
+		im = Image.open(stream)
 
-	#Process the image 
-	x1, x2, y1, y2 = lineFollowWindow(x,y)
-	x_avg, y_avg, num_pos = avgInWindow(pix, x1, x2, y1, y2, isYellow)
+		pix = im.load()
+		x, y = im.size
 
-	#Based on the data do something
-	min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 5)
+		#Process the image 
+		x1, x2, y1, y2 = lineFollowWindow(x,y)
+		x_avg, y_avg, num_pos = avgInWindow(pix, x1, x2, y1, y2, isYellow)
 
-	left_motor = 0
-	right_motor = 0
+		#Based on the data do something
+		min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 5)
 
-	if(num_pos > min_num_pixels):
-		#results are reliable
-		# print("Reliable Results")
-		# print(x_avg)
-		# getTurnCmdFromXAvg(x_avg, x1, x2)
-		#On a linear scale, adjust steering of robot based on x_avg
-		left_motor, right_motor = getTurnCmdFromXAvg(x_avg, x1, x2)
+		left_motor = 0
+		right_motor = 0
 
-	else:
-		#results are not reliables
-		print("Not Reliable Results")
-		# print(x_avg)
-		#Rely on something else such as the middle yellow lane
-		#Or Search for the line
-		#Or make results less sensitive
-		left_motor = 85
-		right_motor = 130
+		if(num_pos > min_num_pixels):
+			#results are reliable
+			# print("Reliable Results")
+			# print(x_avg)
+			# getTurnCmdFromXAvg(x_avg, x1, x2)
+			#On a linear scale, adjust steering of robot based on x_avg
+			left_motor, right_motor = getTurnCmdFromXAvg(x_avg, x1, x2)
 
-	activate_motors(s, left_motor, right_motor)
+		else:
+			#results are not reliables
+			print("Not Reliable Results")
+			# print(x_avg)
+			#Rely on something else such as the middle yellow lane
+			#Or Search for the line
+			#Or make results less sensitive
+			left_motor = 85
+			right_motor = 130
+
+		activate_motors(s, left_motor, right_motor)
