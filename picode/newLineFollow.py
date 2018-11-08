@@ -41,7 +41,7 @@ def lineFollowWindow(x_max, y_max):
 
 	return(x_start, x_end, y_start, y_end)
 
-def avgInWindow(x_start, x_end, y_start, y_end, colorFunc):
+def avgInWindow(img, x_start, x_end, y_start, y_end, colorFunc):
 	x_avg = 0
 	y_avg = 0
 	num_positive = 0
@@ -63,7 +63,7 @@ def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
 	num_pix = (x_max-x_min) * (y_max-y_min)
 	return (percent/100) * num_pix
 
-def fullProcess():
+def fullProcess(img):
 	#Do This
 	right = (120,0)
 	left = (0,120)
@@ -71,8 +71,8 @@ def fullProcess():
 
 	x_max, y_max = img.size
 	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
-	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
-	white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
+	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(img, x_start, x_end, y_start, y_end, isYellow)
+	white_avg_x, white_y, white_pos = avgInWindow(img, x_start, x_end, y_start, y_end, isWhite)
 
 	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
 
@@ -118,7 +118,7 @@ def activate_motors(serial, left, right):
 	send_to_arduino(serial, "1 {0} {1}".format(left, right))
 
 
-def run_image_updater():
+def run_image_updater(img):
 	with picamera.PiCamera() as camera:
 		camera.start_preview()
 		time.sleep(2)
@@ -130,16 +130,16 @@ def run_image_updater():
 			pix = im.load()
 			img = pix
 
-def run_image_recognition():
+def run_image_recognition(img):
 	while(img == None):
 		time.sleep(0.5)
 	while(True):
-		left_motor, right_motor = fullProcess()
+		left_motor, right_motor = fullProcess(img)
 		activate_motors(s, left_motor, right_motor)
 
 #Main
-t1 = threading.Thread(target=run_image_updater)
-t2 = threading.Thread(target=run_image_recognition)
+t1 = threading.Thread(target=run_image_updater, args=(img,))
+t2 = threading.Thread(target=run_image_recognition, args=(img,))
 
 t1.start()
 t2.start()
