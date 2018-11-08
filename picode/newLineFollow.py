@@ -81,7 +81,7 @@ def fullProcess():
 	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
 	white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
 
-	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
+	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
 
 	# print("Min: ")
 	# print(min_num_pixels)
@@ -103,15 +103,15 @@ def fullProcess():
 		if(avg < incr*4):
 			#Left
 			print("Left Both")
-			return left
+			# return left
 		elif(avg < incr*8):
 			#Straight
 			print("Straight Both")
-			return straight
+			# return straight
 		elif(avg < incr*10):
 			#Right
 			print("Right Both")
-			return right
+			# return right
 		else:
 			#
 			print("No CLue")
@@ -139,15 +139,16 @@ def fullProcess():
 	elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
 		#Turn Right
 		print("Right Yellow Only")
-		return right
+		# return right
 	elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
 		#Turn Left
 		print("Left White Only")
-		return left
+		# return left
 	else:
 		#I dont know
 		print("IDK")
 		return(0,0)
+	return (0,0)
 
 
 def send_to_arduino(s, cmd):
