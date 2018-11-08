@@ -43,8 +43,8 @@ def avgInWindow(img, x_start, x_end, y_start, y_end, colorFunc):
 	return (x_avg, y_avg, num_positive)
 
 def lineFollowWindow(x_max, y_max):
-	width = int(x_max/2)
-	height = int(y_max/8)
+	width = int(x_max - 1)
+	height = int(y_max/15)
 
 	# x_start = int(x_max*0.5) # Useful for While Line Following
 	x_start = 0 # Useful for Yellow Line Following
@@ -70,28 +70,33 @@ def getTurnCmdFromXAvg(x_avg, x_min, x_max, percents=[]):
 	x_min = 0
 
 	perc = (x_avg*100)/x_max
+	
+	slow = 100
+	med = 120
+	medfast = 140
+	fast = 160
 
 	if(perc < percents[0]):
 		#Hard Left
-		return (75, 150)
+		return (slow, medfast)
 	elif(perc < percents[1]):
 		#Left
-		return (110, 150)
+		return (slow, med)
 	elif(perc < percents[2]):
 		#Soft Left
-		return (130, 150)
+		return (slow, slow +10)
 	elif(perc < percents[3]):
 		#Straight
-		return (130,130)
+		return (slow,slow)
 	elif(perc < percents[4]):
 		#Soft Right
-		return (150, 130)
+		return (slow +10, slow)
 	elif(perc < percents[5]):
 		#Right
-		return (150, 110)
+		return (med, slow)
 	else:
 		#Hard Right
-		return(150, 75)
+		return(medfast, slow)
 
 def send_to_arduino(s, cmd):
 	s.write((cmd + ".").encode('utf-8'))
@@ -102,13 +107,13 @@ def activate_motors(serial, left, right):
 
 
 
-s = serial.Serial("/dev/ttyACM0", 9600)
+s = serial.Serial("/dev/ttyACM0", 115200)
 
 while(True):
 	stream = io.BytesIO()
 	with picamera.PiCamera() as camera:
 	    camera.start_preview()
-	    time.sleep(2)
+	    #time.sleep(0.1)
 	    camera.capture(stream, format='jpeg')
 	# "Rewind" the stream to the beginning so we can read its content
 	stream.seek(0)
@@ -122,7 +127,7 @@ while(True):
 	x_avg, y_avg, num_pos = avgInWindow(pix, x1, x2, y1, y2, isYellow)
 
 	#Based on the data do something
-	min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 5)
+	min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 2)
 
 	left_motor = 0
 	right_motor = 0
@@ -144,5 +149,6 @@ while(True):
 		#Or make results less sensitive
 		left_motor = 85
 		right_motor = 130
-
+        
+	print(left_motor, right_motor)
 	activate_motors(s, left_motor, right_motor)
