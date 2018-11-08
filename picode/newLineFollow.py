@@ -102,15 +102,15 @@ def fullProcess():
 
 		if(avg < incr*4):
 			#Left
-			print("Left")
+			print("Left Both")
 			return left
 		elif(avg < incr*8):
 			#Straight
-			print("Straight")
+			print("Straight Both")
 			return straight
 		elif(avg < incr*10):
 			#Right
-			print("Right")
+			print("Right Both")
 			return right
 		else:
 			#
@@ -138,11 +138,11 @@ def fullProcess():
 
 	elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
 		#Turn Right
-		print("Right")
+		print("Right Yellow Only")
 		return right
 	elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
 		#Turn Left
-		print("Left")
+		print("Left White Only")
 		return left
 	else:
 		#I dont know
