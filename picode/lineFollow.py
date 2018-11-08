@@ -43,8 +43,8 @@ def avgInWindow(img, x_start, x_end, y_start, y_end, colorFunc):
 	return (x_avg, y_avg, num_positive)
 
 def lineFollowWindow(x_max, y_max):
-	width = int(x_max - 1)
-	height = int(y_max/15)
+	width = int(x_max/2)
+	height = int(y_max/8)
 
 	# x_start = int(x_max*0.5) # Useful for While Line Following
 	x_start = 0 # Useful for Yellow Line Following
@@ -70,33 +70,28 @@ def getTurnCmdFromXAvg(x_avg, x_min, x_max, percents=[]):
 	x_min = 0
 
 	perc = (x_avg*100)/x_max
-	
-	slow = 100
-	med = 120
-	medfast = 140
-	fast = 160
 
 	if(perc < percents[0]):
 		#Hard Left
-		return (slow, medfast)
+		return (75, 150)
 	elif(perc < percents[1]):
 		#Left
-		return (slow, med)
+		return (110, 150)
 	elif(perc < percents[2]):
 		#Soft Left
-		return (slow, slow +10)
+		return (130, 150)
 	elif(perc < percents[3]):
 		#Straight
-		return (slow,slow)
+		return (130,130)
 	elif(perc < percents[4]):
 		#Soft Right
-		return (slow +10, slow)
+		return (150, 130)
 	elif(perc < percents[5]):
 		#Right
-		return (med, slow)
+		return (150, 110)
 	else:
 		#Hard Right
-		return(medfast, slow)
+		return(150, 75)
 
 def send_to_arduino(s, cmd):
 	s.write((cmd + ".").encode('utf-8'))
@@ -105,50 +100,49 @@ def send_to_arduino(s, cmd):
 def activate_motors(serial, left, right):
 	send_to_arduino(serial, "1 {0} {1}".format(left, right))
 
+s = serial.Serial("/dev/ttyACM0", 9600)
 
+stream = io.BytesIO()
+with picamera.PiCamera() as camera:
+	camera.start_preview()
+	time.sleep(2)
+	camera.capture(stream, format='jpeg')
 
-s = serial.Serial("/dev/ttyACM0", 115200)
+	while(True):
+		
+		# "Rewind" the stream to the beginning so we can read its content
+		stream.seek(0)
+		im = Image.open(stream)
 
-while(True):
-	stream = io.BytesIO()
-	with picamera.PiCamera() as camera:
-	    camera.start_preview()
-	    #time.sleep(0.1)
-	    camera.capture(stream, format='jpeg')
-	# "Rewind" the stream to the beginning so we can read its content
-	stream.seek(0)
-	im = Image.open(stream)
+		pix = im.load()
+		x, y = im.size
 
-	pix = im.load()
-	x, y = im.size
+		#Process the image 
+		x1, x2, y1, y2 = lineFollowWindow(x,y)
+		x_avg, y_avg, num_pos = avgInWindow(pix, x1, x2, y1, y2, isYellow)
 
-	#Process the image 
-	x1, x2, y1, y2 = lineFollowWindow(x,y)
-	x_avg, y_avg, num_pos = avgInWindow(pix, x1, x2, y1, y2, isYellow)
+		#Based on the data do something
+		min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 5)
 
-	#Based on the data do something
-	min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 2)
+		left_motor = 0
+		right_motor = 0
 
-	left_motor = 0
-	right_motor = 0
+		if(num_pos > min_num_pixels):
+			#results are reliable
+			# print("Reliable Results")
+			# print(x_avg)
+			# getTurnCmdFromXAvg(x_avg, x1, x2)
+			#On a linear scale, adjust steering of robot based on x_avg
+			left_motor, right_motor = getTurnCmdFromXAvg(x_avg, x1, x2)
 
-	if(num_pos > min_num_pixels):
-		#results are reliable
-		# print("Reliable Results")
-		# print(x_avg)
-		# getTurnCmdFromXAvg(x_avg, x1, x2)
-		#On a linear scale, adjust steering of robot based on x_avg
-		left_motor, right_motor = getTurnCmdFromXAvg(x_avg, x1, x2)
+		else:
+			#results are not reliables
+			print("Not Reliable Results")
+			# print(x_avg)
+			#Rely on something else such as the middle yellow lane
+			#Or Search for the line
+			#Or make results less sensitive
+			left_motor = 85
+			right_motor = 130
 
-	else:
-		#results are not reliables
-		print("Not Reliable Results")
-		# print(x_avg)
-		#Rely on something else such as the middle yellow lane
-		#Or Search for the line
-		#Or make results less sensitive
-		left_motor = 85
-		right_motor = 130
-        
-	print(left_motor, right_motor)
-	activate_motors(s, left_motor, right_motor)
+		activate_motors(s, left_motor, right_motor)
