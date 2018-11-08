@@ -39,7 +39,7 @@ def lineFollowWindow(x_max, y_max):
 	x_start = 0 # Useful for Yellow Line Following
 	x_end = x_max
 
-	y_start = int(y_max*0.4)
+	y_start = int(y_max*0.45)
 	y_end = y_start + height
 
 	return(x_start, x_end, y_start, y_end)
@@ -70,51 +70,63 @@ def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
 def fullProcess():
 	#Do This
 	global img
-
-	right = (120,0)
-	left = (0,120)
-	straight = (120,120)
-
 	global x_max
 	global y_max
+
+	right = (130,100)
+	left = (100,130)
+	straight = (120,120)
+
 	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
 	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
 	white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
 
 	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
 
-	if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
-		if(white_avg_x < yellow_avg_x):
-			print("Mid Err Right")
-			return right
-		#lane follow
-		comp_yel = yellow_avg_x
-		comp_white = x_max - white_avg_x
-		if(abs(comp_yel - comp_white) < int(x_max/10)):
-			print("Mid-S")
-			return straight
-		elif(comp_yel > comp_white):
-			print("Mid-R")
-			return right
-		elif(comp_yel < comp_white):
-			print("Mid-L")
-			return left
-		else:
-			print("og idk")
-			return (0,0)
+	print("Min: ")
+	print(min_num_pixels)
+	print("Y Avg: ")
+	print(yellow_avg_x)
+	print(yellow_pos)
+	print("W Avg: ")
+	print(white_avg_x)
+	print(white_pos)
+	print()
 
-	elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
-		#Turn Right
-		print("Right")
-		return right
-	elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
-		#Turn Left
-		print("Left")
-		return left
-	else:
-		#I dont know
-		print("IDK")
-		return(0,0)
+	return (0,0)
+
+	# if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
+	# 	if(white_avg_x < yellow_avg_x):
+	# 		print("Mid Err Right")
+	# 		return right
+	# 	#lane follow
+	# 	comp_yel = yellow_avg_x
+	# 	comp_white = x_max - white_avg_x
+	# 	if(abs(comp_yel - comp_white) < int(x_max/10)):
+	# 		print("Mid-S")
+	# 		return straight
+	# 	elif(comp_yel > comp_white):
+	# 		print("Mid-R")
+	# 		return right
+	# 	elif(comp_yel < comp_white):
+	# 		print("Mid-L")
+	# 		return left
+	# 	else:
+	# 		print("og idk")
+	# 		return (0,0)
+
+	# elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
+	# 	#Turn Right
+	# 	print("Right")
+	# 	return right
+	# elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
+	# 	#Turn Left
+	# 	print("Left")
+	# 	return left
+	# else:
+	# 	#I dont know
+	# 	print("IDK")
+	# 	return(0,0)
 
 
 def send_to_arduino(s, cmd):
@@ -144,10 +156,10 @@ def run_image_updater():
 def run_image_recognition():
 	while(img == None):
 		global img
-		print("zzz")
+		# print("zzz")
 		time.sleep(0.5)
 	while(True):
-		print("In Loop")
+		# print("In Loop")
 		left_motor, right_motor = fullProcess()
 		activate_motors(s, left_motor, right_motor)
 
