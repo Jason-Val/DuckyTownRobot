@@ -83,50 +83,71 @@ def fullProcess():
 
 	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
 
-	print("Min: ")
-	print(min_num_pixels)
-	print("Y Avg: ")
-	print(yellow_avg_x)
-	print(yellow_pos)
-	print("W Avg: ")
-	print(white_avg_x)
-	print(white_pos)
-	print()
+	# print("Min: ")
+	# print(min_num_pixels)
+	# print("Y Avg: ")
+	# print(yellow_avg_x)
+	# print(yellow_pos)
+	# print("W Avg: ")
+	# print(white_avg_x)
+	# print(white_pos)
+	# print()
 
-	return (0,0)
+	# return (0,0)
 
-	# if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
-	# 	if(white_avg_x < yellow_avg_x):
-	# 		print("Mid Err Right")
-	# 		return right
-	# 	#lane follow
-	# 	comp_yel = yellow_avg_x
-	# 	comp_white = x_max - white_avg_x
-	# 	if(abs(comp_yel - comp_white) < int(x_max/10)):
-	# 		print("Mid-S")
-	# 		return straight
-	# 	elif(comp_yel > comp_white):
-	# 		print("Mid-R")
-	# 		return right
-	# 	elif(comp_yel < comp_white):
-	# 		print("Mid-L")
-	# 		return left
-	# 	else:
-	# 		print("og idk")
-	# 		return (0,0)
+	if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
+		avg = (white_avg_x + yellow_avg_x)/2
+		mid = x_max/2
+		incr = x_max/10
 
-	# elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
-	# 	#Turn Right
-	# 	print("Right")
-	# 	return right
-	# elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
-	# 	#Turn Left
-	# 	print("Left")
-	# 	return left
-	# else:
-	# 	#I dont know
-	# 	print("IDK")
-	# 	return(0,0)
+		if(avg < incr*4):
+			#Left
+			print("Left")
+			return left
+		elif(avg < incr*8):
+			#Straight
+			print("Straight")
+			return straight
+		elif(avg < incr*10):
+			#Right
+			print("Right")
+			return right
+		else:
+			#
+			print("No CLue")
+			return (0,0)
+
+		# if(white_avg_x < yellow_avg_x):
+		# 	print("Mid Err Right")
+		# 	return right
+		# #lane follow
+		# comp_yel = yellow_avg_x
+		# comp_white = x_max - white_avg_x
+		# if(abs(comp_yel - comp_white) < int(x_max/10)):
+		# 	print("Mid-S")
+		# 	return straight
+		# elif(comp_yel > comp_white):
+		# 	print("Mid-R")
+		# 	return right
+		# elif(comp_yel < comp_white):
+		# 	print("Mid-L")
+		# 	return left
+		# else:
+		# 	print("og idk")
+		# 	return (0,0)
+
+	elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
+		#Turn Right
+		print("Right")
+		return right
+	elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
+		#Turn Left
+		print("Left")
+		return left
+	else:
+		#I dont know
+		print("IDK")
+		return(0,0)
 
 
 def send_to_arduino(s, cmd):
