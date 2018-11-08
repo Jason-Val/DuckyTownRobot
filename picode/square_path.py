@@ -4,7 +4,6 @@ import serial
 import sys
 import math
 import time
-import matplotlib.pyplot as plt
 import numpy as np
 
 wheelbase = .157 #m
@@ -49,7 +48,7 @@ class robot:
         r_trans_start = 0
         for i in range(len(pwm_list)):
             self.activate_motors(0, 0)
-            time.sleep(3)
+            time.sleep(5)
             print("test pwm {}".format(pwm_list[i]))
             pwm = pwm_list[i]
             self.activate_motors(pwm, pwm)
@@ -140,7 +139,7 @@ def __main__():
         port_ext = sys.argv[1]
     port = "/dev/tty" + port_ext
     
-    r = robot("\\.\COM3")
+    r = robot(port)
     #r = robot(port)
     time.sleep(2)
     #distance to drive in meters
@@ -174,6 +173,7 @@ def __main__():
     print("right")
     print(v_r)
     
+    """
     plt.plot(pwm_low + pwm_high, v_l, label="left motor")
     plt.plot(pwm_low + pwm_high, v_r, label="right motor")
     
@@ -183,7 +183,7 @@ def __main__():
     plt.legend()
     
     plt.show()
-    
+    """
     """
     
     [-400, -350, -300, -250, -200, -150, -100, -50, 50, 100, 150, 200, 250, 300, 350, 400]
