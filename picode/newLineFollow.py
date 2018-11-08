@@ -41,13 +41,14 @@ def lineFollowWindow(x_max, y_max):
 
 	return(x_start, x_end, y_start, y_end)
 
-def avgInWindow(img, x_start, x_end, y_start, y_end, colorFunc):
+def avgInWindow(x_start, x_end, y_start, y_end, colorFunc):
 	x_avg = 0
 	y_avg = 0
 	num_positive = 0
 
 	for i in range(x_start, x_end):
 		for j in range(y_start, y_end):
+			global img
 			if(colorFunc(img[i,j])):
 				x_avg += i
 				y_avg += j
@@ -63,16 +64,18 @@ def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
 	num_pix = (x_max-x_min) * (y_max-y_min)
 	return (percent/100) * num_pix
 
-def fullProcess(img):
+def fullProcess():
 	#Do This
+	global img
+
 	right = (120,0)
 	left = (0,120)
 	straight = (120,120)
 
 	x_max, y_max = img.size
 	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
-	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(img, x_start, x_end, y_start, y_end, isYellow)
-	white_avg_x, white_y, white_pos = avgInWindow(img, x_start, x_end, y_start, y_end, isWhite)
+	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
+	white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
 
 	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
 
@@ -118,12 +121,12 @@ def activate_motors(serial, left, right):
 	send_to_arduino(serial, "1 {0} {1}".format(left, right))
 
 
-def run_image_updater(img):
+def run_image_updater():
 	with picamera.PiCamera() as camera:
 		camera.start_preview()
 		time.sleep(2)
 		while(True):
-			print(img)
+			global img
 			stream = io.BytesIO()
 			camera.capture(stream, format='jpeg')
 			stream.seek(0)
@@ -131,18 +134,19 @@ def run_image_updater(img):
 			pix = im.load()
 			img = pix
 
-def run_image_recognition(img):
+def run_image_recognition():
 	while(img == None):
+		global img
 		print("zzz")
 		time.sleep(0.5)
 	while(True):
-		print("Running")
-		left_motor, right_motor = fullProcess(img)
+		print("In Loop")
+		left_motor, right_motor = fullProcess()
 		activate_motors(s, left_motor, right_motor)
 
 #Main
-t1 = threading.Thread(target=run_image_updater, args=(img,))
-t2 = threading.Thread(target=run_image_recognition, args=(img,))
+t1 = threading.Thread(target=run_image_updater)
+t2 = threading.Thread(target=run_image_recognition)
 
 t1.start()
 t2.start()
