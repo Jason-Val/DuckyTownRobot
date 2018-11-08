@@ -28,18 +28,18 @@ def isRed(pixl):
 	return isColor(red, pixl)
 
 def isWhite(pixl):
-	return isColor(white, pixl)
+	return isColor(white, pixl, 100)
 
 def isYellow(pixl):
-	return isColor(yellow, pixl)
+	return isColor(yellow, pixl, 200)
 
 def lineFollowWindow(x_max, y_max):
-	height = int(y_max/5)
+	height = int(y_max/7)
 
 	x_start = 0 # Useful for Yellow Line Following
 	x_end = x_max
 
-	y_start = int(y_max*0.45)
+	y_start = int(y_max*0.5)
 	y_end = y_start + height
 
 	return(x_start, x_end, y_start, y_end)
@@ -103,15 +103,15 @@ def fullProcess():
 		if(avg < incr*4):
 			#Left
 			print("Left Both")
-			# return left
+			return left
 		elif(avg < incr*8):
 			#Straight
 			print("Straight Both")
-			# return straight
+			return straight
 		elif(avg < incr*10):
 			#Right
 			print("Right Both")
-			# return right
+			return right
 		else:
 			#
 			print("No CLue")
@@ -139,11 +139,11 @@ def fullProcess():
 	elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
 		#Turn Right
 		print("Right Yellow Only")
-		# return right
+		return right
 	elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
 		#Turn Left
 		print("Left White Only")
-		# return left
+		return left
 	else:
 		#I dont know
 		print("IDK")
