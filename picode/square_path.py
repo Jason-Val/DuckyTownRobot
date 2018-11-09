@@ -83,7 +83,7 @@ class robot:
             print("end measurement")
             l_trans, r_trans = self.get_actual_translation()
             t = time.time()
-            v = (l_trans - l_trans_start)/(t - start_time)
+            v = (r_trans - r_trans_start)/(t - start_time)
             print("v is " + str(v))
             velocities[i] = v
 
@@ -106,7 +106,7 @@ class robot:
             print("end measurement")
             l_trans, r_trans = self.get_actual_translation()
             t = time.time()
-            v = (r_trans - r_trans_start)/(t - start_time)
+            v = (l_trans - l_trans_start)/(t - start_time)
             print("v is " + str(v))
             velocities[i] = v
 
