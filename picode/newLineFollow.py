@@ -73,9 +73,13 @@ def fullProcess():
 	global x_max
 	global y_max
 
-	right = (130,100)
-	left = (100,130)
-	straight = (120,120)
+	hard_right = (125,0)
+	right = (145,110)
+	soft_right = (140,125)
+	straight = (130,130)
+	soft_left = (125,140)
+	left = (110,145)
+	hard_left = (0,125)
 
 	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
 	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
@@ -83,70 +87,45 @@ def fullProcess():
 
 	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
 
-	# print("Min: ")
-	# print(min_num_pixels)
-	# print("Y Avg: ")
-	# print(yellow_avg_x)
-	# print(yellow_pos)
-	# print("W Avg: ")
-	# print(white_avg_x)
-	# print(white_pos)
-	# print()
-
-	# return (0,0)
-
 	if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
+		#We see both the yellow and white line
+		#This is the case we want
 		avg = (white_avg_x + yellow_avg_x)/2
 		mid = x_max/2
-		incr = x_max/10
+		incr = x_max/100
 
-		if(avg < incr*4):
-			#Left
+		if(avg < incr*40):
 			print("Left Both")
 			return left
-		elif(avg < incr*8):
-			#Straight
+		elif(avg < incr*45):
+			print("Soft Left Both")
+			return soft_left
+		elif(avg < incr*55):
 			print("Straight Both")
 			return straight
-		elif(avg < incr*10):
-			#Right
+		elif(avg < incr*65):
+			print("Soft Right Both")
+			return soft_right
+		elif(avg < incr*100):
 			print("Right Both")
 			return right
 		else:
-			#
-			print("No CLue")
+			print("This case should never happen")
 			return (0,0)
-
-		# if(white_avg_x < yellow_avg_x):
-		# 	print("Mid Err Right")
-		# 	return right
-		# #lane follow
-		# comp_yel = yellow_avg_x
-		# comp_white = x_max - white_avg_x
-		# if(abs(comp_yel - comp_white) < int(x_max/10)):
-		# 	print("Mid-S")
-		# 	return straight
-		# elif(comp_yel > comp_white):
-		# 	print("Mid-R")
-		# 	return right
-		# elif(comp_yel < comp_white):
-		# 	print("Mid-L")
-		# 	return left
-		# else:
-		# 	print("og idk")
-		# 	return (0,0)
 
 	elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
 		#Turn Right
 		print("Right Yellow Only")
+		# return hard_right
 		return right
 	elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
 		#Turn Left
 		print("Left White Only")
+		# return hard_left
 		return left
 	else:
-		#I dont know
-		print("IDK")
+		print("No Yellow Or White")
+		#Search
 		return(0,0)
 	return (0,0)
 
