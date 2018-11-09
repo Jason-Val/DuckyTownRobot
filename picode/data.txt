@@ -1,0 +1,311 @@
+test pwm -400
+start sleeping...
+take measurement...
+received 2 -148 0
+
+end measurement
+received 2 -377 0
+
+v is -0.49352244679045487
+test pwm -350
+start sleeping...
+take measurement...
+received 2 -504 0
+
+end measurement
+received 2 -692 0
+
+v is -0.40472931943356744
+test pwm -300
+start sleeping...
+take measurement...
+received 2 -797 0
+
+end measurement
+received 2 -952 0
+
+v is -0.33366409926874474
+test pwm -250
+start sleeping...
+take measurement...
+received 2 -1037 0
+
+end measurement
+received 2 -1159 0
+
+v is -0.2628215611585417
+test pwm -200
+start sleeping...
+take measurement...
+received 2 -1217 0
+
+end measurement
+received 2 -1305 0
+
+v is -0.18941493701645065
+test pwm -150
+start sleeping...
+take measurement...
+received 2 -1343 0
+
+end measurement
+received 2 -1391 0
+
+v is -0.10329167352826349
+test pwm -100
+start sleeping...
+take measurement...
+received 2 -1403 0
+
+end measurement
+received 2 -1419 0
+
+v is -0.03448366777265078
+test pwm -50
+start sleeping...
+take measurement...
+received 2 -1419 0
+
+end measurement
+received 2 -1419 0
+
+v is 0.0
+test pwm 0
+start sleeping...
+take measurement...
+received 2 -1419 0
+
+end measurement
+received 2 -1419 0
+
+v is 0.0
+test pwm 50
+start sleeping...
+take measurement...
+received 2 -1419 0
+
+end measurement
+received 2 -1419 0
+
+v is 0.0
+test pwm 100
+start sleeping...
+take measurement...
+received 2 -1411 0
+
+end measurement
+received 2 -1393 0
+
+v is 0.03877912492214187
+test pwm 150
+start sleeping...
+take measurement...
+received 2 -1359 0
+
+end measurement
+received 2 -1308 0
+
+v is 0.10986295254675946
+test pwm 200
+start sleeping...
+take measurement...
+received 2 -1253 0
+
+end measurement
+received 2 -1165 0
+
+v is 0.18941786240367178
+test pwm 250
+start sleeping...
+take measurement...
+received 2 -1085 0
+
+end measurement
+received 2 -965 0
+
+v is 0.2583675397191806
+test pwm 300
+start sleeping...
+take measurement...
+received 2 -864 0
+
+end measurement
+received 2 -710 0
+
+v is 0.3314896344059142
+test pwm 350
+start sleeping...
+take measurement...
+received 2 -587 0
+
+end measurement
+received 2 -401 0
+
+v is 0.4004248302718481
+test pwm 400
+start sleeping...
+take measurement...
+received 2 -250 0
+
+end measurement
+received 2 -20 0
+
+v is 0.49509199928733105
+test pwm -400
+start sleeping...
+take measurement...
+received 2 -16 -148
+
+end measurement
+received 2 -16 -382
+
+v is -0.5035257775539033
+test pwm -350
+start sleeping...
+take measurement...
+received 2 -16 -510
+
+end measurement
+received 2 -16 -697
+
+v is -0.4025133720444853
+test pwm -300
+start sleeping...
+take measurement...
+received 2 -16 -804
+
+end measurement
+received 2 -16 -958
+
+v is -0.33148435719327984
+test pwm -250
+start sleeping...
+take measurement...
+received 2 -16 -1040
+
+end measurement
+received 2 -16 -1160
+
+v is -0.2583161324973717
+test pwm -200
+start sleeping...
+take measurement...
+received 2 -16 -1218
+
+end measurement
+received 2 -16 -1302
+
+v is -0.18081123897496906
+test pwm -150
+start sleeping...
+take measurement...
+received 2 -16 -1336
+
+end measurement
+received 2 -16 -1386
+
+v is -0.10768436541804309
+test pwm -100
+start sleeping...
+take measurement...
+received 2 -16 -1396
+
+end measurement
+received 2 -16 -1408
+
+v is -0.025862713911643454
+test pwm -50
+start sleeping...
+take measurement...
+received 2 -16 -1408
+
+end measurement
+received 2 -16 -1408
+
+v is 0.0
+test pwm 0
+start sleeping...
+take measurement...
+received 2 -16 -1408
+
+end measurement
+received 2 -16 -1408
+
+v is 0.0
+test pwm 50
+start sleeping...
+take measurement...
+received 2 -16 -1408
+
+end measurement
+received 2 -16 -1408
+
+v is 0.0
+test pwm 100
+start sleeping...
+take measurement...
+received 2 -16 -1400
+
+end measurement
+received 2 -16 -1394
+
+v is 0.012915042467175631
+test pwm 150
+start sleeping...
+take measurement...
+received 2 -16 -1364
+
+end measurement
+received 2 -16 -1326
+
+v is 0.08178449676670245
+test pwm 200
+start sleeping...
+take measurement...
+received 2 -16 -1276
+
+end measurement
+received 2 -16 -1196
+
+v is 0.17220025253770846
+test pwm 250
+start sleeping...
+take measurement...
+received 2 -16 -1123
+
+end measurement
+received 2 -16 -1008
+
+v is 0.24753588286607378
+test pwm 300
+start sleeping...
+take measurement...
+received 2 -16 -908
+
+end measurement
+received 2 -16 -759
+
+v is 0.32100111065200365
+test pwm 350
+start sleeping...
+take measurement...
+received 2 -16 -638
+
+end measurement
+received 2 -16 -455
+
+v is 0.39390489544966506
+test pwm 400
+start sleeping...
+take measurement...
+received 2 -16 -304
+
+end measurement
+received 2 -16 -76
+
+v is 0.4912413466400833
+[-400, -350, -300, -250, -200, -150, -100, -50, 0, 50, 100, 150, 200, 250, 300, 350, 400]
+Left data:
+[-0.5035257775539033, -0.4025133720444853, -0.33148435719327984, -0.2583161324973717, -0.18081123897496906, -0.10768436541804309, -0.025862713911643454, 0.0, 0.0, 0.0, 0.012915042467175631, 0.08178449676670245, 0.17220025253770846, 0.24753588286607378, 0.32100111065200365, 0.39390489544966506, 0.4912413466400833]
+Right data:
+[-0.49352244679045487, -0.40472931943356744, -0.33366409926874474, -0.2628215611585417, -0.18941493701645065, -0.10329167352826349, -0.03448366777265078, 0.0, 0.0, 0.0, 0.03877912492214187, 0.10986295254675946, 0.18941786240367178, 0.2583675397191806, 0.3314896344059142, 0.4004248302718481, 0.49509199928733105]
