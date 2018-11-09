@@ -4,7 +4,6 @@ import serial
 import sys
 import math
 import time
-import matplotlib.pyplot as plt
 import numpy as np
 
 wheelbase = .157 #m
@@ -47,7 +46,7 @@ class robot:
         r_trans_start = 0
         for i in range(len(pwm_list)):
             self.activate_motors(0, 0)
-            time.sleep(3)
+            time.sleep(5)
             print("test pwm {}".format(pwm_list[i]))
             pwm = pwm_list[i]
             self.activate_motors(pwm, pwm)
@@ -186,6 +185,7 @@ def __main__():
     
     #r = robot("\\.\COM3")
     r = robot(port)
+
     time.sleep(2)
     #distance to drive in meters
     distance = 0.4
@@ -202,5 +202,43 @@ def __main__():
     print(v_l)
     print("Right data:")
     print(v_r)
+    
+    """
+    plt.plot(pwm_low + pwm_high, v_l, label="left motor")
+    plt.plot(pwm_low + pwm_high, v_r, label="right motor")
+    
+    plt.xlabel("pwm")
+    plt.ylabel("velocity (m/s)")
+    plt.title("velocity vs pwm")
+    plt.legend()
+    
+    plt.show()
+    """
+    """
+    
+    [-400, -350, -300, -250, -200, -150, -100, -50, 50, 100, 150, 200, 250, 300, 350, 400]
+    [-0.5324684671734549, 
+    -0.4389622757837263, 
+    -0.3775627211935226, 
+    -0.2934385012961068, 
+    -0.20666704113785078, 
+    -0.13562950021804568, 
+    -0.05161557481842923, 
+    0.0, 
+    0.0, 
+    0.07103386441256744, 
+    0.16162422284479072, 
+    0.23697108656593577, 
+    0.3121389160862959, 
+    0.39175563657950613, 
+    0.47138180138081637, 
+    0.5335317438787168]
+    
+    print("begin driving")
+    for i in range(4):
+        r.drive_straight(distance, speed)
+        r.rotate(math.pi/2, rotate_time)
+    r.stop()
+    """
     
 __main__()

@@ -44,11 +44,11 @@ def avgInWindow(img, x_start, x_end, y_start, y_end, colorFunc):
 
 def lineFollowWindow(x_max, y_max):
 	width = int(x_max/2)
-	height = int(y_max/8)
+	height = int(y_max/5)
 
 	# x_start = int(x_max*0.5) # Useful for While Line Following
 	x_start = 0 # Useful for Yellow Line Following
-	x_end = x_start + width
+	x_end = x_max - 1
 
 	y_start = int(y_max*0.6)
 	y_end = y_start + height
@@ -122,7 +122,7 @@ with picamera.PiCamera() as camera:
 		x_avg, y_avg, num_pos = avgInWindow(pix, x1, x2, y1, y2, isYellow)
 
 		#Based on the data do something
-		min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 5)
+		min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 3)
 
 		left_motor = 0
 		right_motor = 0
