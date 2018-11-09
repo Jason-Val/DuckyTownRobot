@@ -94,7 +94,6 @@ class robot:
         velocities = [None for x in pwm_list]
         for i in range(len(pwm_list)):
             self.activate_motors(0, 0)
-            time.sleep(5)
             print("test pwm {}".format(pwm_list[i]))
             pwm = pwm_list[i]
             self.activate_motors(pwm, 0)
@@ -107,8 +106,9 @@ class robot:
             print("end measurement")
             l_trans, r_trans = self.get_actual_translation()
             t = time.time()
-            
-            velocities[i] = (l_trans - l_trans_start)/(t - start_time)
+            v = (l_trans - l_trans_start)/(t - start_time)
+            print("v is " + str(v))
+            velocities[i] = v
 
         self.activate_motors(0, 0)
         return velocities
@@ -197,8 +197,8 @@ def __main__():
     rotate_time = .5
         
     pwm_list = [x for x in range(-400, 401, 50)]
-    v_l = r.plot_pwm_vs_velocity_l(3, pwm_list)
     v_r = r.plot_pwm_vs_velocity_r(3, pwm_list)
+    v_l = r.plot_pwm_vs_velocity_l(3, pwm_list)
     print(pwm_list)
     print("Left data:")
     print(v_l)
