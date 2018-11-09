@@ -34,10 +34,8 @@ class robot:
     def get_actual_translation(self):
         self._send_to_arduino("2")
         msg = self.s.read_until().decode('utf-8')
-        print("message is " + str(msg))
         if msg == '':
             return None
-        #print(msg)
         _, l_count, r_count = map(int, msg.split(" "))
         l_distance = l_count*self.wheel_circumference/self.encoder_segments
         r_distance = r_count*self.wheel_circumference/self.encoder_segments
@@ -65,7 +63,53 @@ class robot:
             velocities[i][0] = (l_trans - l_trans_start)/(t - start_time)
             velocities[i][1] = (r_trans - r_trans_start)/(t - start_time)
 
-        self.activate_motors(pwm, pwm)
+        self.activate_motors(0, 0)
+        return velocities
+        
+    def plot_pwm_vs_velocity_l(self, time_per_speed, pwm_list):
+        velocities = [None for x in pwm_list]
+        for i in range(len(pwm_list)):
+            self.activate_motors(0, 0)
+            time.sleep(5)
+            print("test pwm {}".format(pwm_list[i]))
+            pwm = pwm_list[i]
+            self.activate_motors(pwm, 0)
+            print("start sleeping...")
+            time.sleep(2)
+            print("take measurement...")
+            l_trans_start, r_trans_start = self.get_actual_translation()
+            start_time = time.time()
+            time.sleep(time_per_speed)
+            print("end measurement")
+            l_trans, r_trans = self.get_actual_translation()
+            t = time.time()
+            
+            velocities[i] = (l_trans - l_trans_start)/(t - start_time)
+
+        self.activate_motors(0, 0)
+        return velocities
+        
+    def plot_pwm_vs_velocity_r(self, time_per_speed, pwm_list):
+        velocities = [None for x in pwm_list]
+        for i in range(len(pwm_list)):
+            self.activate_motors(0, 0)
+            time.sleep(5)
+            print("test pwm {}".format(pwm_list[i]))
+            pwm = pwm_list[i]
+            self.activate_motors(pwm, 0)
+            print("start sleeping...")
+            time.sleep(2)
+            print("take measurement...")
+            l_trans_start, r_trans_start = self.get_actual_translation()
+            start_time = time.time()
+            time.sleep(time_per_speed)
+            print("end measurement")
+            l_trans, r_trans = self.get_actual_translation()
+            t = time.time()
+            
+            velocities[i] = (r_trans - r_trans_start)/(t - start_time)
+
+        self.activate_motors(0, 0)
         return velocities
         
     def read_out_location(self, lpwm, rpwm, t):
@@ -140,8 +184,8 @@ def __main__():
         port_ext = sys.argv[1]
     port = "/dev/tty" + port_ext
     
-    r = robot("\\.\COM3")
-    #r = robot(port)
+    #r = robot("\\.\COM3")
+    r = robot(port)
     time.sleep(2)
     #distance to drive in meters
     distance = 0.4
@@ -149,66 +193,14 @@ def __main__():
     speed = 1/4
     #rotations per second
     rotate_time = .5
-    
-    pwm_high = [x for x in range(50, 401, 50)]
-    pwm_low = [x for x in range(-400, -49, 50)]
-    v_high = r.plot_pwm_vs_velocity(3, pwm_high)
-    
-    print("done!!!")
-    
-    #time.sleep(2)
-    
-    v_low = r.plot_pwm_vs_velocity(2, pwm_low)
-    r.stop()
-    
-    v_l = []
-    v_r = []
-    
-    for l, r in (v_low + v_high):
-        v_l.append(l)
-        v_r.append(r)
         
-    print(pwm_low + pwm_high)
-    print("left:")
+    pwm_list = [x for x in range(-400, 401, 50)]
+    v_l = r.plot_pwm_vs_velocity_l(3, pwm_list)
+    v_r = r.plot_pwm_vs_velocity_r(3, pwm_list)
+    print(pwm_list)
+    print("Left data:")
     print(v_l)
-    print("right")
+    print("Right data:")
     print(v_r)
-    
-    plt.plot(pwm_low + pwm_high, v_l, label="left motor")
-    plt.plot(pwm_low + pwm_high, v_r, label="right motor")
-    
-    plt.xlabel("pwm")
-    plt.ylabel("velocity (m/s)")
-    plt.title("velocity vs pwm")
-    plt.legend()
-    
-    plt.show()
-    
-    """
-    
-    [-400, -350, -300, -250, -200, -150, -100, -50, 50, 100, 150, 200, 250, 300, 350, 400]
-    [-0.5324684671734549, 
-    -0.4389622757837263, 
-    -0.3775627211935226, 
-    -0.2934385012961068, 
-    -0.20666704113785078, 
-    -0.13562950021804568, 
-    -0.05161557481842923, 
-    0.0, 
-    0.0, 
-    0.07103386441256744, 
-    0.16162422284479072, 
-    0.23697108656593577, 
-    0.3121389160862959, 
-    0.39175563657950613, 
-    0.47138180138081637, 
-    0.5335317438787168]
-    
-    print("begin driving")
-    for i in range(4):
-        r.drive_straight(distance, speed)
-        r.rotate(math.pi/2, rotate_time)
-    r.stop()
-    """
     
 __main__()
