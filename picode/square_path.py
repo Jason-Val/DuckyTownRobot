@@ -96,7 +96,7 @@ class robot:
             self.activate_motors(0, 0)
             print("test pwm {}".format(pwm_list[i]))
             pwm = pwm_list[i]
-            self.activate_motors(pwm, 0)
+            self.activate_motors(0, pwm)
             print("start sleeping...")
             time.sleep(2)
             print("take measurement...")
