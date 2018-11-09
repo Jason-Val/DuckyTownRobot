@@ -33,6 +33,7 @@ class robot:
     def get_actual_translation(self):
         self._send_to_arduino("2")
         msg = self.s.read_until().decode('utf-8')
+        print("received " + msg)
         if msg == '':
             return None
         _, l_count, r_count = map(int, msg.split(" "))
@@ -82,8 +83,9 @@ class robot:
             print("end measurement")
             l_trans, r_trans = self.get_actual_translation()
             t = time.time()
-            
-            velocities[i] = (l_trans - l_trans_start)/(t - start_time)
+            v = (l_trans - l_trans_start)/(t - start_time)
+            print("v is " + str(v))
+            velocities[i] = v
 
         self.activate_motors(0, 0)
         return velocities
