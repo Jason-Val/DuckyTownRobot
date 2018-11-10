@@ -1,6 +1,7 @@
 import time
 import picamera
 from PIL import Image
+import threading
 
 img_sem = threading.Semaphore()
 img = None
