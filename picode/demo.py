@@ -6,7 +6,7 @@ import math
 import time
 import numpy as np
 import threading
-#import vision
+import vision
     
 class robot:
     def __init__(self, port = "/dev/ttyACM0"):
@@ -18,37 +18,48 @@ class robot:
         self.v_l = 0
         self.v_r = 0
         self.pd_thread = threading.Thread(target=self.visual_pd_loop, name="pd_thread")
-        #self.vision_thread = threading.Thread(target=vision.start_thread, name="vision_thread")
+        self.vision_thread = threading.Thread(target=vision.start_thread, name="vision_thread")
         self.serial_sem = threading.Semaphore()
         
+    """
     def vel_to_pwm_l(self, vel):
+        
         if vel < 0:
-            return 662.15*vel - 59.873
+            #return 662.15*vel - 59.873
+            return 676.52*vel - 71.921
         if vel > 0:
-            return 637.09*vel + 51.57
+            #return 637.09*vel + 51.57
+            return 675.09*vel + 79.807
         return 0
         
     def vel_to_pwm_r(self, vel):
+        
         if vel < 0:
-            return 608.83*vel - 68.259
+            #return 608.83*vel - 68.259
+            return 687.99*vel - 68.317
         if vel > 0:
-            return 619.95*vel + 60.407
+            #return 619.95*vel + 60.407
+            return 695.55*vel + 66.464        
         return 0
+    """
         
     def visual_pd_loop(self):
         while (True):
-            #error = vision.error()
-            delta_l = 0         #TODO: Sam implement this
-            delta_r = 0
-            self.v_l += delta_l
-            self.v_r += delta_r
+            delta_error = vision.get_error()
+            print(delta_error)
+            """
+            delta_error = 0
+            self.v_l += delta_error/2
+            self.v_r -= delta_error/2
             self.activate_motors(self.v_l, self.v_r)
+            """
+            time.sleep(1)
         
     def start_demo(self, turn_direction):
         self.v_l = 0.2
         self.v_r = 0.2
         self.pd_thread.start()
-        #self.vision_thread.start()
+        self.vision_thread.start()
         self.activate_motors(self.v_l, self.v_r)
         while (input() != "q"):
             pass
@@ -75,14 +86,15 @@ def __main__():
     
     #r = robot("\\.\COM3")
     r = robot(port)
-
+    
     time.sleep(2)
     
-    pwm_l = r.vel_to_pwm_l(0.2)
-    pwm_r = r.vel_to_pwm_r(0.2)
-    print("pwm_l: {}, pwm_r: {}".format(pwm_l, pwm_r))
-    r.activate_motors(pwm_l, pwm_r)
+    #r.activate_motors(v, v)
+    r.vision_thread.start()
+    time.sleep(3)
+    r.pd_thread.start()
     input()
+    
     r.stop()
     
 __main__()

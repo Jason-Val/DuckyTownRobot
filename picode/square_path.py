@@ -90,6 +90,10 @@ class robot:
         self.activate_motors(0, 0)
         return velocities
         
+        """
+        
+        """
+        
     def plot_pwm_vs_velocity_r(self, time_per_speed, pwm_list):
         velocities = [None for x in pwm_list]
         for i in range(len(pwm_list)):
