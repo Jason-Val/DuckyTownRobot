@@ -9,7 +9,7 @@ import threading
 import vision
     
 class robot:
-    def __init__(self, port = "/dev/ttyACM0"):
+    def __init__(self, port="/dev/ttyACM0"):
         self.wheelbase = 0.157
         self.wheel_circumference = 2*math.pi*0.033
         self.encoder_segments = 32
@@ -20,6 +20,7 @@ class robot:
         self.pd_thread = threading.Thread(target=self.visual_pd_loop, name="pd_thread")
         self.vision_thread = threading.Thread(target=vision.start_thread, name="vision_thread")
         self.serial_sem = threading.Semaphore()
+        self.prev_error = 0
         
     """
     def vel_to_pwm_l(self, vel):
@@ -45,16 +46,19 @@ class robot:
         
     def visual_pd_loop(self):
         while (True):
-            delta_error = vision.get_error()
-            print(delta_error)
+            error = vision.get_error()
+            print(error)
+            delta_error = error - self.prev_error
+            self.prev_error = error
+            delta_v = -self.K*error -self.B*delta_error
+            
             """
-            delta_error = 0
             self.v_l += delta_error/2
             self.v_r -= delta_error/2
             self.activate_motors(self.v_l, self.v_r)
+            time.sleep(.05)
             """
-            time.sleep(1)
-        
+            
     def start_demo(self, turn_direction):
         self.v_l = 0.2
         self.v_r = 0.2

@@ -31,6 +31,11 @@ void set_motor()
   md.setSpeeds(lspeed, rspeed);
 }
 
+void set_motor(double pwm_l, double pwm_r)
+{
+  md.setSpeeds(pwm_l, pwm_r);
+}
+
 void get_current()
 {
   Serial.println(String(md.getM1CurrentMilliamps()) + ", " + String(md.getM2CurrentMilliamps()));
