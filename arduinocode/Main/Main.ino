@@ -1,3 +1,8 @@
+#include <DualMC33926MotorShield.h>
+
+#include <PinChangeInt.h>
+
+
 #include <string.h>
 #include "MotorPd.h"
 
