@@ -53,11 +53,19 @@ void MotorPd::setC(double c)
 
 double MotorPd::getPWM_l(double vLeft)
 {
+  if (vLeft == 0)
+  {
+    return 0;
+  }
   return 695.55*vLeft + 66.464;
 }
 
 double MotorPd::getPWM_r(double vRight)
 {
+  if (vRight == 0)
+  {
+    return 0;
+  }
   return 675.09*vRight + 79.807;
 }
 
