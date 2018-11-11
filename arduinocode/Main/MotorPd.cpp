@@ -71,6 +71,18 @@ double* MotorPd::computeCorrection(double* correction)
   double deltaError = error - prevError;
   prevError = error;
   double deltaV = -K*(error)-B*(deltaError);
+
+  Serial.print("error: ");
+  Serial.print(error);
+  Serial.print("; deltaError: ");
+  Serial.print(deltaError);
+  Serial.print("; deltaV: ");
+  Serial.print(deltaV);
+  Serial.print("; velocity: ");
+  Serial.print(v[0]);
+  Serial.print(", ");
+  Serial.println(v[1]);
+  
   v[0] += deltaV/2.0;
   v[1] -= deltaV/2.0;
   correction[0] = getPWM_l(v[0]);
