@@ -1,8 +1,3 @@
-#include <DualMC33926MotorShield.h>
-
-#include <PinChangeInt.h>
-
-
 #include <string.h>
 #include "MotorPd.h"
 
@@ -15,6 +10,7 @@ void ir_setup();
 void get_ir();
 void get_current();
 void set_motor(double pwm_l, double pwm_r);
+void set_motor_vel();
 
 bool pd_active = false;
 long t_pd_updated = millis();
@@ -56,8 +52,13 @@ void loop() {
         break;
       case 2:
         get_ir();
+        break;
       case 3:
         pd_active = !pd_active;
+        break;
+      case 4:
+        set_motor_vel();
+        break;
       default:
         break;
     }
