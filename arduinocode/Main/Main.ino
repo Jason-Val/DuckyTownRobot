@@ -31,10 +31,11 @@ void setup() {
 void loop() {
   motor_setup();
   int mode = -1;
-  if (pd_active) {
+  if (pd_active && millis() - t_pd_updated > pd_update_delay) {
     double *correction = new double[2];
     correction = pd.computeCorrection(correction);
     set_motor(correction[0], correction[1]);
+    t_pd_updated = millis();
   } 
   else if(millis() - t_pd_updated > pd_update_delay)
   {
