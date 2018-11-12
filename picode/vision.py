@@ -41,18 +41,18 @@ def lineFollowWindow(x_max, y_max):
 
     return(x_start, x_end, y_start, y_end)
 
-def avgInWindow(x_start, x_end, y_start, y_end, colorFunc):
+def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=10):
     x_avg = 0
     y_avg = 0
     num_positive = 0
-    global img
 
-    for i in range(x_start, x_end):
+    for i in range(x_start, x_end, num_to_process):
         for j in range(y_start, y_end):
+            global img
             if(colorFunc(img[i,j])):
                 x_avg += i
                 y_avg += j
-                num_positive += 1
+                num_positive += num_to_process
 
     if(not num_positive == 0):
         x_avg = int(x_avg/num_positive)
@@ -68,48 +68,94 @@ def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
 
 """
 def get_error():
-    #Do This
+
+    global img
     global x_max
     global y_max
-    global img_sem
-    
-    left_lane_ideal = 150
-    right_lane_ideal = 1259
-    
-    hard_right = (125,0)
-    right = (145,110)
-    soft_right = (140,125)
-    straight = (130,130)
-    soft_left = (125,140)
-    left = (110,145)
-    hard_left = (0,125)
-    
+
+    # hard_right = (0.14,0.1)
+    # right = (0.14,0.125)
+    # soft_right = (0.14,0.135)
+    # straight = (0.14,0.14)
+    # soft_left = (0.135,0.14)
+    # left = (0.125,0.14)
+    # hard_left = (0.1,0.14)
+
     x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
-    img_sem.acquire()
     yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
     white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
-    img_sem.release()
-    
+
     min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
+    incr = x_max/100
+
+    lane_width_approx_in_pixels = 1000
+
+    robot_avg = x_max/2
+
+    if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
+        #We see both the yellow and white line
+        #This is the case we want
+        lane_avg = (white_avg_x + yellow_avg_x)/2
+        return robot_avg - lane_avg
+
+    elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
+        #Only see Yellow line
+        lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
+        return robot_avg - lane_avg
+
+    elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
+        #Only see White line
+        lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
+        return robot_avg - lane_avg
+
+    else:
+        print("No Yellow Or White")
+        return None
+
+
+
+    #Do This
+    # global x_max
+    # global y_max
+    # global img_sem
     
-    print("y: [{0}, {1}], {2}".format(yellow_avg_x, yellow_y, yellow_pos))
-    print("w: [{0}, {1}], {2}".format(white_avg_x, white_y, white_pos))
-    print("------")
+    # left_lane_ideal = 150
+    # right_lane_ideal = 1259
     
-    error = 0
+    # hard_right = (125,0)
+    # right = (145,110)
+    # soft_right = (140,125)
+    # straight = (130,130)
+    # soft_left = (125,140)
+    # left = (110,145)
+    # hard_left = (0,125)
     
-    left_error = 0
-    right_error = 0
+    # x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
+    # img_sem.acquire()
+    # yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
+    # white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
+    # img_sem.release()
     
-    if (yellow_pos > min_num_pixels):
-        #calculate center based on yellow position
-        left_error = left_lane_ideal - yellow_avg_x #positive if too far left
-    if (white_pos > min_num_pixels):
-        #calculate center based on white position
-        right_error = right_lane_ideal - white_avg_x #positive if too far left
+    # min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
     
-    print("left error: {}; right error: {}".format(left_error, right_error))
-    return left_error
+    # print("y: [{0}, {1}], {2}".format(yellow_avg_x, yellow_y, yellow_pos))
+    # print("w: [{0}, {1}], {2}".format(white_avg_x, white_y, white_pos))
+    # print("------")
+    
+    # error = 0
+    
+    # left_error = 0
+    # right_error = 0
+    
+    # if (yellow_pos > min_num_pixels):
+    #     #calculate center based on yellow position
+    #     left_error = left_lane_ideal - yellow_avg_x #positive if too far left
+    # if (white_pos > min_num_pixels):
+    #     #calculate center based on white position
+    #     right_error = right_lane_ideal - white_avg_x #positive if too far left
+    
+    # print("left error: {}; right error: {}".format(left_error, right_error))
+    # return left_error
     """
     if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
         #We see both the yellow and white line
