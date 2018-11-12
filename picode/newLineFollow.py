@@ -192,5 +192,6 @@ with picamera.PiCamera() as camera:
 		left_motor, right_motor = fullProcess()
 		print("Before Activate Call")
 		activate_motors(s_global, left_motor, right_motor)
+		print("After Call")
 
 activate_motors(s, 0, 0)
