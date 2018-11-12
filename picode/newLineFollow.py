@@ -131,7 +131,7 @@ def fullProcess():
 
 
 def send_to_arduino(s, cmd):
-	s.write((cmd + ".").encode('utf-8'))
+	s.write((cmd + ";").encode('utf-8'))
 	s.flush()
 
 def activate_motors(serial, left, right):
@@ -165,13 +165,31 @@ def run_image_recognition():
 		activate_motors(s, left_motor, right_motor)
 
 #Main
-t1 = threading.Thread(target=run_image_updater)
-t2 = threading.Thread(target=run_image_recognition)
+# t1 = threading.Thread(target=run_image_updater)
+# t2 = threading.Thread(target=run_image_recognition)
 
-t1.start()
-t2.start()
+# t1.start()
+# t2.start()
 
-t1.join()
-t2.join()
+# t1.join()
+# t2.join()
+
+with picamera.PiCamera() as camera:
+	camera.start_preview()
+	time.sleep(2)
+	while(True):
+		# global img
+		stream = io.BytesIO()
+		camera.capture(stream, format='jpeg')
+		stream.seek(0)
+		im = Image.open(stream)
+		# global x_max
+		# global y_max
+		x_max, y_max = im.size
+		pix = im.load()
+		img = pix
+
+		left_motor, right_motor = fullProcess()
+		activate_motors(s, left_motor, right_motor)
 
 activate_motors(s, 0, 0)
