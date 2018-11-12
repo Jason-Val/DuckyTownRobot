@@ -1,5 +1,8 @@
-#include "DualMC33926MotorShield.h"
-#include "PinChangeInt.h"
+#include <PinChangeInt.h>
+
+#include <DualMC33926MotorShield.h>
+
+
 #include "math.h"
 
 #define PinMotor1Sensor1 2
@@ -50,8 +53,8 @@ void loop()
   //Serial.println("Right:" + String(left_count) + " Left:" + String(right_count) + "; S_l=" + String(S_l) + " S_r=" + String(S_r) + "; theta:" + String(theta * (180.0 / M_PI)));
   //Serial.println(Etime);
   delay(1000);
-  Serial.print("S_ref: " + String(S_ref) + "; n_ref: " + String(n_ref));
-  Serial.println("; S_l: " + String(S_l) + "; S_r: " + String(S_r) + "; n_l: " + String(left_count) +"; n_r:" + String(right_count));
+  //Serial.print("S_ref: " + String(S_ref) + "; n_ref: " + String(n_ref));
+  //Serial.println("; S_l: " + String(S_l) + "; S_r: " + String(S_r) + "; n_l: " + String(left_count) +"; n_r:" + String(right_count));
 }
 
 void get_location() {
@@ -90,8 +93,8 @@ void left_encoder_isr() {
 void motor_control() {
 
   if (((left_count < (n_ref-20))||(right_count < (n_ref-20)))||((left_count < (n_ref-20))||(right_count < (n_ref-20)))){
-    md.setM1Speed(100); //Left
-    md.setM2Speed(100); //Right
+    md.setM1Speed(200); //Left
+    md.setM2Speed(200); //Right
   }
   else{
     md.setM1Speed(0); //Left
