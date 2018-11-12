@@ -5,7 +5,7 @@ import picamera
 import threading
 from PIL import Image
 
-s = serial.Serial("/dev/ttyACM0", 115200)
+s_global = serial.Serial("/dev/ttyACM0", 115200)
 img = None
 x_max = 0
 y_max = 0
@@ -131,11 +131,11 @@ def fullProcess():
 
 
 def send_to_arduino(s, cmd):
-	s.write((cmd + ";").encode('utf-8'))
+	s.write((cmd).encode('utf-8'))
 	s.flush()
 
-def activate_motors(serial, left, right):
-	send_to_arduino(serial, "1 {0} {1}".format(left, right))
+def activate_motors(s, left, right):
+	send_to_arduino(s, "1 {0} {1};".format(left, right))
 
 
 def run_image_updater():
@@ -190,6 +190,7 @@ with picamera.PiCamera() as camera:
 		img = pix
 
 		left_motor, right_motor = fullProcess()
-		activate_motors(s, left_motor, right_motor)
+		print("Before Activate Call")
+		activate_motors(s_global, left_motor, right_motor)
 
 activate_motors(s, 0, 0)
