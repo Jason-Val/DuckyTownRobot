@@ -4,7 +4,7 @@
 
 extern volatile long right_count;
 extern volatile long left_count;
-
+/*
 long* getCounts(long* counts)
 {
   
@@ -12,6 +12,18 @@ long* getCounts(long* counts)
   counts[0] = left_count;
   counts[1] = right_count;
   sei();
+}
+*/
+
+long* getCounts(long* counts)
+{
+  uint8_t SaveSREG = SREG;   // save interrupt flag
+  cli();   // disable interrupts
+  c = PulseCounts;  // access the shared data
+  counts[0] = left_count;
+  counts[1] = right_count;
+  SREG = SaveSREG;   // restore the interrupt flag
+  return counts;
 }
 
 double* MotorPd::getTranslation(double* trans)
