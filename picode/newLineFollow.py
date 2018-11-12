@@ -179,6 +179,9 @@ with picamera.PiCamera() as camera:
 	time.sleep(2)
 	while(True):
 		# global img
+
+		start_time = time.time()
+
 		stream = io.BytesIO()
 		camera.capture(stream, format='jpeg')
 		stream.seek(0)
@@ -186,10 +189,18 @@ with picamera.PiCamera() as camera:
 		# global x_max
 		# global y_max
 		x_max, y_max = im.size
-		pix = im.load()
-		img = pix
+		img = im.load()
+
+		print("--- %s seconds for load ---" % (time.time() - start_time))
+
+		start_time = time.time()
+
 
 		left_motor, right_motor = fullProcess()
+
+		print("--- %s seconds for process ---" % (time.time() - start_time))
+
+
 		print("Before Activate Call")
 		activate_motors(s_global, left_motor, right_motor)
 		print("After Call")
