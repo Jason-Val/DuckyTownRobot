@@ -5,7 +5,7 @@ import picamera
 import threading
 from PIL import Image
 
-s = serial.Serial("/dev/ttyACM0", 115200)
+s_global = serial.Serial("/dev/ttyACM0", 115200)
 img = None
 x_max = 0
 y_max = 0
@@ -131,11 +131,11 @@ def fullProcess():
 
 
 def send_to_arduino(s, cmd):
-	s.write((cmd + ".").encode('utf-8'))
+	s.write((cmd).encode('utf-8'))
 	s.flush()
 
-def activate_motors(serial, left, right):
-	send_to_arduino(serial, "1 {0} {1}".format(left, right))
+def activate_motors(s, left, right):
+	send_to_arduino(s, "1 {0} {1};".format(left, right))
 
 
 def run_image_updater():
@@ -165,13 +165,44 @@ def run_image_recognition():
 		activate_motors(s, left_motor, right_motor)
 
 #Main
-t1 = threading.Thread(target=run_image_updater)
-t2 = threading.Thread(target=run_image_recognition)
+# t1 = threading.Thread(target=run_image_updater)
+# t2 = threading.Thread(target=run_image_recognition)
 
-t1.start()
-t2.start()
+# t1.start()
+# t2.start()
 
-t1.join()
-t2.join()
+# t1.join()
+# t2.join()
+
+with picamera.PiCamera() as camera:
+	camera.start_preview()
+	time.sleep(2)
+	while(True):
+		# global img
+
+		start_time = time.time()
+
+		stream = io.BytesIO()
+		camera.capture(stream, format='jpeg')
+		stream.seek(0)
+		im = Image.open(stream)
+		# global x_max
+		# global y_max
+		x_max, y_max = im.size
+		img = im.load()
+
+		print("--- %s seconds for load ---" % (time.time() - start_time))
+
+		start_time = time.time()
+
+
+		left_motor, right_motor = fullProcess()
+
+		print("--- %s seconds for process ---" % (time.time() - start_time))
+
+
+		print("Before Activate Call")
+		activate_motors(s_global, left_motor, right_motor)
+		print("After Call")
 
 activate_motors(s, 0, 0)
