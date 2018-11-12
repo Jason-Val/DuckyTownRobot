@@ -180,7 +180,7 @@ with picamera.PiCamera() as camera:
 	while(True):
 		# global img
 
-		start_time = time.time()
+		#start_time = time.time()
 
 		stream = io.BytesIO()
 		camera.capture(stream, format='jpeg')
@@ -191,7 +191,7 @@ with picamera.PiCamera() as camera:
 		x_max, y_max = im.size
 		img = im.load()
 
-		print("--- %s seconds for load ---" % (time.time() - start_time))
+		#print("--- %s seconds for load ---" % (time.time() - start_time))
 
 		start_time = time.time()
 
