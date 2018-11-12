@@ -19,6 +19,9 @@ long t_pd_updated = millis();
 long pd_update_delay = 100;
 MotorPd pd(1, 1);
 
+extern volatile long right_count;
+extern volatile long left_count;
+
 void setup() {
   // initialize serial communication:
   Serial.begin(115200);
@@ -34,10 +37,17 @@ void loop() {
     correction = pd.computeCorrection(correction);
     set_motor(correction[0], correction[1]);
     t_pd_updated = millis();
-
   }
   else if(millis() - t_pd_updated > pd_update_delay)
   {
+    /*
+    long* counts = new long[2];
+    //counts = getCounts(counts);
+    Serial.print("counts: ");
+    Serial.print(left_count);
+    Serial.print(", ");
+    Serial.println(right_count);
+    */
     pd.resetInitPoint();
     t_pd_updated = millis();
   }
