@@ -7,13 +7,13 @@ import time
 import numpy as np
 import threading
 import vision
-    
+
 class robot:
     def __init__(self, port="/dev/ttyACM0"):
         self.wheelbase = 0.157
         self.wheel_circumference = 2*math.pi*0.033
         self.encoder_segments = 32
-        #self.s = serial.Serial(port,115200,timeout=1)
+        self.s = serial.Serial(port,115200,timeout=1)
         self.s = None
         self.v_l = 0
         self.v_r = 0

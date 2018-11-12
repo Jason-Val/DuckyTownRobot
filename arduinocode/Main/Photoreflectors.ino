@@ -1,5 +1,3 @@
-
-
 #define PinMotor1Sensor1 5
 #define PinMotor1Sensor2 6
 #define PinMotor2Sensor1 2

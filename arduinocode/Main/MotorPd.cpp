@@ -1,13 +1,37 @@
 #include "Arduino.h"
 #include "MotorPd.h"
+#include "math.h"
 
 extern volatile long right_count;
 extern volatile long left_count;
+/*
+long* getCounts(long* counts)
+{
+  
+  cli();
+  counts[0] = left_count;
+  counts[1] = right_count;
+  sei();
+}
+*/
+
+long* getCounts(long* counts)
+{
+  uint8_t SaveSREG = SREG;   // save interrupt flag
+  cli();   // disable interrupts
+  c = PulseCounts;  // access the shared data
+  counts[0] = left_count;
+  counts[1] = right_count;
+  SREG = SaveSREG;   // restore the interrupt flag
+  return counts;
+}
 
 double* MotorPd::getTranslation(double* trans)
 {
-  trans[0] = ((M_PI * dia * left_count) / encoderSegments);
-  trans[1] = ((M_PI * dia * right_count) / encoderSegments);
+  long* counts = new long[2];
+  counts = getCounts(counts);
+  trans[0] = ((M_PI * dia * counts[0]) / encoderSegments);
+  trans[1] = ((M_PI * dia * counts[1]) / encoderSegments);
   return trans;
 }
 
@@ -44,11 +68,14 @@ void MotorPd::resetInitPoint()
 {
   double* vel = new double[2];
   vel = getVelocity(vel);
+  
+  long* counts = new long[2];
+  counts = getCounts(counts);
   Serial.print(vel[0]);
   Serial.print(", ");
   Serial.println(vel[1]);
   Serial.print("right count: ");
-  Serial.println(right_count);
+  Serial.println(counts[1]);
   sPrev = getTranslation(sPrev);
   tPrev = millis();
 }

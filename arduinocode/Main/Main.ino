@@ -1,7 +1,6 @@
-#include <PinChangeInt.h>
-#include <DualMC33926MotorShield.h>
-
 #include <string.h>
+#include <DualMC33926MotorShield.h>
+#include <PinChangeInt.h>
 #include "MotorPd.h"
 
 
@@ -35,12 +34,14 @@ void loop() {
     correction = pd.computeCorrection(correction);
     set_motor(correction[0], correction[1]);
     t_pd_updated = millis();
-  } 
-//  else if(millis() - t_pd_updated > pd_update_delay)
-//  {
-//    pd.resetInitPoint();
-//    t_pd_updated = millis();
-//  }
+
+  }
+  else if(millis() - t_pd_updated > pd_update_delay)
+  {
+    pd.resetInitPoint();
+    t_pd_updated = millis();
+  }
+  
   
   if (Serial.available()) {
     char input[1];

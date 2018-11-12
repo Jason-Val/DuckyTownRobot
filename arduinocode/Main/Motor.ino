@@ -1,4 +1,3 @@
-#include "DualMC33926MotorShield.h"
 #include <string.h>
 
 DualMC33926MotorShield md;
