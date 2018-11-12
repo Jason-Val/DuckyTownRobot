@@ -70,11 +70,11 @@ class robot:
         self.stop()
         
     def stop(self):
-        self._send_to_arduino("1 0 0")
+        self._send_to_arduino("1 0 0;")
         self.s.close()
         
     def activate_motors(self, v_l, v_r):
-        self._send_to_arduino("1 {0} {1}.".format(left, right))
+        self._send_to_arduino("5 {0} {1};".format(left, right))
         
     def _send_to_arduino(self, cmd):
         self.serial_sem.acquire()
