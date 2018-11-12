@@ -1,3 +1,6 @@
+#include <PinChangeInt.h>
+#include <DualMC33926MotorShield.h>
+
 #include <string.h>
 #include "MotorPd.h"
 
@@ -14,7 +17,7 @@ void set_motor_vel();
 
 bool pd_active = false;
 long t_pd_updated = millis();
-long pd_update_delay = 1000;
+long pd_update_delay = 100;
 MotorPd pd(1, 1);
 
 void setup() {
@@ -27,10 +30,11 @@ void setup() {
 void loop() {
   motor_setup();
   int mode = -1;
-  if (pd_active) {
+  if (pd_active && millis() - t_pd_updated > pd_update_delay) {
     double *correction = new double[2];
     correction = pd.computeCorrection(correction);
     set_motor(correction[0], correction[1]);
+    t_pd_updated = millis();
   } 
   else if(millis() - t_pd_updated > pd_update_delay)
   {

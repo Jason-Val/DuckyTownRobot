@@ -24,7 +24,7 @@ MotorPd::MotorPd(double k, double b)
   sPrev = getTranslation(sPrev);
   v = new double[2];
   v[0] = 0;
-  v[1] = 1;
+  v[1] = 0;
   tPrev = millis();
   prevError = 0;
 }
@@ -34,14 +34,21 @@ double* MotorPd::getVelocity(double* vel)
   double* currentS = new double[2];
   currentS = getTranslation(currentS);
   long t = millis();
-  vel[0] = (currentS[0] - sPrev[0])/(t - tPrev);
-  vel[1] = (currentS[1] - sPrev[1])/(t - tPrev);
-  
+  double delta_t = ((double)(t - tPrev))/1000.0;
+  vel[0] = (currentS[0] - sPrev[0])/delta_t;
+  vel[1] = (currentS[1] - sPrev[1])/delta_t;
   return vel;
 }
 
 void MotorPd::resetInitPoint()
 {
+  double* vel = new double[2];
+  vel = getVelocity(vel);
+  Serial.print(vel[0]);
+  Serial.print(", ");
+  Serial.println(vel[1]);
+  Serial.print("right count: ");
+  Serial.println(right_count);
   sPrev = getTranslation(sPrev);
   tPrev = millis();
 }
@@ -51,22 +58,22 @@ void MotorPd::setC(double c)
   C = c;
 }
 
-double MotorPd::getPWM_l(double vLeft)
-{
-  if (vLeft == 0)
-  {
-    return 0;
-  }
-  return 695.55*vLeft + 66.464;
-}
-
 double MotorPd::getPWM_r(double vRight)
 {
   if (vRight == 0)
   {
     return 0;
   }
-  return 675.09*vRight + 79.807;
+  return 695.55*vRight + 66.464;
+}
+
+double MotorPd::getPWM_l(double vLeft)
+{
+  if (vLeft == 0)
+  {
+    return 0;
+  }
+  return 675.09*vLeft + 79.807;
 }
 
 double* MotorPd::computeCorrection(double* correction)
@@ -79,7 +86,7 @@ double* MotorPd::computeCorrection(double* correction)
   double deltaError = error - prevError;
   prevError = error;
   double deltaV = -K*(error)-B*(deltaError);
-
+  
   Serial.print("error: ");
   Serial.print(error);
   Serial.print("; deltaError: ");
@@ -87,12 +94,18 @@ double* MotorPd::computeCorrection(double* correction)
   Serial.print("; deltaV: ");
   Serial.print(deltaV);
   Serial.print("; velocity: ");
+  Serial.print(vNew[0]);
+  Serial.print(", ");
+  Serial.println(vNew[1]);
+  
+  v[0] = vNew[0] - deltaV/2.0;
+  v[1] = vNew[1] + deltaV/2.0;
+  
+  Serial.print("; new velocity: ");
   Serial.print(v[0]);
   Serial.print(", ");
   Serial.println(v[1]);
   
-  v[0] += deltaV/2.0;
-  v[1] -= deltaV/2.0;
   correction[0] = getPWM_l(v[0]);
   correction[1] = getPWM_r(v[1]);
   
