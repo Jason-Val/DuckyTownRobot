@@ -69,11 +69,11 @@ def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
 
 def fullProcess():
 	#Do This
-	start_time = time.time()
+	#start_time = time.time()
 	global img
 	global x_max
 	global y_max
-	print("--- %s load in global vars ---" % (time.time() - start_time))
+	#print("--- %s load in global vars ---" % (time.time() - start_time))
 
 	hard_right = (125,0)
 	right = (145,110)
@@ -83,11 +83,11 @@ def fullProcess():
 	left = (110,145)
 	hard_left = (0,125)
 
-	start_time = time.time()
+	#start_time = time.time()
 	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
 	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
 	white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
-	print("--- %s avg in windows total ---" % (time.time() - start_time))
+	#print("--- %s avg in windows total ---" % (time.time() - start_time))
 
 	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
 
@@ -184,7 +184,7 @@ with picamera.PiCamera() as camera:
 	while(True):
 		# global img
 
-		start_time = time.time()
+		#start_time = time.time()
 
 		stream = io.BytesIO()
 		camera.capture(stream, format='jpeg')
@@ -195,18 +195,18 @@ with picamera.PiCamera() as camera:
 		x_max, y_max = im.size
 		img = im.load()
 
-		print("--- %s seconds for load ---" % (time.time() - start_time))
+		#print("--- %s seconds for load ---" % (time.time() - start_time))
 
-		start_time = time.time()
+		#start_time = time.time()
 
 
 		left_motor, right_motor = fullProcess()
 
-		print("--- %s seconds for process ---" % (time.time() - start_time))
+		#print("--- %s seconds for process ---" % (time.time() - start_time))
 
 
-		print("Before Activate Call")
+		#print("Before Activate Call")
 		activate_motors(s_global, left_motor, right_motor)
-		print("After Call")
+		#print("After Call")
 
 activate_motors(s, 0, 0)
