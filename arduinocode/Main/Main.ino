@@ -17,7 +17,7 @@ void set_motor_vel();
 bool pd_active = false;
 long t_pd_updated = millis();
 long pd_update_delay = 100;
-MotorPd pd(10, 0.5);
+MotorPd pd(.5, 0);
 double* correction = new double[2];
 
 extern volatile long right_count;
@@ -67,6 +67,9 @@ void loop() {
         //set_motor_vel();
         pd.setVelocity();
         //delay(500);
+        break;
+      case 5:
+        set_motor_vel();
         break;
       default:
         break;

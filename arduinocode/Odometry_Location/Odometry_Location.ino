@@ -1,9 +1,8 @@
-#include <PinChangeInt.h>
-
-#include <DualMC33926MotorShield.h>
+#include <string.h>
 
 
 #include "math.h"
+
 
 #define PinMotor1Sensor1 2
 #define PinMotor1Sensor2 3
@@ -49,7 +48,7 @@ void loop()
   right_encoder_isr();
   get_location();
   set_location();
-  motor_control();
+  //motor_control();
   //Serial.println("Right:" + String(left_count) + " Left:" + String(right_count) + "; S_l=" + String(S_l) + " S_r=" + String(S_r) + "; theta:" + String(theta * (180.0 / M_PI)));
   //Serial.println(Etime);
   delay(1000);

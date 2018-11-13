@@ -84,8 +84,8 @@ double* MotorPd::getVelocity(double* vel)
   buf = getTranslation(buf);
   long t = millis();
   double delta_t = ((double)(t - tPrev))/1000.0;
-  buf[0] = (buf[0] - sPrev[0]);///delta_t;
-  buf[1] = (buf[1] - sPrev[1]);///delta_t;
+  buf[0] = (buf[0] - sPrev[0])/delta_t;
+  buf[1] = (buf[1] - sPrev[1])/delta_t;
   return buf;
 }
 
@@ -266,8 +266,8 @@ double* MotorPd::computeCorrection(double* correction)
   Serial.print(", ");
   Serial.println(vNew[1]);
   
-  v[0] = vNew[0] - deltaV/2.0;
-  v[1] = vNew[1] + deltaV/2.0;
+  v[0] = vNew[0] - deltaV;
+  v[1] = vNew[1] + deltaV;
   
   Serial.print("; new velocity: ");
   Serial.print(v[0]);
