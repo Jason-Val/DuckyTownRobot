@@ -55,15 +55,19 @@ void loop()
   //motor_control();
   //Serial.println("Right:" + String(left_count) + " Left:" + String(right_count) + "; S_l=" + String(S_l) + " S_r=" + String(S_r) + "; theta:" + String(theta * (180.0 / M_PI)));
   //Serial.println(Etime);
-  delay(1000);
+  delay(100);
   Serial.print("S_l:");
   Serial.print(S_l);
-  Serial.print(" S_r:");
+  Serial.print("  S_r:");
   Serial.print(S_r);
-  Serial.print("n_l:");
+  Serial.print("  n_l:");
   Serial.print(left_count);
-  Serial.print("n_r:");
-  Serial.println(right_count);
+  Serial.print("  n_r:");
+  Serial.print(right_count);
+  Serial.print("  PWM_l:");
+  Serial.print(PWM_l);
+  Serial.print("  PWM_r:");
+  Serial.println(PWM_r);
 }
 
 void right_encoder_isr() {
@@ -113,6 +117,14 @@ void motor_control() {
 }
 
 void throttle() {
+   left_encoder_isr();
+   right_encoder_isr();
+    if (left_count > right_count) {
+    PWM_l = PWM_l - w * (err_count);
+    }
+    else if (right_count > left_count) {
+    PWM_r = PWM_r - w * (err_count);
+    }
   md.setM1Speed(PWM_l); //Left
   md.setM2Speed(PWM_r); //Right
 }
@@ -127,14 +139,6 @@ void first_stretch() {
   PWM_r = 200;
   S_l_ref = 0.6096;
   S_r_ref = 0.6096;
-  /*
-    if (left_count > right_count) {
-    PWM_l = PWM_l - w * (err_count);
-    }
-    else if (right_count > left_count) {
-    PWM_r = PWM_r - w * (err_count);
-    }
-  */
   motor_control();
   flag = 1;
 }
