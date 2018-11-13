@@ -13,6 +13,8 @@ curr_error = 0
 
 class robot:
     def __init__(self, port="/dev/ttyACM0"):
+        self.K = 1.0
+        self.B = 0.0
         self.wheelbase = 0.157
         self.wheel_circumference = 2*math.pi*0.033
         self.encoder_segments = 32
@@ -62,6 +64,10 @@ class robot:
             if(follow_lane):
                 print("Following")
                 #Activate Motors here
+                self.v_l += delta_error/2
+                self.v_r -= delta_error/2
+                self.activate_motors(self.v_l, self.v_r)
+                time.sleep(.05)
             
             """
             self.v_l += delta_error/2
@@ -118,6 +124,7 @@ def __main__():
 
     while(running):
         global follow_lane
+        print("State: " + str(state))
 
         if(state == 0):
             #waiting to go
@@ -140,7 +147,7 @@ def __main__():
             #The turn itself (left)
             #Use the pd controller to navigate the robot around the turn
             r.activate_motors(1.1, 1.35)
-            time.sleep(1.0)
+            time.sleep(2.0)
             r.activate_motors(0, 0)
             state += 1
 
@@ -192,7 +199,7 @@ def __main__():
         elif(state == 7):
             #The turn itself (rigt)
             #Use the pd controller to navigate the robot around the turn
-            r.activate_motors(1.35, 1.1)
+            r.activate_motors(1.35, 1.0)
             time.sleep(1.0)
             r.activate_motors(0, 0)
             state += 1
