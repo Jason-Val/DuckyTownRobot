@@ -73,14 +73,6 @@ def get_error():
     global x_max
     global y_max
 
-    # hard_right = (0.14,0.1)
-    # right = (0.14,0.125)
-    # soft_right = (0.14,0.135)
-    # straight = (0.14,0.14)
-    # soft_left = (0.135,0.14)
-    # left = (0.125,0.14)
-    # hard_left = (0.1,0.14)
-
     x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
     yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
     white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
@@ -115,94 +107,6 @@ def get_error():
     else:
         print("No Yellow Or White")
         return None
-
-
-
-    #Do This
-    # global x_max
-    # global y_max
-    # global img_sem
-    
-    # left_lane_ideal = 150
-    # right_lane_ideal = 1259
-    
-    # hard_right = (125,0)
-    # right = (145,110)
-    # soft_right = (140,125)
-    # straight = (130,130)
-    # soft_left = (125,140)
-    # left = (110,145)
-    # hard_left = (0,125)
-    
-    # x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
-    # img_sem.acquire()
-    # yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
-    # white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
-    # img_sem.release()
-    
-    # min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
-    
-    # print("y: [{0}, {1}], {2}".format(yellow_avg_x, yellow_y, yellow_pos))
-    # print("w: [{0}, {1}], {2}".format(white_avg_x, white_y, white_pos))
-    # print("------")
-    
-    # error = 0
-    
-    # left_error = 0
-    # right_error = 0
-    
-    # if (yellow_pos > min_num_pixels):
-    #     #calculate center based on yellow position
-    #     left_error = left_lane_ideal - yellow_avg_x #positive if too far left
-    # if (white_pos > min_num_pixels):
-    #     #calculate center based on white position
-    #     right_error = right_lane_ideal - white_avg_x #positive if too far left
-    
-    # print("left error: {}; right error: {}".format(left_error, right_error))
-    # return left_error
-    """
-    if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
-        #We see both the yellow and white line
-        #This is the case we want
-        avg = (white_avg_x + yellow_avg_x)/2
-        mid = x_max/2
-        incr = x_max/100
-
-        if(avg < incr*40):
-            print("Left Both")
-            return left
-        elif(avg < incr*45):
-            print("Soft Left Both")
-            return soft_left
-        elif(avg < incr*55):
-            print("Straight Both")
-            return straight
-        elif(avg < incr*65):
-            print("Soft Right Both")
-            return soft_right
-        elif(avg < incr*100):
-            print("Right Both")
-            return right
-        else:
-            print("This case should never happen")
-            return (0,0)
-    
-    elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
-        #Turn Right
-        print("Right Yellow Only")
-        # return hard_right
-        return right
-    elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
-        #Turn Left
-        print("Left White Only")
-        # return hard_left
-        return left
-    else:
-        print("No Yellow Or White")
-        #Search
-        return(0,0)
-    return (0,0)
-    """
     
 """
 Constantly streams video
