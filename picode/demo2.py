@@ -52,6 +52,8 @@ class robot:
     def visual_pd_loop(self):
         while (True):
             error = vision.get_error()
+            if(error == None):
+                continue
             print(error)
             delta_error = error - self.prev_error
             self.prev_error = error
