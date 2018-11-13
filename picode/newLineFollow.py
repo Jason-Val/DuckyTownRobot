@@ -44,18 +44,18 @@ def lineFollowWindow(x_max, y_max):
 
 	return(x_start, x_end, y_start, y_end)
 
-def avgInWindow(x_start, x_end, y_start, y_end, colorFunc):
+def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=5):
 	x_avg = 0
 	y_avg = 0
 	num_positive = 0
 
-	for i in range(x_start, x_end):
+	for i in range(x_start, x_end, num_to_process):
 		for j in range(y_start, y_end):
 			global img
 			if(colorFunc(img[i,j])):
 				x_avg += i
 				y_avg += j
-				num_positive += 1
+				num_positive += num_to_process
 
 	if(not num_positive == 0):
 		x_avg = int(x_avg/num_positive)
@@ -69,9 +69,11 @@ def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
 
 def fullProcess():
 	#Do This
+	start_time = time.time()
 	global img
 	global x_max
 	global y_max
+	print("--- %s load in global vars ---" % (time.time() - start_time))
 
 	hard_right = (125,0)
 	right = (145,110)
@@ -81,9 +83,11 @@ def fullProcess():
 	left = (110,145)
 	hard_left = (0,125)
 
+	start_time = time.time()
 	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
 	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
 	white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
+	print("--- %s avg in windows total ---" % (time.time() - start_time))
 
 	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
 
@@ -180,7 +184,7 @@ with picamera.PiCamera() as camera:
 	while(True):
 		# global img
 
-		start_time = time.time()
+		# start_time = time.time()
 
 		stream = io.BytesIO()
 		camera.capture(stream, format='jpeg')
@@ -191,7 +195,7 @@ with picamera.PiCamera() as camera:
 		x_max, y_max = im.size
 		img = im.load()
 
-		print("--- %s seconds for load ---" % (time.time() - start_time))
+		# print("--- %s seconds for load ---" % (time.time() - start_time))
 
 		start_time = time.time()
 
