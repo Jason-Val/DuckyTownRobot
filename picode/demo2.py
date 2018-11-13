@@ -98,7 +98,7 @@ class robot:
         self.s.close()
         
     def activate_motors(self, v_l, v_r):
-        self._send_to_arduino("5 {0} {1};".format(left, right))
+        self._send_to_arduino("5 {0} {1};".format(v_l, v_r))
         
     def _send_to_arduino(self, cmd):
         self.serial_sem.acquire()
