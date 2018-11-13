@@ -10,6 +10,7 @@ class MotorPd
     double* computeCorrection(double* correction);
     void setC(double c);
     void resetInitPoint();
+    void setVelocity();
   private:
     double K;
     double B;
@@ -21,6 +22,9 @@ class MotorPd
     double* sPrev;
     long tPrev;
     double prevError;
+    double* buf;
+    double* prevError2;
+    double vref;
 
     double* getTranslation(double* trans);
     double* getVelocity(double* vel);

@@ -1,7 +1,6 @@
-#include <PinChangeInt.h>
-#include <DualMC33926MotorShield.h>
-
 #include <string.h>
+#include <DualMC33926MotorShield.h>
+#include <PinChangeInt.h>
 #include "MotorPd.h"
 
 
@@ -18,7 +17,11 @@ void set_motor_vel();
 bool pd_active = false;
 long t_pd_updated = millis();
 long pd_update_delay = 100;
-MotorPd pd(1, 1);
+MotorPd pd(10, 0.5);
+double* correction = new double[2];
+
+extern volatile long right_count;
+extern volatile long left_count;
 
 void setup() {
   // initialize serial communication:
@@ -28,19 +31,19 @@ void setup() {
 }
 
 void loop() {
-  motor_setup();
   int mode = -1;
   if (pd_active && millis() - t_pd_updated > pd_update_delay) {
-    double *correction = new double[2];
     correction = pd.computeCorrection(correction);
     set_motor(correction[0], correction[1]);
+    pd.resetInitPoint();
     t_pd_updated = millis();
-  } 
+  }
   else if(millis() - t_pd_updated > pd_update_delay)
   {
     pd.resetInitPoint();
     t_pd_updated = millis();
   }
+  
   
   if (Serial.available()) {
     char input[1];
@@ -61,7 +64,9 @@ void loop() {
         pd_active = !pd_active;
         break;
       case 4:
-        set_motor_vel();
+        //set_motor_vel();
+        pd.setVelocity();
+        //delay(500);
         break;
       default:
         break;
