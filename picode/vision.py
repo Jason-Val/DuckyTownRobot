@@ -106,6 +106,8 @@ def get_error():
     global x_max
     global y_max
 
+    adjust_const = 15
+
     x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
     yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
     white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
@@ -123,19 +125,19 @@ def get_error():
         #This is the case we want
         lane_avg = (white_avg_x + yellow_avg_x)/2
         print("Case 1 Lane Avg: %s" + str(lane_avg))
-        return robot_avg - lane_avg
+        return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
         #Only see Yellow line
         lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
         print("Case 2 Lane Avg: %s" + str(lane_avg))
-        return robot_avg - lane_avg
+        return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
         #Only see White line
         lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
         print("Case 3 Lane Avg: %s" + str(lane_avg))
-        return robot_avg - lane_avg
+        return robot_avg - lane_avg + adjust_const
 
     else:
         print("No Yellow Or White")

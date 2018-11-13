@@ -75,6 +75,12 @@ class robot:
             self.activate_motors(self.v_l, self.v_r)
             time.sleep(.05)
             """
+
+    def get_deltas(self):
+        #TODO
+        #Return delta x, delta y, delta theta
+        return (0,0,0)
+
             
     def start_demo(self, turn_direction):
         self.v_l = 0.2
@@ -173,9 +179,11 @@ def __main__():
             time.sleep(1.0)
             r.activate_motors(0, 0)
 
-            print("Delta X: TODO" + str(0))
-            print("Delta Y: TODO" + str(0))
-            print("Delta Theta: TODO" + str(0))
+            dx,dy,dt = r.get_deltas()
+
+            print("Delta X: " + str(dx))
+            print("Delta Y: " + str(dy))
+            print("Delta Theta: " + str(dt))
 
             state += 1
 
