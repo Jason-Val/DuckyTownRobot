@@ -2,7 +2,16 @@ import serial
 import io
 import time
 import picamera
+import threading
 from PIL import Image
+
+s_global = serial.Serial("/dev/ttyACM0", 115200)
+img = None
+x_max = 0
+y_max = 0
+
+left_motor = 0
+right_motor = 0
 
 red = (255,0,0)
 white = (255,255,255)
@@ -19,22 +28,34 @@ def isRed(pixl):
 	return isColor(red, pixl)
 
 def isWhite(pixl):
-	return isColor(white, pixl)
+	return isColor(white, pixl, 100)
 
 def isYellow(pixl):
-	return isColor(yellow, pixl)
+	return isColor(yellow, pixl, 200)
 
-def avgInWindow(img, x_start, x_end, y_start, y_end, colorFunc):
+def lineFollowWindow(x_max, y_max):
+	height = int(y_max/7)
+
+	x_start = 0 # Useful for Yellow Line Following
+	x_end = x_max
+
+	y_start = int(y_max*0.5)
+	y_end = y_start + height
+
+	return(x_start, x_end, y_start, y_end)
+
+def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=5):
 	x_avg = 0
 	y_avg = 0
 	num_positive = 0
 
-	for i in range(x_start, x_end):
+	for i in range(x_start, x_end, num_to_process):
 		for j in range(y_start, y_end):
+			global img
 			if(colorFunc(img[i,j])):
 				x_avg += i
 				y_avg += j
-				num_positive += 1
+				num_positive += num_to_process
 
 	if(not num_positive == 0):
 		x_avg = int(x_avg/num_positive)
@@ -42,107 +63,166 @@ def avgInWindow(img, x_start, x_end, y_start, y_end, colorFunc):
 
 	return (x_avg, y_avg, num_positive)
 
-def lineFollowWindow(x_max, y_max):
-	width = int(x_max/2)
-	height = int(y_max/8)
-
-	# x_start = int(x_max*0.5) # Useful for While Line Following
-	x_start = 0 # Useful for Yellow Line Following
-	x_end = x_start + width
-
-	y_start = int(y_max*0.6)
-	y_end = y_start + height
-
-	return(x_start, x_end, y_start, y_end)
-
 def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
 	num_pix = (x_max-x_min) * (y_max-y_min)
 	return (percent/100) * num_pix
 
-def getTurnCmdFromXAvg(x_avg, x_min, x_max, percents=[]):
+def fullProcess():
+	#Do This
+	#start_time = time.time()
+	global img
+	global x_max
+	global y_max
+	#print("--- %s load in global vars ---" % (time.time() - start_time))
 
-	if(not len(percents) == 6):
-		# percents = [35,40,45,50,55,60]
-		percents = [29,36,43,57,64,71]
+	hard_right = (125,70)
+	right = (135,110)
+	soft_right = (140,125)
+	straight = (130,130)
+	soft_left = (125,140)
+	left = (110,135)
+	hard_left = (70,125)
 
-	x_max = x_max - x_min
-	x_avg = x_avg - x_min
-	x_min = 0
+	#start_time = time.time()
+	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
+	yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
+	white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
+	#print("--- %s avg in windows total ---" % (time.time() - start_time))
 
-	perc = (x_avg*100)/x_max
+	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
+	incr = x_max/100
 
-	if(perc < percents[0]):
-		#Hard Left
-		return (75, 150)
-	elif(perc < percents[1]):
-		#Left
-		return (110, 150)
-	elif(perc < percents[2]):
-		#Soft Left
-		return (130, 150)
-	elif(perc < percents[3]):
-		#Straight
-		return (130,130)
-	elif(perc < percents[4]):
-		#Soft Right
-		return (150, 130)
-	elif(perc < percents[5]):
-		#Right
-		return (150, 110)
+	if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
+		#We see both the yellow and white line
+		#This is the case we want
+		avg = (white_avg_x + yellow_avg_x)/2
+		
+
+		if(avg < incr*40):
+			print("Left Both")
+			return left
+		elif(avg < incr*45):
+			print("Soft Left Both")
+			return soft_left
+		elif(avg < incr*55):
+			print("Straight Both")
+			return straight
+		elif(avg < incr*65):
+			print("Soft Right Both")
+			return soft_right
+		elif(avg < incr*100):
+			print("Right Both")
+			return right
+		else:
+			print("This case should never happen")
+			return (0,0)
+
+	elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
+		#Turn Right
+		# yellow_avg_x
+		# print("Right Yellow Only")
+
+		if(yellow_avg_x < incr*45):
+			print("Right Yellow Only")
+			return right
+		else:
+			print("Hard Right Yellow Only")
+			return hard_right
+		# return hard_right
+		# return right
+	elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
+		#Turn Left
+		# print("Left White Only")
+
+		if(white_avg_x > incr*55):
+			print("Left White Only")
+			return left
+		else:
+			print("Hard Left White Only")
+			return hard_left
+
+		# return hard_left
+		# return left
 	else:
-		#Hard Right
-		return(150, 75)
+		print("No Yellow Or White")
+		#Search
+		return(0,0)
+	return (0,0)
+
 
 def send_to_arduino(s, cmd):
-	s.write((cmd + ".").encode('utf-8'))
+	s.write((cmd).encode('utf-8'))
 	s.flush()
 
-def activate_motors(serial, left, right):
-	send_to_arduino(serial, "1 {0} {1}".format(left, right))
+def activate_motors(s, left, right):
+	send_to_arduino(s, "1 {0} {1};".format(left, right))
 
-s = serial.Serial("/dev/ttyACM0", 9600)
 
-stream = io.BytesIO()
+def run_image_updater():
+	with picamera.PiCamera() as camera:
+		camera.start_preview()
+		time.sleep(2)
+		while(True):
+			global img
+			stream = io.BytesIO()
+			camera.capture(stream, format='jpeg')
+			stream.seek(0)
+			im = Image.open(stream)
+			global x_max
+			global y_max
+			x_max, y_max = im.size
+			pix = im.load()
+			img = pix
+
+def run_image_recognition():
+	while(img == None):
+		global img
+		# print("zzz")
+		time.sleep(0.5)
+	while(True):
+		# print("In Loop")
+		left_motor, right_motor = fullProcess()
+		activate_motors(s, left_motor, right_motor)
+
+#Main
+# t1 = threading.Thread(target=run_image_updater)
+# t2 = threading.Thread(target=run_image_recognition)
+
+# t1.start()
+# t2.start()
+
+# t1.join()
+# t2.join()
+
 with picamera.PiCamera() as camera:
 	camera.start_preview()
 	time.sleep(2)
-	camera.capture(stream, format='jpeg')
-
 	while(True):
-		
-		# "Rewind" the stream to the beginning so we can read its content
+		# global img
+
+		#start_time = time.time()
+
+		stream = io.BytesIO()
+		camera.capture(stream, format='jpeg')
 		stream.seek(0)
 		im = Image.open(stream)
+		# global x_max
+		# global y_max
+		x_max, y_max = im.size
+		img = im.load()
 
-		pix = im.load()
-		x, y = im.size
+		#print("--- %s seconds for load ---" % (time.time() - start_time))
 
-		#Process the image 
-		x1, x2, y1, y2 = lineFollowWindow(x,y)
-		x_avg, y_avg, num_pos = avgInWindow(pix, x1, x2, y1, y2, isYellow)
+		#start_time = time.time()
 
-		#Based on the data do something
-		min_num_pixels = percentToNumPixels(x1, x2, y1, y2, 5)
 
-		left_motor = 0
-		right_motor = 0
+		left_motor, right_motor = fullProcess()
 
-		if(num_pos > min_num_pixels):
-			#results are reliable
-			# print("Reliable Results")
-			# print(x_avg)
-			# getTurnCmdFromXAvg(x_avg, x1, x2)
-			#On a linear scale, adjust steering of robot based on x_avg
-			left_motor, right_motor = getTurnCmdFromXAvg(x_avg, x1, x2)
+		#print("--- %s seconds for process ---" % (time.time() - start_time))
 
-		else:
-			#results are not reliables
-			print("Not Reliable Results")
-			# print(x_avg)
-			#Rely on something else such as the middle yellow lane
-			#Or Search for the line
-			#Or make results less sensitive
-			left_motor = 85
-			right_motor = 130
 
-		activate_motors(s, left_motor, right_motor)
+		#print("Before Activate Call")
+		activate_motors(s_global, left_motor, right_motor)
+		#print("After Call")
+
+activate_motors(s, 0, 0)

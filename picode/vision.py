@@ -29,6 +29,10 @@ def isWhite(pixl):
 
 def isYellow(pixl):
     return isColor(yellow, pixl, 200)
+
+def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
+    num_pix = (x_max-x_min) * (y_max-y_min)
+    return (percent/100) * num_pix
     
 def lineFollowWindow(x_max, y_max):
     height = int(y_max/7)
@@ -41,6 +45,39 @@ def lineFollowWindow(x_max, y_max):
 
     return(x_start, x_end, y_start, y_end)
 
+def stopWindow():
+    height = int(y_max/2)
+
+    global x_max
+
+    x_start = x_max*0.4 # Useful for Yellow Line Following
+    x_end = x_max*0.6
+
+    y_start = int(y_max*0.5)
+    y_end = y_start + height
+
+    return(x_start, x_end, y_start, y_end)
+
+def isStopSign(num_to_process=10):
+    x_start, x_end, y_start, y_end = stopWindow()
+
+    y_avg = 0
+
+    for i in range(x_start, x_end, num_to_process):
+        for j in range(y_start, y_end):
+            global img
+            if(isRed(img[i,j])):
+                y_avg += j
+                num_positive += num_to_process
+
+    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
+
+    if(num_positive > req_pixls and not num_positive == 0):
+        y_avg = int(y_avg/num_positive)
+        return y_avg
+    else:
+        return -1
+
 def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=10):
     x_avg = 0
     y_avg = 0
@@ -52,17 +89,13 @@ def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=10):
             if(colorFunc(img[i,j])):
                 x_avg += i
                 y_avg += j
-                num_positive += num_to_process
+                num_positive += 1
 
     if(not num_positive == 0):
         x_avg = int(x_avg/num_positive)
         y_avg = int(y_avg/num_positive)
 
-    return (x_avg, y_avg, num_positive)
-
-def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
-    num_pix = (x_max-x_min) * (y_max-y_min)
-    return (percent/100) * num_pix
+    return (x_avg, y_avg, num_positive*num_to_process)
 
 """
 
@@ -73,13 +106,7 @@ def get_error():
     global x_max
     global y_max
 
-    # hard_right = (0.14,0.1)
-    # right = (0.14,0.125)
-    # soft_right = (0.14,0.135)
-    # straight = (0.14,0.14)
-    # soft_left = (0.135,0.14)
-    # left = (0.125,0.14)
-    # hard_left = (0.1,0.14)
+    adjust_const = 15
 
     x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
     yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
@@ -98,111 +125,23 @@ def get_error():
         #This is the case we want
         lane_avg = (white_avg_x + yellow_avg_x)/2
         print("Case 1 Lane Avg: %s" + str(lane_avg))
-        return robot_avg - lane_avg
+        return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
         #Only see Yellow line
         lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
         print("Case 2 Lane Avg: %s" + str(lane_avg))
-        return robot_avg - lane_avg
+        return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
         #Only see White line
         lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
         print("Case 3 Lane Avg: %s" + str(lane_avg))
-        return robot_avg - lane_avg
+        return robot_avg - lane_avg + adjust_const
 
     else:
         print("No Yellow Or White")
         return None
-
-
-
-    #Do This
-    # global x_max
-    # global y_max
-    # global img_sem
-    
-    # left_lane_ideal = 150
-    # right_lane_ideal = 1259
-    
-    # hard_right = (125,0)
-    # right = (145,110)
-    # soft_right = (140,125)
-    # straight = (130,130)
-    # soft_left = (125,140)
-    # left = (110,145)
-    # hard_left = (0,125)
-    
-    # x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
-    # img_sem.acquire()
-    # yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
-    # white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
-    # img_sem.release()
-    
-    # min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
-    
-    # print("y: [{0}, {1}], {2}".format(yellow_avg_x, yellow_y, yellow_pos))
-    # print("w: [{0}, {1}], {2}".format(white_avg_x, white_y, white_pos))
-    # print("------")
-    
-    # error = 0
-    
-    # left_error = 0
-    # right_error = 0
-    
-    # if (yellow_pos > min_num_pixels):
-    #     #calculate center based on yellow position
-    #     left_error = left_lane_ideal - yellow_avg_x #positive if too far left
-    # if (white_pos > min_num_pixels):
-    #     #calculate center based on white position
-    #     right_error = right_lane_ideal - white_avg_x #positive if too far left
-    
-    # print("left error: {}; right error: {}".format(left_error, right_error))
-    # return left_error
-    """
-    if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
-        #We see both the yellow and white line
-        #This is the case we want
-        avg = (white_avg_x + yellow_avg_x)/2
-        mid = x_max/2
-        incr = x_max/100
-
-        if(avg < incr*40):
-            print("Left Both")
-            return left
-        elif(avg < incr*45):
-            print("Soft Left Both")
-            return soft_left
-        elif(avg < incr*55):
-            print("Straight Both")
-            return straight
-        elif(avg < incr*65):
-            print("Soft Right Both")
-            return soft_right
-        elif(avg < incr*100):
-            print("Right Both")
-            return right
-        else:
-            print("This case should never happen")
-            return (0,0)
-    
-    elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
-        #Turn Right
-        print("Right Yellow Only")
-        # return hard_right
-        return right
-    elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
-        #Turn Left
-        print("Left White Only")
-        # return hard_left
-        return left
-    else:
-        print("No Yellow Or White")
-        #Search
-        return(0,0)
-    return (0,0)
-    """
     
 """
 Constantly streams video
