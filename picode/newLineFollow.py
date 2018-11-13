@@ -75,13 +75,13 @@ def fullProcess():
 	global y_max
 	#print("--- %s load in global vars ---" % (time.time() - start_time))
 
-	hard_right = (125,0)
-	right = (145,110)
+	hard_right = (125,70)
+	right = (135,110)
 	soft_right = (140,125)
 	straight = (130,130)
 	soft_left = (125,140)
-	left = (110,145)
-	hard_left = (0,125)
+	left = (110,135)
+	hard_left = (70,125)
 
 	#start_time = time.time()
 	x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
@@ -90,13 +90,13 @@ def fullProcess():
 	#print("--- %s avg in windows total ---" % (time.time() - start_time))
 
 	min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
+	incr = x_max/100
 
 	if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
 		#We see both the yellow and white line
 		#This is the case we want
 		avg = (white_avg_x + yellow_avg_x)/2
-		mid = x_max/2
-		incr = x_max/100
+		
 
 		if(avg < incr*40):
 			print("Left Both")
@@ -119,14 +119,30 @@ def fullProcess():
 
 	elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
 		#Turn Right
-		print("Right Yellow Only")
+		# yellow_avg_x
+		# print("Right Yellow Only")
+
+		if(yellow_avg_x < incr*45):
+			print("Right Yellow Only")
+			return right
+		else:
+			print("Hard Right Yellow Only")
+			return hard_right
 		# return hard_right
-		return right
+		# return right
 	elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
 		#Turn Left
-		print("Left White Only")
+		# print("Left White Only")
+
+		if(white_avg_x > incr*55):
+			print("Left White Only")
+			return left
+		else:
+			print("Hard Left White Only")
+			return hard_left
+
 		# return hard_left
-		return left
+		# return left
 	else:
 		print("No Yellow Or White")
 		#Search
