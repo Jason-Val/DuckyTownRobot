@@ -29,6 +29,10 @@ def isWhite(pixl):
 
 def isYellow(pixl):
     return isColor(yellow, pixl, 200)
+
+def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
+    num_pix = (x_max-x_min) * (y_max-y_min)
+    return (percent/100) * num_pix
     
 def lineFollowWindow(x_max, y_max):
     height = int(y_max/7)
@@ -41,6 +45,39 @@ def lineFollowWindow(x_max, y_max):
 
     return(x_start, x_end, y_start, y_end)
 
+def stopWindow():
+    height = int(y_max/2)
+
+    global x_max
+
+    x_start = x_max*0.4 # Useful for Yellow Line Following
+    x_end = x_max*0.6
+
+    y_start = int(y_max*0.5)
+    y_end = y_start + height
+
+    return(x_start, x_end, y_start, y_end)
+
+def isStopSign(num_to_process=10):
+    x_start, x_end, y_start, y_end = stopWindow()
+
+    y_avg = 0
+
+    for i in range(x_start, x_end, num_to_process):
+        for j in range(y_start, y_end):
+            global img
+            if(isRed(img[i,j])):
+                y_avg += j
+                num_positive += num_to_process
+
+    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
+
+    if(num_positive > req_pixls and not num_positive == 0):
+        y_avg = int(y_avg/num_positive)
+        return y_avg
+    else:
+        return -1
+
 def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=10):
     x_avg = 0
     y_avg = 0
@@ -52,17 +89,13 @@ def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=10):
             if(colorFunc(img[i,j])):
                 x_avg += i
                 y_avg += j
-                num_positive += num_to_process
+                num_positive += 1
 
     if(not num_positive == 0):
         x_avg = int(x_avg/num_positive)
         y_avg = int(y_avg/num_positive)
 
-    return (x_avg, y_avg, num_positive)
-
-def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
-    num_pix = (x_max-x_min) * (y_max-y_min)
-    return (percent/100) * num_pix
+    return (x_avg, y_avg, num_positive*num_to_process)
 
 """
 
