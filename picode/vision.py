@@ -118,25 +118,25 @@ def get_error():
     lane_width_approx_in_pixels = 1000
 
     robot_avg = x_max/2
-    print("Robot Avg: %s" + str(robot_avg))
+    #print("Robot Avg: %s" + str(robot_avg))
 
     if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
         #We see both the yellow and white line
         #This is the case we want
         lane_avg = (white_avg_x + yellow_avg_x)/2
-        print("Case 1 Lane Avg: %s" + str(lane_avg))
+        #print("Case 1 Lane Avg: %s" + str(lane_avg))
         return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
         #Only see Yellow line
         lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
-        print("Case 2 Lane Avg: %s" + str(lane_avg))
+        #print("Case 2 Lane Avg: %s" + str(lane_avg))
         return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
         #Only see White line
         lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
-        print("Case 3 Lane Avg: %s" + str(lane_avg))
+        #print("Case 3 Lane Avg: %s" + str(lane_avg))
         return robot_avg - lane_avg + adjust_const
 
     else:
