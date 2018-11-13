@@ -49,6 +49,10 @@ class robot:
     """
         
     def visual_pd_loop(self):
+        while(vision.img == None):
+            time.sleep(0.5)
+            print("ZZZ")
+
         while (True):
             error = vision.get_error()
             if(error == None):
