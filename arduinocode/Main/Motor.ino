@@ -5,7 +5,7 @@ DualMC33926MotorShield md;
 
 //https://arduino.stackexchange.com/questions/1013/how-do-i-split-an-incoming-string
 #define INPUT_SIZE 32
-
+/*
 double getPWM_r(double vRight)
 {
   if (vRight == 0)
@@ -22,6 +22,26 @@ double getPWM_l(double vLeft)
     return 0;
   }
   return 675.09*vLeft + 79.807;
+}
+*/
+double getPWM_r(double vRight)
+{
+  if (vRight == 0)
+  {
+    return 0;
+  }
+  return 695.55*vRight + 66.464;
+}
+
+double getPWM_l(double vLeft)
+{
+  if (vLeft == 0)
+  {
+    return 0;
+  }
+  //return 675.09*vLeft + 79.807;
+  return 665.09*vLeft + 79.807;
+  //return 650.09*vLeft + 79.807;
 }
 
 void stopIfFault()
