@@ -13,8 +13,11 @@ curr_error = 0
 
 class robot:
     def __init__(self, port="/dev/ttyACM0"):
-        self.K = 1.0/(200.0*45.0)
-        self.B = (1.0/(200.0*45.0))/4
+        magnitude = 10
+        range = 100
+        scale = 6
+        self.K = 1.0/(magnitude*range*scale)
+        self.B = 1.0/(magnitude*range*scale*2)
         self.wheelbase = 0.157
         self.wheel_circumference = 2*math.pi*0.033
         self.encoder_segments = 32
@@ -53,11 +56,13 @@ class robot:
             time.sleep(0.5)
             print("ZZZ")
         
-        self.v_l = 0.012
-        self.v_r = 0.012
+        self.v_l = 0.14
+        self.v_r = 0.14
         self.activate_motors(self.v_l, self.v_r)
         
-        time.sleep(.01)
+        time.sleep(.1)
+        
+        print("***start***")
         
         while (True):
             error = vision.get_error()
@@ -65,6 +70,8 @@ class robot:
                 continue
             print(error)
             delta_error = error - self.prev_error
+            #if delta_error > 40:
+            #    continue
             self.prev_error = error
             delta_v = -self.K*error -self.B*delta_error
             print("delta v: {}".format(delta_v))
@@ -76,18 +83,12 @@ class robot:
             if(follow_lane):
                 #print("Following")
                 #Activate Motors here
-                self.v_l += delta_v/2.0
-                self.v_r -= delta_v/2.0
-                print("vel: {}, {}".format(self.v_l, self.v_r))
-                self.activate_motors(self.v_l, self.v_r)
+                #self.v_l += delta_v/2.0
+                #self.v_r -= delta_v/2.0
+                print("vel: {}, {}".format(self.v_l + delta_v/2, self.v_r - delta_v/2))
+                self.activate_motors(self.v_l + delta_v/2, self.v_r - delta_v/2)
                 time.sleep(.5)
             
-            """
-            self.v_l += delta_error/2
-            self.v_r -= delta_error/2
-            self.activate_motors(self.v_l, self.v_r)
-            time.sleep(.05)
-            """
 
     def get_deltas(self):
         #TODO
@@ -110,10 +111,7 @@ class robot:
         self.s.close()
         
     def activate_motors(self, v_l, v_r):
-        if (v_l > 0.13 or v_l < 0):
-            print("send " + str(v_l))
-            #input()
-        self._send_to_arduino("5 {0} {1};".format(v_l, v_r))
+        self._send_to_arduino("5 {0} {1};".format(format(v_l, '.4f'), format(v_r, '.4f')))
         
     def _send_to_arduino(self, cmd):
         self.serial_sem.acquire()
@@ -150,6 +148,10 @@ def __main__():
     input()
     follow_lane = False
     r.activate_motors(0, 0)
+    
+    r.vision_thread.join()
+    r.pd_thread.join()
+    
     input()
     
     while(running):
