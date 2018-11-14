@@ -40,7 +40,7 @@ def lineFollowWindow(x_max, y_max):
     x_start = 0 # Useful for Yellow Line Following
     x_end = x_max
 
-    y_start = int(y_max*0.5)
+    y_start = int(y_max*0.45)
     y_end = y_start + height
 
     return(x_start, x_end, y_start, y_end)

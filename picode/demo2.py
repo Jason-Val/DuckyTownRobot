@@ -15,8 +15,8 @@ class robot:
     def __init__(self, port="/dev/ttyACM0"):
         magnitude = 10
         range = 100
-        scaleK = 5.3
-        scaleB = 5
+        scaleK = 5.30
+        scaleB = 5.00
         self.K = 1.0/(magnitude*range*scaleK)
         self.B = 1.0/(magnitude*range*scaleB)
         self.wheelbase = 0.157
@@ -57,8 +57,8 @@ class robot:
             time.sleep(0.5)
             print("ZZZ")
         
-        self.v_l = 0.105
-        self.v_r = 0.105
+        self.v_l = 0.108
+        self.v_r = 0.108
         self.activate_motors(self.v_l, self.v_r)
         
         time.sleep(.1)
@@ -69,7 +69,7 @@ class robot:
             error = vision.get_error()
             if(error == None):
                 continue
-            error += 15
+            error += 12
             print(error)
             delta_error = error - self.prev_error
             #if delta_error > 40:
