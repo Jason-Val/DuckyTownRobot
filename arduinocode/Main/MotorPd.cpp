@@ -84,9 +84,9 @@ double* MotorPd::getVelocity(double* vel)
   buf = getTranslation(buf);
   long t = millis();
   double delta_t = ((double)(t - tPrev))/1000.0;
-  buf[0] = (buf[0] - sPrev[0])/delta_t;
-  buf[1] = (buf[1] - sPrev[1])/delta_t;
-  return buf;
+  vel[0] = (buf[0] - sPrev[0])/delta_t;
+  vel[1] = (buf[1] - sPrev[1])/delta_t;
+  return vel;
 }
 
 void MotorPd::resetInitPoint()
@@ -127,7 +127,8 @@ double MotorPd::getPWM_l(double vLeft)
   {
     return 0;
   }
-  return 675.09*vLeft + 79.807;
+  //return 675.09*vLeft + 79.807;
+  return 630.09*vLeft + 79.807;
 }
 /*
 double* MotorPd::computeCorrection(double* correction)
@@ -162,7 +163,7 @@ double* MotorPd::computeCorrection(double* correction)
   return correction;
 }
 */
-/*
+
 double* MotorPd::computeCorrection(double* correction)
 {
   double* vNew = getVelocity(buf);
@@ -185,7 +186,7 @@ double* MotorPd::computeCorrection(double* correction)
   deltaV[0] = -K*(error[0])-B*(deltaError[0]);
   deltaV[1] = -K*(error[1])-B*(deltaError[1]);
 
-  //Serial.print("; velocity: ");
+  //Serial.print("velocity: ");
   //Serial.print(vNew[0]);
   //Serial.print(", ");
   //Serial.println(vNew[1]);
@@ -198,7 +199,7 @@ double* MotorPd::computeCorrection(double* correction)
   
   return correction;
 }
-*/
+
 /*
 double* MotorPd::computeCorrection(double* correction)
 {
@@ -244,7 +245,7 @@ double* MotorPd::computeCorrection(double* correction)
   return correction;
 }
 */
-
+/*
 double* MotorPd::computeCorrection(double* correction)
 {
   double* vNew = getVelocity(buf);
@@ -279,5 +280,5 @@ double* MotorPd::computeCorrection(double* correction)
   
   return correction;
 }
-
+*/
 

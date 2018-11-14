@@ -16,8 +16,8 @@ void set_motor_vel();
 
 bool pd_active = false;
 long t_pd_updated = millis();
-long pd_update_delay = 100;
-MotorPd pd(.5, 0);
+long pd_update_delay = 200;
+MotorPd pd(1, -.3);
 double* correction = new double[2];
 
 extern volatile long right_count;
