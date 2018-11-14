@@ -19,7 +19,6 @@ class robot:
         self.wheel_circumference = 2*math.pi*0.033
         self.encoder_segments = 32
         self.s = serial.Serial(port,115200,timeout=1)
-        self.s = None
         self.v_l = 0
         self.v_r = 0
         self.pd_thread = threading.Thread(target=self.visual_pd_loop, name="pd_thread")
@@ -124,11 +123,22 @@ def __main__():
 
     state = 0
     running = True
+
+    r.v_l = 0.12
+    r.v_r = 0.12
+
+    r.activate_motors(r.v_l, r.v_r)
     
     #r.activate_motors(v, v)
     r.vision_thread.start()
     time.sleep(3)
     r.pd_thread.start()
+
+    follow_lane = True
+
+
+    input()
+
 
     while(running):
         global follow_lane
