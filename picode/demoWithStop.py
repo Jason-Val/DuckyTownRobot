@@ -146,17 +146,22 @@ def __main__():
 
     follow_lane = True
 
-    while(vision.isStopSign() < 0.0):
-        # follow_lane = True
-        time.sleep(0.5)
+    while(True):
 
-    while(vision.isStopSign() > vision.y_max - 300):
-        time.sleep(0.5)
+        follow_lane = True
+        r.activate_motors(r.v_l, r.v_r)
 
-    follow_lane = False
-    r.activate_motors(0, 0)
+        while(vision.isStopSign() < 0.0):
+            # follow_lane = True
+            time.sleep(0.25)
 
-    input()
+        while(vision.isStopSign() > vision.y_max - 150):
+            time.sleep(0.25)
+
+        follow_lane = False
+        r.activate_motors(0, 0)
+        input()
+
     follow_lane = False
     r.activate_motors(0, 0)
     
