@@ -147,8 +147,8 @@ def __main__():
     input()
 
     while(True):
-        self.v_l = 0.108
-        self.v_r = 0.108
+        r.v_l = 0.108
+        r.v_r = 0.108
         follow_lane = True
         r.activate_motors(r.v_l, r.v_r)
 
@@ -164,6 +164,7 @@ def __main__():
         self.v_r = 0.0
         r.activate_motors(r.v_l, r.v_r)
         follow_lane = False
+        print("Done")
         input()
 
     follow_lane = False
