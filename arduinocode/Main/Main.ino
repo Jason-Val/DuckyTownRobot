@@ -13,6 +13,7 @@ void get_ir();
 void get_current();
 void set_motor(double pwm_l, double pwm_r);
 void set_motor_vel();
+void printstuff();
 
 bool pd_active = false;
 long t_pd_updated = millis();
@@ -71,6 +72,8 @@ void loop() {
       case 5:
         set_motor_vel();
         break;
+      case 6:
+        printstuff();
       default:
         break;
     }
