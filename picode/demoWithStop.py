@@ -150,7 +150,7 @@ def __main__():
         # follow_lane = True
         time.sleep(0.01)
 
-    while(vision.isStopSign() > vision.y_max - 250):
+    while(vision.isStopSign() > vision.y_max - 100):
         time.sleep(0.01)
 
     follow_lane = False
