@@ -144,13 +144,9 @@ def __main__():
     time.sleep(3)
     r.pd_thread.start()
 
-    input()
-
     while(True):
-        r.v_l = 0.108
-        r.v_r = 0.108
+
         follow_lane = True
-        r.activate_motors(r.v_l, r.v_r)
 
         while(vision.isStopSign() < 0):
             follow_lane = True
