@@ -63,7 +63,7 @@ def isStopSign(num_to_process=10):
 
     y_avg = 0
 
-    for i in range(x_start, x_end, num_to_process):
+    for i in range(x_start, x_end, int(num_to_process)):
         for j in range(y_start, y_end):
             global img
             if(isRed(img[i,j])):
