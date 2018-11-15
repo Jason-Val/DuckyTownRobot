@@ -15,6 +15,7 @@ double B = 1.0;
 double N_enc = 32.0; // Segments on Encoder = 32
 double dia = 0.071; // Dia = 71 mm
 double WB = 0.157;  // Wheel Base = 157 mm
+<<<<<<< HEAD
 double w1 = 0.5; // Weighting factor right
 double w2 = 1.0; //weighting factor left
 int flag = 0;
@@ -22,6 +23,15 @@ int flag = 0;
 // Parameters:
 double PWM_l;
 double PWM_r;
+=======
+double wr = 0.2; // Weighting factor right
+double wl = 0.5; //weighting factor left
+int flag = 0;
+
+// Parameters:
+double PWM_l = 200;
+double PWM_r = 200;
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
 
 // Variables:
 double right_count = 0.0;
@@ -46,17 +56,26 @@ void setup()
 
   attachPinChangeInterrupt(PinMotor2Sensor1, left_encoder_isr, CHANGE);
   attachPinChangeInterrupt(PinMotor2Sensor2, left_encoder_isr, CHANGE);
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
 }
 
 void loop()
 {
   first_stretch();
+<<<<<<< HEAD
   //else if (flag == 1)
   //{
   //curve_path();
   //}
   //curve_path();
+=======
+  //curve_path();
+  //motor_control();
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
   //Serial.println("Right:" + String(left_count) + " Left:" + String(right_count) + "; S_l=" + String(S_l) + " S_r=" + String(S_r) + "; theta:" + String(theta * (180.0 / M_PI)));
   //Serial.println(Etime);
   delay(100);
@@ -78,7 +97,11 @@ void loop()
 
 void right_encoder_isr() {
   static int8_t lookup_table_r[] = {
+<<<<<<< HEAD
     0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0    };
+=======
+    0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0  };
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
   static uint8_t enc_val_r = 0;
   enc_val_r = enc_val_r << 2;
   enc_val_r = enc_val_r | ((PIND & 0b00001100) >> 2);
@@ -87,7 +110,11 @@ void right_encoder_isr() {
 
 void left_encoder_isr() {
   static int8_t lookup_table_l[] = {
+<<<<<<< HEAD
     0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0    };
+=======
+    0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0  };
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
   static uint8_t enc_val_l = 0;
   enc_val_l = enc_val_l << 2;
   enc_val_l = enc_val_l | ((PIND & 0b01100000) >> 5);
@@ -123,11 +150,30 @@ void motor_control() {
   }
   else {
     brake();
+<<<<<<< HEAD
     Serial.end();
+=======
+    S_l_ref = 0.0;
+    S_r_ref = 0.0;
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
   }
 }
 
 void throttle() {
+<<<<<<< HEAD
+=======
+  left_encoder_isr();
+  right_encoder_isr();
+  err_count = left_count - right_count;
+  if (flag == 1){
+    if (err_count > 0.0) {
+      PWM_r = PWM_r + wr * (err_count);
+    }
+    else if (err_count < 0.0) {
+      PWM_l = PWM_l + wl * (err_count)/2;
+    }
+  }
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
   md.setM1Speed(PWM_l); //Left
   md.setM2Speed(PWM_r); //Right
 }
@@ -138,6 +184,7 @@ void brake() {
 }
 
 void first_stretch() {
+<<<<<<< HEAD
   PWM_l = 200;
   PWM_r = 200;
   S_l_ref = 1.0;
@@ -149,6 +196,13 @@ void first_stretch() {
   else if (err_count > 0.0) {
     PWM_l = PWM_l + w2 * (err_count);
   }
+=======
+  flag = 1;
+  //PWM_l = 200;
+  //PWM_r = 200;
+  S_l_ref = 0.6096;
+  S_r_ref = 0.6096;
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
   motor_control();
 }
 
@@ -188,4 +242,7 @@ void second_stretch() {
   motor_control();
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2b6217d80247f7d6f482e7d2d9616ea5c5fd608d
