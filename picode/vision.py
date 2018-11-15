@@ -50,18 +50,19 @@ def stopWindow():
 
     global x_max
 
-    x_start = x_max*0.4 # Useful for Yellow Line Following
-    x_end = x_max*0.6
+    x_start = int(x_max*0.4) # Useful for Yellow Line Following
+    x_end = int(x_max*0.6)
 
     y_start = int(y_max*0.5)
     y_end = y_start + height
 
     return(x_start, x_end, y_start, y_end)
 
-def isStopSign(num_to_process=10):
+def isStopSign(num_to_process=100):
     x_start, x_end, y_start, y_end = stopWindow()
 
     y_avg = 0
+    num_positive = 0
 
     for i in range(x_start, x_end, int(num_to_process)):
         for j in range(y_start, y_end):
