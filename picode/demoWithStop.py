@@ -146,19 +146,12 @@ def __main__():
 
     follow_lane = True
 
-    start_t = time.time()
-
     while(vision.isStopSign() < 0.0):
         # follow_lane = True
-        # time.sleep(0.1)
-        print("Int Pre Stop - Time to Run: " + str(time.time() - start_t))
-        start_t = time.time()
+        time.sleep(0.01)
 
-    start_t = time.time()
-
-    while(vision.isStopSign() > 0.0):
-        print("Int Post Stop - Time to Run: " + str(time.time() - start_t))
-        start_t = time.time()
+    while(vision.isStopSign() > vision.y_max - 250):
+        time.sleep(0.01)
 
     follow_lane = False
     r.activate_motors(0, 0)
