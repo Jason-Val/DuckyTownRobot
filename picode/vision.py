@@ -105,8 +105,9 @@ def get_error():
     global img
     global x_max
     global y_max
-
-    adjust_const = 15
+    
+    #Going up goes to the left by a matter on pixels
+    adjust_const = 45
 
     x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
     yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
