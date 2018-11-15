@@ -25,22 +25,22 @@ def isRed(pixl):
     return isColor(red, pixl)
 
 def isWhite(pixl):
-    return isColor(white, pixl, 100)
+    return isColor(white, pixl, 125)
 
 def isYellow(pixl):
-    return isColor(yellow, pixl, 200)
+    return isColor(yellow, pixl, 250)
 
 def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
     num_pix = (x_max-x_min) * (y_max-y_min)
-    return (percent/100) * num_pix
+    return int((percent/100) * num_pix)
     
 def lineFollowWindow(x_max, y_max):
-    height = int(y_max/7)
+    height = int(y_max/6)
 
     x_start = 0 # Useful for Yellow Line Following
     x_end = x_max
 
-    y_start = int(y_max*0.45)
+    y_start = int(y_max*0.32)
     y_end = y_start + height
 
     return(x_start, x_end, y_start, y_end)
@@ -58,7 +58,7 @@ def stopWindow():
 
     return(x_start, x_end, y_start, y_end)
 
-def isStopSign(num_to_process=100):
+def isStopSign(num_to_process=50):
     x_start, x_end, y_start, y_end = stopWindow()
 
     y_avg = 0
@@ -71,7 +71,7 @@ def isStopSign(num_to_process=100):
                 y_avg += j
                 num_positive += num_to_process
 
-    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 2)
+    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 3)
 
     if(num_positive > req_pixls and not num_positive == 0):
         y_avg = int(y_avg/num_positive)
@@ -114,7 +114,7 @@ def get_error():
     yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
     white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
 
-    min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
+    min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 2)
     incr = x_max/100
 
     lane_width_approx_in_pixels = 1000

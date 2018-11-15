@@ -51,6 +51,8 @@ void setup()
 
 void loop()
 {
+  first_stretch();
+  /*
     if (flag == 0) {
       first_stretch();
     }
@@ -64,7 +66,7 @@ void loop()
       Serial.println("Broken Flag");
       Serial.end();
     }
-
+  */
   //else if (flag == 1)
   //{
   //curve_path();
@@ -91,17 +93,17 @@ void loop()
   */
 }
 
-void right_encoder_isr() {
+void left_encoder_isr() {
   static int8_t lookup_table_r[] = {
     0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0
   };
   static uint8_t enc_val_r = 0;
   enc_val_r = enc_val_r << 2;
   enc_val_r = enc_val_r | ((PIND & 0b00001100) >> 2);
-  right_count = right_count + lookup_table_r[enc_val_r & 0b1111];
+  left_count = left_count + lookup_table_r[enc_val_r & 0b1111];
 }
 
-void left_encoder_isr() {
+void right_encoder_isr() {
   static int8_t lookup_table_l[] = {
     0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0
   };
@@ -109,7 +111,7 @@ void left_encoder_isr() {
   enc_val_l = enc_val_l << 2;
   enc_val_l = enc_val_l | ((PIND & 0b01100000) >> 5);
   //    Serial.println(enc_val_l);
-  left_count = left_count + lookup_table_l[enc_val_l & 0b1111];
+  right_count = right_count + lookup_table_l[enc_val_l & 0b1111];
 }
 
 void get_location() {
@@ -147,7 +149,7 @@ void get_location() {
 void motor_control() {
   if ((S_l < S_l_ref) && (S_r < S_r_ref)) {
     throttle();
-    delay(250);
+    //delay(100);
     Serial.print("  PWM_l:");
     Serial.print(PWM_l);
     Serial.print("  PWM_r:");
@@ -178,9 +180,11 @@ void first_stretch() {
   get_location();
   if (err_count >= 0) {
     PWM_l = PWM_l + w1 * (err_count);
+    PWM_r = PWM_r - w1 * (err_count);
   }
   else {
     PWM_l = PWM_l - w2 * (err_count);
+    PWM_r = PWM_r + w2 * (err_count);
   }
   motor_control();
 }
@@ -210,9 +214,11 @@ void second_stretch() {
   get_location();
   if (err_count >= 0) {
     PWM_l = PWM_l + w1 * (err_count);
+    PWM_r = PWM_r - w1 * (err_count);
   }
   else {
     PWM_l = PWM_l - w2 * (err_count);
+    PWM_r = PWM_r + w2 * (err_count);
   }
   motor_control();
 }

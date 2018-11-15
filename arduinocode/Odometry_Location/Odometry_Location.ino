@@ -1,5 +1,6 @@
-#include <string.h>
-
+#include "math.h"
+#include "DualMC33926MotorShield.h"
+#include "PinChangeInt.h"
 
 #include "math.h"
 
@@ -51,7 +52,10 @@ void loop()
   //motor_control();
   //Serial.println("Right:" + String(left_count) + " Left:" + String(right_count) + "; S_l=" + String(S_l) + " S_r=" + String(S_r) + "; theta:" + String(theta * (180.0 / M_PI)));
   //Serial.println(Etime);
-  delay(1000);
+  Serial.print(" n_l = ");
+  Serial.print(left_count);
+  Serial.print("  n_r = ");
+  Serial.println(right_count);
   //Serial.print("S_ref: " + String(S_ref) + "; n_ref: " + String(n_ref));
   //Serial.println("; S_l: " + String(S_l) + "; S_r: " + String(S_r) + "; n_l: " + String(left_count) +"; n_r:" + String(right_count));
 }
