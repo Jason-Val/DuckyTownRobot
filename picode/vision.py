@@ -71,7 +71,7 @@ def isStopSign(num_to_process=100):
                 y_avg += j
                 num_positive += num_to_process
 
-    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
+    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 2)
 
     if(num_positive > req_pixls and not num_positive == 0):
         y_avg = int(y_avg/num_positive)
