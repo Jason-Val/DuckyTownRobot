@@ -144,18 +144,28 @@ def __main__():
     time.sleep(3)
     r.pd_thread.start()
 
-    while(vision.isStopSign() < 0):
-        follow_lane = True
-        time.sleep(0.1)
-
-    while(vision.isStopSign() > 0):
-        follow_lane = True
-        time.sleep(0.1)
-
-    follow_lane = False
-
-
     input()
+
+    while(True):
+        self.v_l = 0.108
+        self.v_r = 0.108
+        follow_lane = True
+        r.activate_motors(r.v_l, r.v_r)
+
+        while(vision.isStopSign() < 0):
+            follow_lane = True
+            time.sleep(0.1)
+
+        while(vision.isStopSign() > 0):
+            follow_lane = True
+            time.sleep(0.1)
+
+        self.v_l = 0.0
+        self.v_r = 0.0
+        r.activate_motors(r.v_l, r.v_r)
+        follow_lane = False
+        input()
+
     follow_lane = False
     r.activate_motors(0, 0)
     
@@ -164,103 +174,103 @@ def __main__():
     
     input()
     
-    while(running):
-        global follow_lane
-        print("State: " + str(state))
+    # while(running):
+    #     global follow_lane
+    #     print("State: " + str(state))
 
-        if(state == 0):
-            #waiting to go
-            #Do nothing until user inputs something
-            s_in = input()
-            if(s_in == "stop"):
-                state = -2
-            state += 1
+    #     if(state == 0):
+    #         #waiting to go
+    #         #Do nothing until user inputs something
+    #         s_in = input()
+    #         if(s_in == "stop"):
+    #             state = -2
+    #         state += 1
 
-        elif(state == 1):
-            #First Straight Away
-            #Line follow until we hit a left turn
-            while(get_curr_error() < 100):
-                follow_lane = True
+    #     elif(state == 1):
+    #         #First Straight Away
+    #         #Line follow until we hit a left turn
+    #         while(get_curr_error() < 100):
+    #             follow_lane = True
 
-            follow_lane = False
-            state += 1
+    #         follow_lane = False
+    #         state += 1
         
-        elif(state == 2):
-            #The turn itself (left)
-            #Use the pd controller to navigate the robot around the turn
-            r.activate_motors(1.1, 1.35)
-            time.sleep(2.0)
-            r.activate_motors(0, 0)
-            state += 1
+    #     elif(state == 2):
+    #         #The turn itself (left)
+    #         #Use the pd controller to navigate the robot around the turn
+    #         r.activate_motors(1.1, 1.35)
+    #         time.sleep(2.0)
+    #         r.activate_motors(0, 0)
+    #         state += 1
 
-        elif(state == 3):
-            #The second straight away
-            #Use line following until we see the red
-            while(vision.isStopSign() < 0):
-                follow_lane = True
+    #     elif(state == 3):
+    #         #The second straight away
+    #         #Use line following until we see the red
+    #         while(vision.isStopSign() < 0):
+    #             follow_lane = True
 
-            state += 1
+    #         state += 1
 
-        elif(state == 4):
-            #We are on the red
-            #Line follow until we no longer see then red
-            #Use pd to drive a few inches forward then print  x,y,theta
+    #     elif(state == 4):
+    #         #We are on the red
+    #         #Line follow until we no longer see then red
+    #         #Use pd to drive a few inches forward then print  x,y,theta
 
-            while(vision.isStopSign() > 0):
-                follow_lane = True
+    #         while(vision.isStopSign() > 0):
+    #             follow_lane = True
 
-            follow_lane = False
+    #         follow_lane = False
 
-            r.activate_motors(1.15, 1.15)
-            time.sleep(1.0)
-            r.activate_motors(0, 0)
+    #         r.activate_motors(1.15, 1.15)
+    #         time.sleep(1.0)
+    #         r.activate_motors(0, 0)
 
-            dx,dy,dt = r.get_deltas()
+    #         dx,dy,dt = r.get_deltas()
 
-            print("Delta X: " + str(dx))
-            print("Delta Y: " + str(dy))
-            print("Delta Theta: " + str(dt))
+    #         print("Delta X: " + str(dx))
+    #         print("Delta Y: " + str(dy))
+    #         print("Delta Theta: " + str(dt))
 
-            state += 1
+    #         state += 1
 
-        elif(state == 5):
-            #We are now waiting to start the next section of the test
-            #Do nothing until a user tells it to
-            s_in = input()
-            if(s_in == "stop"):
-                state = -2
-            state += 1
+    #     elif(state == 5):
+    #         #We are now waiting to start the next section of the test
+    #         #Do nothing until a user tells it to
+    #         s_in = input()
+    #         if(s_in == "stop"):
+    #             state = -2
+    #         state += 1
 
-        elif(state == 6):
-            #First Straight Away
-            #Line follow until we hit a right turn
-            while(get_curr_error() > -100):
-                follow_lane = True
+    #     elif(state == 6):
+    #         #First Straight Away
+    #         #Line follow until we hit a right turn
+    #         while(get_curr_error() > -100):
+    #             follow_lane = True
 
-            follow_lane = False
-            state += 1
+    #         follow_lane = False
+    #         state += 1
 
-        elif(state == 7):
-            #The turn itself (rigt)
-            #Use the pd controller to navigate the robot around the turn
-            r.activate_motors(1.35, 1.0)
-            time.sleep(1.0)
-            r.activate_motors(0, 0)
-            state += 1
+    #     elif(state == 7):
+    #         #The turn itself (rigt)
+    #         #Use the pd controller to navigate the robot around the turn
+    #         r.activate_motors(1.35, 1.0)
+    #         time.sleep(1.0)
+    #         r.activate_motors(0, 0)
+    #         state += 1
 
-        elif(state == 8):
-            #The second straight away
-            #Use line following until we see the red
-            state = 3
+    #     elif(state == 8):
+    #         #The second straight away
+    #         #Use line following until we see the red
+    #         state = 3
 
-        elif(state == 9):
-            #We are on the red
-            #Line follow until we no longer see then red
-            #Use pd to drive a few inches forward then print  x,y,theta
-            state = 4
+    #     elif(state == 9):
+    #         #We are on the red
+    #         #Line follow until we no longer see then red
+    #         #Use pd to drive a few inches forward then print  x,y,theta
+    #         state = 4
 
-        else:
-            running = False
+    #     else:
+    #         running = False
     
     r.stop()
     
