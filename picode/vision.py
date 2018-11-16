@@ -9,6 +9,8 @@ img = None
 x_max = 0
 y_max = 0
 
+white_hsv = (80, 37, 0, 100, 75, 100)
+yellow_hsv = (18,81,12,100,22,100)
 red = (255,0,0)
 white = (255,255,255)
 yellow = (255,255,0)
@@ -21,14 +23,43 @@ def isColor(color, pixl, diff=250):
     else:
         return False
 
+def rgb2hsv(r, g, b):
+    r, g, b = r/255.0, g/255.0, b/255.0
+    mx = max(r, g, b)
+    mn = min(r, g, b)
+    df = mx-mn
+    if mx == mn:
+        h = 0
+    elif mx == r:
+        h = (60 * ((g-b)/df) + 360) % 360
+    elif mx == g:
+        h = (60 * ((b-r)/df) + 120) % 360
+    elif mx == b:
+        h = (60 * ((r-g)/df) + 240) % 360
+    if mx == 0:
+        s = 0
+    else:
+        s = df/mx       
+    v = mx
+    return h, s*100, v*100
+
+def isHSVColor(color, pixl):
+    h,s,v = rgb2hsv(pixl[0],pixl[1],pixl[2])
+    if(color[0]<=color[1] and h >= color[0] and h <= color[1] and s >= color[2] and s <= color[3] and v >= color[4] and v <= color[5]):
+        return True
+    elif((h >= color[0] or h <= color[1]) and s >= color[2] and s <= color[3] and v >= color[4] and v <= color[5]):
+        return True
+    else:
+        return False
+
 def isRed(pixl):
     return isColor(red, pixl)
 
 def isWhite(pixl):
-    return isColor(white, pixl, 125)
+    return isHSVColor(white_hsv, pixl)
 
 def isYellow(pixl):
-    return isColor(yellow, pixl, 250)
+    return isHSVColor(yellow_hsv, pixl)
 
 def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
     num_pix = (x_max-x_min) * (y_max-y_min)
@@ -103,6 +134,8 @@ def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=10):
 """
 def get_error():
 
+    str_time = time.time()
+
     global img
     global x_max
     global y_max
@@ -121,6 +154,8 @@ def get_error():
 
     robot_avg = x_max/2
     #print("Robot Avg: %s" + str(robot_avg))
+
+    print("Im Processing Took: " + str(time.time() - str_time))
 
     if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
         #We see both the yellow and white line
