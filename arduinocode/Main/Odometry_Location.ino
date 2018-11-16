@@ -1,5 +1,6 @@
 
 extern volatile long right_count;
+extern volatile long left_count;
 
 void printstuff()
 {
