@@ -13,7 +13,7 @@ void get_ir();
 void get_current();
 void set_motor(double pwm_l, double pwm_r);
 void set_motor_vel();
-void printstuff();
+void get_location();
 
 bool pd_active = false;
 long t_pd_updated = millis();
@@ -44,7 +44,42 @@ void loop() {
     pd.resetInitPoint();
     t_pd_updated = millis();
   }
+
+  /*
+  if (user_started)
+  {
+    if(flagged1)
+    {
+      flagged1 = firststretc();
+      if (!flagged1) {
+        flagged2 = true;
+      }
+    }
+    if(flagged2)
+    {
+      flagged2 = curve();
+      if(!flagged2)
+      {
+        flagged3=true;
+      }
+    }
+    if(flaggd3)
+    {
+      flagged3 = secondstrecth();
+      if(!flagged3)
+      {
+        user_started=false;
+      }
+    }
+  }
   
+
+  if(flag1)
+  {
+    flag1=firststrecht();
+    delay(100);
+  }
+  */
   
   if (Serial.available()) {
     char input[1];
@@ -73,7 +108,7 @@ void loop() {
         set_motor_vel();
         break;
       case 6:
-        printstuff();
+        get_location();
       default:
         break;
     }
