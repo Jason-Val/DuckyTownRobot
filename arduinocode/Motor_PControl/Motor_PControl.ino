@@ -2,8 +2,8 @@
 #include "PinChangeInt.h"
 #include "math.h"
 
-#define PinMotor1Sensor1 5
-#define PinMotor1Sensor2 6
+#define PinMotor1Sensor1 6
+#define PinMotor1Sensor2 5
 #define PinMotor2Sensor1 2
 #define PinMotor2Sensor2 3
 
@@ -14,8 +14,8 @@ volatile long left_count = 0;
 int N_enc = 32; // Segments on Encoder = 32
 double dia = 0.071; // Dia = 71 mm
 double WB = 0.157;  // Wheel Base = 157 mm
-int w1 = 1; // Weight factor right
-int w2 = 1; //weight factor left
+int w1 = 10; // Weight factor right
+int w2 = 4; //weight factor left
 int flag = 0;
 
 // Parameters:
@@ -49,35 +49,39 @@ void loop() {
   S_l = ((M_PI * dia * left_count) / N_enc);
   S_r = ((M_PI * dia * right_count) / N_enc);
 
-  if ((S_l < 0.5)&&(S_r < 0.5)){
-  PWM_l = 200;
-  PWM_r = 200;
+  if ((S_l < 1.0)&&(S_r < 1.0)){
+  PWM_l = 150;
+  PWM_r = 150;
+  
   if (err_count >= 0) {
-    PWM_l = PWM_l + w1 * (err_count)/2;
-    PWM_r = PWM_r - w1 * (err_count)/2;
+    PWM_l = PWM_l + w1 * (abs(err_count));
+    PWM_r = PWM_r - w1 * (abs(err_count));
   }
   else {
-    PWM_l = PWM_l - w2 * (err_count)/2;
-    PWM_r = PWM_r + w2 * (err_count)/2;
+    PWM_l = PWM_l - w2 * (abs(err_count));
+    PWM_r = PWM_r + w2 * (abs(err_count));
   }
+  
+  Serial.print(" PWM_l = ");
+  Serial.print(PWM_l);
+  Serial.print(" PWM_r = ");
+  Serial.print(PWM_r);
+  
   md.setM1Speed(PWM_l); //Left
   md.setM2Speed(PWM_r); //Right
   }
   else{
   md.setM1Speed(0); //Left
   md.setM2Speed(0); //Right
+  Serial.end();
     }
-  delay(20);
+  //delay(20);
   Serial.print(" n_l = ");
   Serial.print(left_count);
   Serial.print(" n_r = ");
   Serial.print(right_count);
   Serial.print(" err_count = ");
-  Serial.print(err_count);
-  Serial.print(" PWM_l = ");
-  Serial.print(PWM_l);
-  Serial.print(" PWM_r = ");
-  Serial.println(PWM_r);
+  Serial.println(err_count);
 }
 
 void ir_setup() {
