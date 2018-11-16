@@ -14,7 +14,7 @@ volatile long left_count = 0;
 int N_enc = 32; // Segments on Encoder = 32
 double dia = 0.071; // Dia = 71 mm
 double WB = 0.157;  // Wheel Base = 157 mm
-int w1 = 2; // Weight factor right
+int w1 = 1; // Weight factor right
 int w2 = 1; //weight factor left
 int flag = 0;
 
@@ -23,7 +23,7 @@ int PWM_l;
 int PWM_r;
 
 // Variables:
-volatile long err_count = 0;
+long err_count = 0;
 int n_l_ref = 0;
 int n_r_ref = 0;
 double S_l = 0.0, S_r = 0.0;
@@ -34,7 +34,12 @@ DualMC33926MotorShield md;
 void setup() {
   Serial.begin(115200);
   md.init(); 
-  void ir_setup();
+  //void ir_setup();
+  attachPinChangeInterrupt(PinMotor1Sensor1, right_encoder_isr, CHANGE);
+  attachPinChangeInterrupt(PinMotor1Sensor2, right_encoder_isr, CHANGE);
+  //  attachInterrupt(digitalPinToInterrupt(PinMotor2Sensor1), left_encoder_isr, CHANGE);
+  attachPinChangeInterrupt(PinMotor2Sensor1, left_encoder_isr, CHANGE);
+  attachPinChangeInterrupt(PinMotor2Sensor2, left_encoder_isr, CHANGE);
   }
 
 void loop() {
@@ -48,12 +53,12 @@ void loop() {
   PWM_l = 200;
   PWM_r = 200;
   if (err_count >= 0) {
-    PWM_l = PWM_l + w1 * (err_count);
-    PWM_r = PWM_r - w1 * (err_count);
+    PWM_l = PWM_l + w1 * (err_count)/2;
+    PWM_r = PWM_r - w1 * (err_count)/2;
   }
   else {
-    PWM_l = PWM_l - w2 * (err_count);
-    PWM_r = PWM_r + w2 * (err_count);
+    PWM_l = PWM_l - w2 * (err_count)/2;
+    PWM_r = PWM_r + w2 * (err_count)/2;
   }
   md.setM1Speed(PWM_l); //Left
   md.setM2Speed(PWM_r); //Right
@@ -62,6 +67,17 @@ void loop() {
   md.setM1Speed(0); //Left
   md.setM2Speed(0); //Right
     }
+  delay(20);
+  Serial.print(" n_l = ");
+  Serial.print(left_count);
+  Serial.print(" n_r = ");
+  Serial.print(right_count);
+  Serial.print(" err_count = ");
+  Serial.print(err_count);
+  Serial.print(" PWM_l = ");
+  Serial.print(PWM_l);
+  Serial.print(" PWM_r = ");
+  Serial.println(PWM_r);
 }
 
 void ir_setup() {

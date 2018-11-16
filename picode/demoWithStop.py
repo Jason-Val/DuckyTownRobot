@@ -15,8 +15,9 @@ class robot:
     def __init__(self, port="/dev/ttyACM0"):
         magnitude = 10
         range = 100
-        scaleK = 7.00
-        scaleB = 5.75
+        scaleK = 5.5
+        scaleB = 5.2
+        self.error_offset = 20
         self.K = 1.0/(magnitude*range*scaleK)
         self.B = 1.0/(magnitude*range*scaleB)
         self.wheelbase = 0.157
@@ -69,7 +70,7 @@ class robot:
             error = vision.get_error()
             if(error == None):
                 continue
-            error += 30
+            error += self.error_offset
             print(error)
             delta_error = error - self.prev_error
             #if delta_error > 40:
