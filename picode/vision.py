@@ -56,10 +56,12 @@ def isRed(pixl):
     return isColor(red, pixl)
 
 def isWhite(pixl):
-    return isHSVColor(white_hsv, pixl)
+    #return isHSVColor(white_hsv, pixl)
+    return isColor(white, pixl)
 
 def isYellow(pixl):
     return isHSVColor(yellow_hsv, pixl)
+    #return isColor(yellow, pixl)
 
 def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
     num_pix = (x_max-x_min) * (y_max-y_min)
@@ -147,7 +149,7 @@ def get_error():
     yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
     white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
 
-    min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 2)
+    min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
     incr = x_max/100
 
     lane_width_approx_in_pixels = 1000
@@ -166,6 +168,7 @@ def get_error():
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
         #Only see Yellow line
+        print("**no white**")
         lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
         #print("Case 2 Lane Avg: %s" + str(lane_avg))
         return robot_avg - lane_avg + adjust_const
@@ -173,6 +176,7 @@ def get_error():
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
         #Only see White line
         lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
+        print("**no yellow**")
         #print("Case 3 Lane Avg: %s" + str(lane_avg))
         return robot_avg - lane_avg + adjust_const
 

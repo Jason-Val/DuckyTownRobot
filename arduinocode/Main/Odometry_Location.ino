@@ -2,6 +2,7 @@
 
 extern volatile long left_count;
 extern volatile long right_count;
+extern volatile long left_count;
 
 int N_enc = 32;
 double dia = 0.071; // Dia = 71 mm

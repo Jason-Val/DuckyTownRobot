@@ -15,8 +15,8 @@ class robot:
     def __init__(self, port="/dev/ttyACM0"):
         magnitude = 10
         range = 100
-        scaleK = 5.00
-        scaleB = 4.75
+        scaleK = 7.00
+        scaleB = 5.75
         self.K = 1.0/(magnitude*range*scaleK)
         self.B = 1.0/(magnitude*range*scaleB)
         self.wheelbase = 0.157
