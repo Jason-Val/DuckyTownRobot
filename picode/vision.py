@@ -35,12 +35,12 @@ def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
     return (percent/100) * num_pix
     
 def lineFollowWindow(x_max, y_max):
-    height = int(y_max/7)
+    height = int(y_max/6)
 
     x_start = 0 # Useful for Yellow Line Following
     x_end = x_max
 
-    y_start = int(y_max*0.45)
+    y_start = int(y_max*0.37)
     y_end = y_start + height
 
     return(x_start, x_end, y_start, y_end)
