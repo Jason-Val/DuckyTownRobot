@@ -18,7 +18,7 @@ void get_location();
 bool pd_active = false;
 long t_pd_updated = millis();
 long pd_update_delay = 200;
-MotorPd pd(1, -.3);
+MotorPd pd(400.0, 0);
 double* correction = new double[2];
 
 extern volatile long right_count;

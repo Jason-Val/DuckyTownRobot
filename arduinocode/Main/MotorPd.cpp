@@ -7,28 +7,6 @@
 extern volatile long right_count;
 extern volatile long left_count;
 
-
-/*
-long* getCounts(long* counts)
-{
-  
-  cli();
-  counts[0] = left_count;
-  counts[1] = right_count;
-  sei();
-}
-*/
-/*
-long* getCounts(long* counts)
-{
-  uint8_t SaveSREG = SREG;   // save interrupt flag
-  cli();   // disable interrupts
-  counts[0] = left_count;
-  counts[1] = right_count;
-  SREG = SaveSREG;   // restore the interrupt flag
-  return counts;
-}
-*/
 double* MotorPd::getTranslation(double* trans)
 {
   trans[0] = ((M_PI * dia * left_count) / encoderSegments);
@@ -164,6 +142,7 @@ double* MotorPd::computeCorrection(double* correction)
 }
 */
 
+/*
 double* MotorPd::computeCorrection(double* correction)
 {
   double* vNew = getVelocity(buf);
@@ -199,7 +178,7 @@ double* MotorPd::computeCorrection(double* correction)
   
   return correction;
 }
-
+*/
 /*
 double* MotorPd::computeCorrection(double* correction)
 {
@@ -245,6 +224,36 @@ double* MotorPd::computeCorrection(double* correction)
   return correction;
 }
 */
+
+double* MotorPd::computeCorrection(double* correction)
+{
+  double* vNew = getVelocity(buf);
+  
+  double error = vNew[1]-C*vNew[0];
+  double deltaError = error - prevError;
+  prevError = error;
+  double deltaV = -K*(error)-B*(deltaError);
+  
+  Serial.print("error: ");
+  Serial.print(error);
+  Serial.print("; deltaError: ");
+  Serial.print(deltaError);
+  Serial.print("; deltaV: ");
+  Serial.print(deltaV);
+  Serial.print("; velocity: ");
+  Serial.print(vNew[0]);
+  Serial.print(", ");
+  Serial.println(vNew[1]);
+  
+  //v[0] = v[0] - deltaV;
+  //v[1] = v[1] + deltaV;
+  
+  correction[0] = v[0] - deltaV;
+  correction[1] = v[0] + deltaV;
+  
+  return correction;
+}
+
 /*
 double* MotorPd::computeCorrection(double* correction)
 {
@@ -281,4 +290,3 @@ double* MotorPd::computeCorrection(double* correction)
   return correction;
 }
 */
-
