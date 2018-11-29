@@ -49,12 +49,13 @@ void MotorPd::setVelocity()
   // Add the final 0 to end the C string
   input[size] = 0;
   
-  float lspeed = atof(strtok(input, " "));
-  float rspeed = atof(strtok(NULL, " "));
-  
-  v[0] = lspeed;
-  v[1] = rspeed;
-  vref = lspeed;
+  vref = atof(strtok(input, " "));
+  //float rspeed = atof(strtok(NULL, " "));
+  //Serial.print("vref is now ");
+  //Serial.println(vref);
+  //v[0] = lspeed;
+  //v[1] = rspeed;
+  //vref = lspeed;
 }
 
 double* MotorPd::getVelocity(double* vel)
@@ -234,6 +235,7 @@ double* MotorPd::computeCorrection(double* correction)
   prevError = error;
   double deltaV = -K*(error)-B*(deltaError);
   
+  /*
   Serial.print("error: ");
   Serial.print(error);
   Serial.print("; deltaError: ");
@@ -244,12 +246,16 @@ double* MotorPd::computeCorrection(double* correction)
   Serial.print(vNew[0]);
   Serial.print(", ");
   Serial.println(vNew[1]);
+  */
   
   //v[0] = v[0] - deltaV;
   //v[1] = v[1] + deltaV;
   
-  correction[0] = v[0] - deltaV;
-  correction[1] = v[0] + deltaV;
+  correction[0] = vref - deltaV;
+  correction[1] = vref + deltaV;
+  
+  correction[0] = getPWM_l(correction[0]);
+  correction[1] = getPWM_r(correction[1]);
   
   return correction;
 }
