@@ -215,19 +215,23 @@ def start_thread():
     global global_error
     with picamera.PiCamera() as camera:
         camera.start_preview()
+        stream = io.BytesIO()
+        camera.framerate = 10
         time.sleep(2)
-        while(True):
+        for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
             start = time.time()
-            stream = io.BytesIO()
-            camera.capture(stream, format='jpeg')
+            stream.truncate()
             stream.seek(0)
             im = Image.open(stream)
             x_max, y_max = im.size
             pix = im.load()
             img_sem.acquire()
-            start = time.time()
             img = pix
-            # global_error = get_error()
             img_sem.release()
-            print("Loading In An Image: {}".format(time.time() - start))
+            print()
+            print("Image Loading: {}".format(time.time() - start))
+            start = time.time()
+            global_error = get_error()
+            print("Image Processing: {}".format(time.time() - start))
+            print()
         camera.end_preview()

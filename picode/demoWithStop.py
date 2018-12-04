@@ -67,7 +67,8 @@ class robot:
         print("***start***")
         
         while (True):
-            error = vision.get_error()
+            error = vision.ret_error()
+            time.sleep(0.2)
             if(error == None):
                 continue
             error += self.error_offset
