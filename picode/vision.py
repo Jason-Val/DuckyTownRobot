@@ -225,6 +225,7 @@ def start_thread():
             x_max, y_max = im.size
             pix = im.load()
             img_sem.acquire()
+            start = time.time()
             img = pix
             # global_error = get_error()
             img_sem.release()
