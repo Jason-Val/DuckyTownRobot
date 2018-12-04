@@ -217,7 +217,7 @@ def start_thread():
         camera.start_preview()
         time.sleep(2)
         while(True):
-            start - time.time()
+            start = time.time()
             stream = io.BytesIO()
             camera.capture(stream, format='jpeg')
             stream.seek(0)
