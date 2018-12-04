@@ -170,18 +170,21 @@ def get_error():
         #This is the case we want
         lane_avg = (white_avg_x + yellow_avg_x)/2
         #print("Case 1 Lane Avg: %s" + str(lane_avg))
+        print("White & Yellow: {}".format(robot_avg - lane_avg + adjust_const))
         return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
         #Only see Yellow line
         lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
         #print("Case 2 Lane Avg: %s" + str(lane_avg))
+        print("Only Yellow: {}".format(robot_avg - lane_avg + adjust_const))
         return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
         #Only see White line
         lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
         #print("Case 3 Lane Avg: %s" + str(lane_avg))
+        print("Only White: {}".format(robot_avg - lane_avg + adjust_const))
         return robot_avg - lane_avg + adjust_const
 
     else:
