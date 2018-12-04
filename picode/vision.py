@@ -122,14 +122,18 @@ def isStopSign(num_to_process=10):
         return -1
 
 def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=7):
+    global img
+    img_sem.acquire()
+    img_copy = img
+    img_sem.release()
     x_avg = 0
     y_avg = 0
     num_positive = 0
 
     for i in range(x_start, x_end, num_to_process):
         for j in range(y_start, y_end):
-            global img
-            h,l,s = colorsys.rgb_to_hls(img[i,j][0]/255.0, img[i,j][1]/255.0, img[i,j][2]/255.0)
+            global img_copy
+            h,l,s = colorsys.rgb_to_hls(img_copy[i,j][0]/255.0, img_copy[i,j][1]/255.0, img_copy[i,j][2]/255.0)
             h *= 240.0
             l *= 240.0
             s *= 240.0
@@ -152,6 +156,7 @@ def ret_error():
     return global_error
 
 def get_error():
+    start = time.time()
 
     global img
     global x_max
@@ -177,6 +182,7 @@ def get_error():
         lane_avg = (white_avg_x + yellow_avg_x)/2
         #print("Case 1 Lane Avg: %s" + str(lane_avg))
         print("White & Yellow: {}".format(robot_avg - lane_avg + adjust_const))
+        print("Processing An Image: {}".format(time.time() - start))
         return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
@@ -184,6 +190,7 @@ def get_error():
         lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
         #print("Case 2 Lane Avg: %s" + str(lane_avg))
         print("Only Yellow: {}".format(robot_avg - lane_avg + adjust_const))
+        print("Processing An Image: {}".format(time.time() - start))
         return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
@@ -191,10 +198,12 @@ def get_error():
         lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
         #print("Case 3 Lane Avg: %s" + str(lane_avg))
         print("Only White: {}".format(robot_avg - lane_avg + adjust_const))
+        print("Processing An Image: {}".format(time.time() - start))
         return robot_avg - lane_avg + adjust_const
 
     else:
         print("No Yellow Or White")
+        print("Processing An Image: {}".format(time.time() - start))
         return None
     
 """
@@ -209,6 +218,7 @@ def start_thread():
         camera.start_preview()
         time.sleep(2)
         while(True):
+            start - time.time()
             stream = io.BytesIO()
             camera.capture(stream, format='jpeg')
             stream.seek(0)
@@ -217,6 +227,7 @@ def start_thread():
             pix = im.load()
             img_sem.acquire()
             img = pix
-            global_error = get_error()
+            # global_error = get_error()
             img_sem.release()
+            print("Loading In An Image: {}".format(time.time() - start))
         camera.end_preview()
