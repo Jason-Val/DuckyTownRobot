@@ -9,6 +9,7 @@ img_sem = threading.Semaphore()
 img = None
 x_max = 0
 y_max = 0
+global_error = 0
 
 red = (255,0,0)
 white = (255,255,255)
@@ -146,6 +147,10 @@ def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=7):
 """
 
 """
+def ret_error():
+    global global_error
+    return global_error
+
 def get_error():
 
     global img
@@ -199,6 +204,7 @@ def start_thread():
     global img
     global x_max
     global y_max
+    global global_error
     with picamera.PiCamera() as camera:
         camera.start_preview()
         time.sleep(2)
@@ -211,5 +217,6 @@ def start_thread():
             pix = im.load()
             img_sem.acquire()
             img = pix
+            global_error = get_error()
             img_sem.release()
         camera.end_preview()
