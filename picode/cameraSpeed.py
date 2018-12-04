@@ -47,3 +47,5 @@ def start_thread():
             # img_sem.release()
             print("Loading In An Image: {}".format(time.time() - start1))
         camera.end_preview()
+
+start_thread()
