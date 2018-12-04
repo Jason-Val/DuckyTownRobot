@@ -39,7 +39,7 @@ def start_thread():
             pix = im.load()
             print("---LOAD---: {}".format(time.time() - start))
             start = time.time()
-            img_sem.acquire()
+            # img_sem.acquire()
             # start = time.time()
             img = pix
             print("set Global: {}".format(time.time() - start))
