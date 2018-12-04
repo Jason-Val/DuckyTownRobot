@@ -231,7 +231,7 @@ def start_thread():
             print()
             print("Image Loading: {}".format(time.time() - start))
             start = time.time()
-            global_error = get_error()
+            # global_error = get_error()
             print("Image Processing: {}".format(time.time() - start))
             print()
         camera.end_preview()

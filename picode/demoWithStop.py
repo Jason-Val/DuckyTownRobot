@@ -67,7 +67,7 @@ class robot:
         print("***start***")
         
         while (True):
-            error = vision.ret_error()
+            error = vision.get_error()
             time.sleep(0.2)
             if(error == None):
                 continue
