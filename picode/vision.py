@@ -132,7 +132,6 @@ def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=7):
 
     for i in range(x_start, x_end, num_to_process):
         for j in range(y_start, y_end):
-            global img_copy
             h,l,s = colorsys.rgb_to_hls(img_copy[i,j][0]/255.0, img_copy[i,j][1]/255.0, img_copy[i,j][2]/255.0)
             h *= 240.0
             l *= 240.0
