@@ -17,8 +17,10 @@ def start_thread():
 
     with picamera.PiCamera() as camera:
         camera.start_preview()
+        camera.resolution = (640, 480)
         time.sleep(2)
         while(True):
+            print()
             start1 = time.time()
             start = time.time()
             stream = io.BytesIO()
