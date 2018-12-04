@@ -3,6 +3,7 @@ import picamera
 from PIL import Image
 import io
 import threading
+import colorsys
 
 img_sem = threading.Semaphore()
 img = None
