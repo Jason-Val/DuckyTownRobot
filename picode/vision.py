@@ -21,14 +21,50 @@ def isColor(color, pixl, diff=250):
     else:
         return False
 
-def isRed(pixl):
-    return isColor(red, pixl)
+def isRed(h,l,s):
+    if(h > 20.0 and h < 210.0):
+        #Hue is not red
+        return False
+    elif(s < 60.0):
+        #Saturation is not good
+        return False
+    elif(l > 200.0):
+        return False
+    else:
+        return True
 
-def isWhite(pixl):
-    return isColor(white, pixl, 100)
+def isWhite(h,l,s):
+    if(h < 30.0 or h > 45.0 or s < 60.0):
+        #Hue is not yellow
+        if((h > 20.0 and h < 210.0) or s < 50.0):
+            #Hue is not red
+            if(l > 180):
+                return True
+            else:
+                return False
+        else:
+            #Hue is red
+            if(l > 200):
+                return True
+            else:
+                return False
+    else:
+        if(l > 230):
+            return True
+        else:
+            return False
 
-def isYellow(pixl):
-    return isColor(yellow, pixl, 200)
+def isYellow(h,l,s):
+    if(h < 30.0 or h > 45.0):
+        #Hue is not yellow
+        return False
+    elif(s < 65):
+        #Saturation is good
+        return False
+    elif(l > 210):
+        return False
+    else:
+        return True
 
 def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
     num_pix = (x_max-x_min) * (y_max-y_min)
@@ -67,7 +103,11 @@ def isStopSign(num_to_process=10):
     for i in range(int(x_start), int(x_end), int(num_to_process)):
         for j in range(y_start, y_end):
             global img
-            if(isRed(img[i,j])):
+            h,l,s = colorsys.rgb_to_hls(img[i,j][0]/255.0, img[i,j][1]/255.0, img[i,j][2]/255.0)
+            h *= 240.0
+            l *= 240.0
+            s *= 240.0
+            if(isRed(h,l,s)):
                 y_avg += j
                 num_positive += num_to_process
 
@@ -79,7 +119,7 @@ def isStopSign(num_to_process=10):
     else:
         return -1
 
-def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=10):
+def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=7):
     x_avg = 0
     y_avg = 0
     num_positive = 0
@@ -87,7 +127,11 @@ def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=10):
     for i in range(x_start, x_end, num_to_process):
         for j in range(y_start, y_end):
             global img
-            if(colorFunc(img[i,j])):
+            h,l,s = colorsys.rgb_to_hls(img[i,j][0]/255.0, img[i,j][1]/255.0, img[i,j][2]/255.0)
+            h *= 240.0
+            l *= 240.0
+            s *= 240.0
+            if(colorFunc(h,l,s)):
                 x_avg += i
                 y_avg += j
                 num_positive += 1
