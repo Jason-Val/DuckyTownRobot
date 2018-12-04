@@ -18,7 +18,7 @@ def start_thread():
     with picamera.PiCamera() as camera:
         camera.start_preview()
         camera.resolution = (640, 480)
-        camera.framerate = 80
+        camera.framerate = 5
         time.sleep(2)
         while(True):
             print()
@@ -27,7 +27,7 @@ def start_thread():
             stream = io.BytesIO()
             print("Stream = Bytes: {}".format(time.time() - start))
             start = time.time()
-            camera.capture(stream, format='jpeg')
+            camera.capture(stream, format='jpeg', use_video_port=True)
             print("Capture: {}".format(time.time() - start))
             start = time.time()
             stream.seek(0)
