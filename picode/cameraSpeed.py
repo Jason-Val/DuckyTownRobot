@@ -51,4 +51,36 @@ def start_thread():
             print("Loading In An Image: {}".format(time.time() - start1))
         camera.end_preview()
 
-start_thread()
+def start_thread2():
+    import io
+    import time
+    import picamera
+
+    with picamera.PiCamera() as camera:
+        stream = io.BytesIO()
+        for foo in camera.capture_continuous(stream, format='jpeg'):
+            # Truncate the stream to the current position (in case
+            # prior iterations output a longer image)
+            print()
+            start1 = time.time()
+            start = time.time()
+            stream.truncate()
+            print("Truncate: {}".format(time.time() - start))
+            start = time.time()
+            stream.seek(0)
+            print("Seek: {}".format(time.time() - start))
+            start = time.time()
+            im = Image.open(stream)
+            print("Open: {}".format(time.time() - start))
+            start = time.time()
+            x_max, y_max = im.size
+            print("Size: {}".format(time.time() - start))
+            start = time.time()
+            pix = im.load()
+            print("---LOAD---: {}".format(time.time() - start))
+            start = time.time()
+            img = pix
+            print("set Global: {}".format(time.time() - start))
+            print("Loading In An Image: {}".format(time.time() - start1))
+
+start_thread2()
