@@ -18,6 +18,7 @@ def start_thread():
     with picamera.PiCamera() as camera:
         camera.start_preview()
         camera.resolution = (640, 480)
+        camera.framerate = 80
         time.sleep(2)
         while(True):
             print()
