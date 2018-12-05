@@ -194,7 +194,7 @@ def get_error():
     global x_max
     global y_max
 
-    adjust_const = 15
+    adjust_const = 0
 
     x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
     avgs_tuple = whiteAndYellowXAvgsInWindow(x_start, x_end, y_start, y_end)
@@ -204,7 +204,7 @@ def get_error():
     min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
     incr = x_max/100
 
-    lane_width_approx_in_pixels = 1000
+    lane_width_approx_in_pixels = 850
 
     robot_avg = x_max/2
     #print("Robot Avg: %s" + str(robot_avg))
@@ -256,6 +256,7 @@ def start_thread():
         camera.start_preview()
         stream = io.BytesIO()
         camera.framerate = 10
+        camera.resolution = (1024, 768)
         time.sleep(2)
         while(True):
             stream = io.BytesIO()
