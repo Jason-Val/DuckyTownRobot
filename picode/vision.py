@@ -147,6 +147,40 @@ def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=7):
 
     return (x_avg, y_avg, num_positive*num_to_process)
 
+def whiteAndYellowXAvgsInWindow(x_start, x_end, y_start, y_end, num_to_process_x=7, num_to_process_y=7):
+    global img
+    img_sem.acquire()
+    img_copy = img
+    img_sem.release()
+
+    x_avg_w = 0
+    num_positive_w = 0
+    x_avg_y = 0
+    num_positive_y = 0
+    
+
+    for i in range(x_start, x_end, num_to_process_x):
+        for j in range(y_start, y_end, num_to_process_y):
+            h,l,s = colorsys.rgb_to_hls(img_copy[i,j][0]/255.0, img_copy[i,j][1]/255.0, img_copy[i,j][2]/255.0)
+            h *= 240.0
+            l *= 240.0
+            s *= 240.0
+
+            if(isWhite(h,l,s)):
+                x_avg_w += i
+                num_positive_w += 1
+            if(isYellow(h,l,s)):
+                x_avg_y += i
+                num_positive_y += 1
+
+    if(not num_positive_w == 0):
+        x_avg_w = int(x_avg_w/num_positive_w)
+    if(not num_positive_y == 0):
+        x_avg_y = int(x_avg_y/num_positive_y)
+
+    return [(x_avg_w, num_positive_w*num_to_process_x*num_to_process_y), (x_avg_y, num_positive_y*num_to_process_x*num_to_process_y)]
+
+
 """
 
 """
@@ -155,7 +189,6 @@ def ret_error():
     return global_error
 
 def get_error():
-    start = time.time()
 
     global img
     global x_max
@@ -164,8 +197,9 @@ def get_error():
     adjust_const = 15
 
     x_start, x_end, y_start, y_end = lineFollowWindow(x_max, y_max)
-    yellow_avg_x, yellow_y, yellow_pos = avgInWindow(x_start, x_end, y_start, y_end, isYellow)
-    white_avg_x, white_y, white_pos = avgInWindow(x_start, x_end, y_start, y_end, isWhite)
+    avgs_tuple = whiteAndYellowXAvgsInWindow(x_start, x_end, y_start, y_end)
+    white_avg_x, white_pos = avgs_tuple[0]
+    yellow_avg_x, yellow_pos = avgs_tuple[1]
 
     min_num_pixels = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
     incr = x_max/100
@@ -181,7 +215,6 @@ def get_error():
         lane_avg = (white_avg_x + yellow_avg_x)/2
         #print("Case 1 Lane Avg: %s" + str(lane_avg))
         print("White & Yellow: {}".format(robot_avg - lane_avg + adjust_const))
-        print("Processing An Image: {}".format(time.time() - start))
         return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
@@ -189,7 +222,6 @@ def get_error():
         lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
         #print("Case 2 Lane Avg: %s" + str(lane_avg))
         print("Only Yellow: {}".format(robot_avg - lane_avg + adjust_const))
-        print("Processing An Image: {}".format(time.time() - start))
         return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
@@ -197,12 +229,10 @@ def get_error():
         lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
         #print("Case 3 Lane Avg: %s" + str(lane_avg))
         print("Only White: {}".format(robot_avg - lane_avg + adjust_const))
-        print("Processing An Image: {}".format(time.time() - start))
         return robot_avg - lane_avg + adjust_const
 
     else:
         print("No Yellow Or White")
-        print("Processing An Image: {}".format(time.time() - start))
         return None
     
 """
@@ -219,7 +249,6 @@ def start_thread():
         camera.framerate = 10
         time.sleep(2)
         for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
-            start = time.time()
             stream.truncate()
             stream.seek(0)
             im = Image.open(stream)
@@ -229,9 +258,6 @@ def start_thread():
             img = pix
             img_sem.release()
             print()
-            print("Image Loading: {}".format(time.time() - start))
-            start = time.time()
             # global_error = get_error()
-            print("Image Processing: {}".format(time.time() - start))
             print()
         camera.end_preview()
