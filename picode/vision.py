@@ -78,7 +78,7 @@ def lineFollowWindow(x_max, y_max):
     x_start = 0 # Useful for Yellow Line Following
     x_end = x_max
 
-    y_start = int(y_max*0.37)
+    y_start = int(y_max*0.3)
     y_end = y_start + height
 
     return(x_start, x_end, y_start, y_end)
@@ -209,31 +209,40 @@ def get_error():
     robot_avg = x_max/2
     #print("Robot Avg: %s" + str(robot_avg))
 
+    lane_avg = 0
+
     if(yellow_pos > min_num_pixels and white_pos > min_num_pixels):
         #We see both the yellow and white line
         #This is the case we want
-        lane_avg = (white_avg_x + yellow_avg_x)/2
-        #print("Case 1 Lane Avg: %s" + str(lane_avg))
-        print("White & Yellow: {}".format(robot_avg - lane_avg + adjust_const))
-        return robot_avg - lane_avg + adjust_const
+        if(white_avg_x < yellow_avg_x or abs(white_avg_x - yellow_avg_x) < 80):
+            #In this case it likely saw a glare and detected it as white
+            #Or, it saw the wrong white (White is on the left) line and tried to take the middle
+            #White is unreliable
+            lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
+            print("White & Yellow (Warn) -> Yellow: {}".format(lane_avg))
+        else:
+            lane_avg = (white_avg_x + yellow_avg_x)/2
+            # print(white_avg_x)
+            # print(yellow_avg_x)
+            print("White & Yellow: {}".format(lane_avg))
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
         #Only see Yellow line
         lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
         #print("Case 2 Lane Avg: %s" + str(lane_avg))
         print("Only Yellow: {}".format(robot_avg - lane_avg + adjust_const))
-        return robot_avg - lane_avg + adjust_const
 
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
         #Only see White line
         lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
         #print("Case 3 Lane Avg: %s" + str(lane_avg))
         print("Only White: {}".format(robot_avg - lane_avg + adjust_const))
-        return robot_avg - lane_avg + adjust_const
 
     else:
         print("No Yellow Or White")
         return None
+
+    return robot_avg - lane_avg + adjust_const
     
 """
 Constantly streams video
