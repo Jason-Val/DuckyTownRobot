@@ -257,8 +257,9 @@ def start_thread():
         stream = io.BytesIO()
         camera.framerate = 10
         time.sleep(2)
-        for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
-            stream.truncate()
+        while(True):
+            stream = io.BytesIO()
+            camera.capture(stream, format='jpeg', use_video_port=True)
             stream.seek(0)
             im = Image.open(stream)
             x_max, y_max = im.size
