@@ -266,7 +266,4 @@ def start_thread():
             img_sem.acquire()
             img = pix
             img_sem.release()
-            print()
-            # global_error = get_error()
-            print()
         camera.end_preview()
