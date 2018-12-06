@@ -6,7 +6,6 @@
 volatile long right_count = 0;
 volatile long left_count = 0;
 
-
 void ir_setup() {
   //Attach Interrupts
   //  attachInterrupt(digitalPinToInterrupt(PinMotor1Sensor1), right_encoder_isr, CHANGE);

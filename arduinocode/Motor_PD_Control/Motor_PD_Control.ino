@@ -7,9 +7,6 @@
 #define PinMotor2Sensor1 2
 #define PinMotor2Sensor2 3
 
-volatile long right_count = 0;
-volatile long left_count = 0;
-
 // Constants:
 int N_enc = 32; // Segments on Encoder = 32
 double dia = 0.071; // Dia = 71 mm
@@ -23,7 +20,9 @@ int PWM_l;
 int PWM_r;
 
 // Variables:
-long err_count = 0;
+volatile long right_count = 0;
+volatile long left_count = 0;
+volatile long err_count = 0;
 int n_l_ref = 0;
 int n_r_ref = 0;
 double S_l = 0.0, S_r = 0.0;
@@ -45,8 +44,8 @@ void setup()
   }
 
 void loop() {
-  left_encoder_isr();
-  right_encoder_isr();
+  //left_encoder_isr();
+  //right_encoder_isr();
   err_count = (right_count - left_count);
   S_l = ((M_PI * dia * left_count) / N_enc);
   S_r = ((M_PI * dia * right_count) / N_enc);
@@ -55,19 +54,19 @@ void loop() {
   PWM_l = 150;
   PWM_r = 150;
   
-  if (err_count >= 0) {
-    PWM_l = PWM_l + w1 * err_count;
-    PWM_r = PWM_r - w2 * err_count;
-  }
-  else {
-    PWM_l = PWM_l + w1 * err_count;
-    PWM_r = PWM_r - w2 * err_count;
-  }
+  PWM_l = PWM_l + w1 * err_count;
+  PWM_r = PWM_r - w2 * err_count;
   
   Serial.print(" PWM_l = ");
   Serial.print(PWM_l);
   Serial.print(" PWM_r = ");
   Serial.print(PWM_r);
+  Serial.print(" n_l = ");
+  Serial.print(left_count);
+  Serial.print(" n_r = ");
+  Serial.print(right_count);
+  Serial.print(" err_count = ");
+  Serial.println(err_count);
   
   md.setM1Speed(PWM_l); //Left
   md.setM2Speed(PWM_r); //Right
@@ -76,14 +75,8 @@ void loop() {
   md.setM1Speed(0); //Left
   md.setM2Speed(0); //Right
   Serial.end();
-    }
+  }
   //delay(20);
-  Serial.print(" n_l = ");
-  Serial.print(left_count);
-  Serial.print(" n_r = ");
-  Serial.print(right_count);
-  Serial.print(" err_count = ");
-  Serial.println(err_count);
 }
 
 void right_encoder_isr() {
@@ -99,6 +92,5 @@ void left_encoder_isr() {
   static uint8_t enc_val_l = 0;
   enc_val_l = enc_val_l << 2;
   enc_val_l = enc_val_l | ((PIND & 0b00001100) >> 2);
-  //    Serial.println(enc_val_l);
   left_count = left_count + lookup_table_l[enc_val_l & 0b1111];
 }
