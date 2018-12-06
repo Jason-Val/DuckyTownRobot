@@ -2,8 +2,8 @@
 #include "PinChangeInt.h"
 #include "math.h"
 
-#define PinMotor1Sensor1 6
-#define PinMotor1Sensor2 5
+#define PinMotor1Sensor1 5
+#define PinMotor1Sensor2 6
 #define PinMotor2Sensor1 2
 #define PinMotor2Sensor2 3
 
@@ -43,11 +43,11 @@ void setup() {
   }
 
 void loop() {
-  left_encoder_isr();
-  right_encoder_isr();
-  err_count = (right_count - left_count);
-  S_l = ((M_PI * dia * left_count) / N_enc);
-  S_r = ((M_PI * dia * right_count) / N_enc);
+  //left_encoder_isr();
+  //right_encoder_isr();
+  //err_count = (right_count - left_count);
+  //S_l = ((M_PI * dia * left_count) / N_enc);
+  //S_r = ((M_PI * dia * right_count) / N_enc);
 
   if ((S_l < 1.0)&&(S_r < 1.0)){
   PWM_l = 150;
@@ -84,6 +84,7 @@ void loop() {
   Serial.println(err_count);
 }
 
+/*
 void ir_setup() {
   //Attach Interrupts
   //  attachInterrupt(digitalPinToInterrupt(PinMotor1Sensor1), right_encoder_isr, CHANGE);
@@ -95,6 +96,7 @@ void ir_setup() {
   attachPinChangeInterrupt(PinMotor2Sensor1, left_encoder_isr, CHANGE);
   attachPinChangeInterrupt(PinMotor2Sensor2, left_encoder_isr, CHANGE);
 }
+*/
 
 void right_encoder_isr() {
   static int8_t lookup_table_r[] = {0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0};
