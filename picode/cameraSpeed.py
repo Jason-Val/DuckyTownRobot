@@ -8,6 +8,7 @@ import colorsys\
 img  = None
 x_max = 0
 y_max = 0
+i = 0
 
 def start_thread():
     global img
@@ -87,12 +88,15 @@ def start_thread3():
     import io
     import time
     import picamera
+    
+    global i
 
     with picamera.PiCamera() as camera:
         stream = io.BytesIO()
         for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
             # Truncate the stream to the current position (in case
             # prior iterations output a longer image)
+            time.sleep(2)
             print()
             start1 = time.time()
             start = time.time()
@@ -114,6 +118,8 @@ def start_thread3():
             img = pix
             print("set Global: {}".format(time.time() - start))
             print("Loading In An Image: {}".format(time.time() - start1))
-
-start_thread2()
-#start_thread3()
+            im.save('/home/pi/Desktop/Pics/img{}.jpg'.format(i))
+            i+=1
+            
+#start_thread2()
+start_thread3()

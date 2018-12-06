@@ -22,7 +22,8 @@ MotorPd::MotorPd(double k, double b)
   encoderSegments = 32.0;
   dia = 0.068;
   WB = 0.157;
-  C = 1.0;
+  //C = 1.0;
+  C = 3.2;
   
   K = k;
   B = b;
@@ -235,7 +236,7 @@ double* MotorPd::computeCorrection(double* correction)
   prevError = error;
   double deltaV = -K*(error)-B*(deltaError);
   
-  /*
+  
   Serial.print("error: ");
   Serial.print(error);
   Serial.print("; deltaError: ");
@@ -246,7 +247,7 @@ double* MotorPd::computeCorrection(double* correction)
   Serial.print(vNew[0]);
   Serial.print(", ");
   Serial.println(vNew[1]);
-  */
+  
   
   //v[0] = v[0] - deltaV;
   //v[1] = v[1] + deltaV;

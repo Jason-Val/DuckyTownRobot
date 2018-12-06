@@ -79,8 +79,9 @@ void set_motor_vel()
   
   float lspeed = atof(strtok(input, " "));
   float rspeed = atof(strtok(NULL, " "));
-  
-  md.setSpeeds(getPWM_l(lspeed), getPWM_r(rspeed));
+  lspeed = getPWM_l(lspeed);
+  rspeed = getPWM_r(rspeed);
+  md.setSpeeds(lspeed, rspeed);
 }
 
 void set_motor(double pwm_l, double pwm_r)
