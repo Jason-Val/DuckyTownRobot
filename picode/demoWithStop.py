@@ -17,7 +17,7 @@ class robot:
         range = 100
         scaleK = 5.40
         scaleB = 4.85
-        self.error_offset = 5
+        self.error_offset = 55
         self.K = 1.0/(magnitude*range*scaleK)
         self.B = 1.0/(magnitude*range*scaleB)
         self.wheelbase = 0.157
