@@ -30,7 +30,20 @@ Concerns / other notes:
     >arduino control:
      -arduino calculates adjustment etc...
   >Conclusion: arduino control!!!
-
+ -Stopping:
+  >we can't always stop upon seeing red
+  >instead, should "stop" at each state, then wait until next action is safe:
+   -this will usually not stop at all: it will "stop" for so little time, it is imperceptible
+   -when there are stopping conditions, it will actually stop
+   -there are some states where a "real" stop is required regardless of whether there are hazards; how to handle this?
+    >if action is four way intersection, wait
+ -Odometry uses:
+  >need odometry [x,y,theta] for termination events
+  >we can associate an [x,y,theta] to each state, then update our odometry every time we hit a new state
+  >so just use vision (stop sign detection) to determine when we have hit a new state (also for stop light stuff)
+ -there will be stop signs at all sides of any intersection
+ -the bottom intersection will be removed in favor of a straightaway
+ -going past a t-intersection; our vision will fail
 Commands to the robot:
 
 shutdown:

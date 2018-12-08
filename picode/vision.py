@@ -147,9 +147,7 @@ def avgInWindow(x_start, x_end, y_start, y_end, colorFunc, num_to_process=7):
 
     return (x_avg, y_avg, num_positive*num_to_process)
 
-"""
 
-"""
 def ret_error():
     global global_error
     return global_error

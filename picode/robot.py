@@ -49,10 +49,6 @@ class Robot:
     def resume(self):
         self.paused = False
         
-    """
-    First, create a queue of states from start to end
-    Then
-    """
     def enqueue_directions(self, start_location, end_location):
         return self.fsm.enqueue_directions(start_location, end_location)
         
@@ -70,7 +66,10 @@ class Robot:
                 self.prev_error = error
                 
                 delta_v = -self.K*error -self.B*delta_error
-                self._activate_motors(self.vref + delta_v/2, self.vref - delta_v/2)
+                
+                self._send_to_arduino("4 {}".format(delta_v/2))
+                
+                #self._activate_motors(self.vref + delta_v/2, self.vref - delta_v/2)
                 
                 follow_lane = not vision.saw_stop_sign()
                 if distance > 0 and self._get_translation() - start_trans > distance:
@@ -78,19 +77,23 @@ class Robot:
                 time.sleep(0.05)
             else:
                 time.sleep(0.5)
+        self._activate_motors(0, 0)
         
     """
     These commands write to arduino to execute the desired action, then wait until the action is completed
     In the case of turning, this will be when the desired distance is covered
     """
-    def make_left_turn(self):
-        pass
+    def make_left_turn(self, velocity):
+        self._send_to_arduino("1 {0};".format(velocity))
+        cmd = self.s.read_until()
         
-    def make_right_turn(self):
-        pass
+    def make_right_turn(self, velocity):
+        self._send_to_arduino("2 {0};".format(velocity))
+        cmd = self.s.read_until()
         
-    def drive_straight(self):
-        pass
+    def drive_straight(self, velocity):
+        self._send_to_arduino("0 {0};".format(velocity))
+        cmd = self.s.read_until()
         
     def action_is_safe(action):
         #use ping, vision, etc to determine whether action is safe

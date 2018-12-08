@@ -15,6 +15,7 @@ void set_motor(double pwm_l, double pwm_r);
 void set_motor_vel();
 void get_location();
 
+
 bool pd_active = false;
 long t_pd_updated = millis();
 long pd_update_delay = 30;
@@ -32,6 +33,11 @@ void setup() {
   ir_setup();
 }
 
+float read_velocity()
+{
+  
+}
+
 void loop() {
   int mode = -1;
   if (pd_active && millis() - t_pd_updated > pd_update_delay) {
@@ -45,57 +51,34 @@ void loop() {
     pd.resetInitPoint();
     t_pd_updated = millis();
   }
-
-  /*
-  if (user_started)
-  {
-    if(flagged1)
-    {
-      flagged1 = firststretc();
-      if (!flagged1) {
-        flagged2 = true;
-      }
-    }
-    if(flagged2)
-    {
-      flagged2 = curve();
-      if(!flagged2)
-      {
-        flagged3=true;
-      }
-    }
-    if(flaggd3)
-    {
-      flagged3 = secondstrecth();
-      if(!flagged3)
-      {
-        user_started=false;
-      }
-    }
-  }
-  
-
-  if(flag1)
-  {
-    flag1=firststrecht();
-    delay(100);
-  }
-  */
   
   if (Serial.available()) {
     char input[1];
     Serial.readBytes(input, 1);
     mode = atoi(input);
+
+    //get vref_ideal from pi
+    //try to match vref_ideal
+    //if ping returns *slow_down*, slow down to less than vref_ideal
+
+    //todo: make this not happen every loop; delay it
+    vref_actual = ping_velocity();
     
     switch (mode) {
       case 0:
-        ping_loop();
+        //ping_loop();
+        //drive straight
+        float velocity = get_velocity();
         break;
       case 1:
-        set_motor();
+        //set_motor();
+        //left turn
+        float velocity = get_velocity();
         break;
       case 2:
-        get_ir();
+        //get_ir();
+        //right turn
+        float velocity = get_velocity();
         break;
       case 3:
         pd_active = !pd_active;

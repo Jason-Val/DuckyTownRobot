@@ -16,7 +16,7 @@ class finite_state_machine:
         self.map = map
         self.current_state = None
         self.command_queue = []
-    
+        
     def fsm_loop(self):
         while (robot.active):
             if (not robot.paused):
@@ -26,18 +26,20 @@ class finite_state_machine:
                     continue
                 if next_state == self.current_state:
                     continue
-                action = self.get_action(self.current_state, next_state)
-                if action == None:
+                actions = self.get_action(self.current_state, next_state)
+                if len(actions) == 0:
                     print("The next set of directions starts at state {}.\
                            Please move me there and then press 'ENTER'".format(next_state))
                     self.robot.pause()
                     input()
                     self.robot.resume()
                     continue
-                while not robot.action_is_safe(action):
-                    time.sleep(0.05)
-                self.make_action(action)
+                for action in actions:
+                    while not robot.action_is_safe(action[0]):
+                        time.sleep(0.05)
+                    self.make_action(action)    # blocks until actions is complete
                 self.current_state = next_state
+                robot.update_state()        # uses current state to update x,y,theta of robot
             else:
                 time.sleep(0.5)
         
@@ -62,11 +64,11 @@ class finite_state_machine:
         pass
     
     def make_action(self, action):
-        if action == "lane_follow":
-            robot.lane_follow()
-        elif "left" in action:
-            robot.make_left_turn()
-        elif "right" in action:
-            robot.make_right_turn()
-        elif "straight" in action:
-            robot.drive_straight()
+        if action[0] == "lane_follow":
+            robot.lane_follow(action[1])
+        elif "left" in action[0]:
+            robot.make_left_turn(action[1])
+        elif "right" in action[0]:
+            robot.make_right_turn(action[1])
+        elif "straight" in action[0]:
+            robot.drive_straight(action[1])
