@@ -22,7 +22,7 @@ class robot:
         self.wheelbase = 0.157
         self.wheel_circumference = 2*math.pi*0.033
         self.encoder_segments = 32
-        self.s = serial.Serial(port,115200,timeout=1)
+        self.s = serial.Serial(port,115200, timeout=1)
         self.loc = [0, 0, 0]
         self.heading = 0
         self.next_loc = [0, 0]
@@ -31,7 +31,10 @@ class robot:
         self.r_rpm = 0
         
     def get_actual_translation(self):
+        print("try to get translation")
+        input()
         self._send_to_arduino("2")
+        input()
         msg = self.s.read_until().decode('utf-8')
         print("received " + msg)
         if msg == '':
@@ -69,7 +72,7 @@ class robot:
     """
     
     def plot_pwm_vs_velocity(self, time_per_speed, pwm_list):
-        velocities = [(0,0) for x in pwm_list]
+        velocities = [[0,0] for x in pwm_list]
         for i in range(len(pwm_list)):
             self.activate_motors(0, 0)
             time.sleep(5)

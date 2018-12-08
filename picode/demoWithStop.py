@@ -72,13 +72,13 @@ class robot:
             if(error == None):
                 continue
             error += self.error_offset
-            print(error)
+            #print(error)
             delta_error = error - self.prev_error
             #if delta_error > 40:
             #    continue
             self.prev_error = error
             delta_v = -self.K*error -self.B*delta_error
-            print("delta v: {}".format(delta_v))
+            # print("delta v: {}".format(delta_v))
 
             global follow_lane
             global curr_error
@@ -89,7 +89,7 @@ class robot:
                 #Activate Motors here
                 #self.v_l += delta_v/2.0
                 #self.v_r -= delta_v/2.0
-                print("vel: {}, {}".format(self.v_l + delta_v/2, self.v_r - delta_v/2))
+                # print("vel: {}, {}".format(self.v_l + delta_v/2, self.v_r - delta_v/2))
                 self.activate_motors(self.v_l + delta_v/2, self.v_r - delta_v/2)
                 time.sleep(.05)
             
