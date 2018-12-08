@@ -15,9 +15,9 @@
 int N_enc = 32; // Segments on Encoder = 32
 double dia = 0.071; // Dia = 71 mm
 double WB = 0.157;  // Wheel Base = 157 mm
-int w1 = 2; // Weight factor right
-int w2 = 1; //weight factor left
-int flag = 0;
+double C;
+double K = 120.0;
+double B = 0.5;
 
 // Parameters:
 int PWM_l;
@@ -32,7 +32,7 @@ int n_r_ref = 0;
 double del_x, x, y, theta = 0.0;
 double S_l = 0.0, S_r = 0.0;
 double loc[3];
-double S_l_ref, S_r_ref;
+double S_l_ref, S_r_ref, err_S, errdot_S, err_temp = 0.0, del_S;
 
 DualMC33926MotorShield md;
 
@@ -51,29 +51,23 @@ void setup()
 
 void loop()
 {
-  go_straight();
-  /*
-    if (flag == 0) {
-      go_straight();
-    }
-    else if (flag == 1) {
-      curved_path();
-    }
-    else if (flag == 2) {
-      second_stretch();
-    }
-    else {
-      Serial.println("Broken Flag");
-      Serial.end();
-    }
-  */
-  //else if (flag == 1)
-  //{
-  //curve_path();
-  //}
-  //curve_path();
-  //Serial.println("Right:" + String(left_count) + " Left:" + String(right_count) + "; S_l=" + String(S_l) + " S_r=" + String(S_r) + "; theta:" + String(theta * (180.0 / M_PI)));
-  //Serial.println(Etime);
+  //go_straight();
+  right_turn();
+  //left_turn();
+  delay(10);
+  Serial.print("  n_l:");
+  Serial.print(left_count);
+  Serial.print("  n_r:");
+  Serial.print(right_count);
+  Serial.print("  S_l:");
+  Serial.print(S_l);
+  Serial.print("  S_r:");
+  Serial.print(S_r);
+  Serial.print("  err_S:");
+  Serial.print(err_S);
+  Serial.print("  errdot_S:");
+  Serial.println(errdot_S);
+  //get_location();
   /*
     delay(1000);
     Serial.print("S_l:");
@@ -99,6 +93,7 @@ void right_encoder_isr() {
   enc_val_r = enc_val_r << 2;
   enc_val_r = enc_val_r | ((PIND & 0b01100000) >> 5);
   right_count = right_count + lookup_table_r[enc_val_r & 0b1111];
+  get_location();
 }
 
 void left_encoder_isr() {
@@ -108,12 +103,13 @@ void left_encoder_isr() {
   enc_val_l = enc_val_l | ((PIND & 0b00001100) >> 2);
   //    Serial.println(enc_val_l);
   left_count = left_count + lookup_table_l[enc_val_l & 0b1111];
+  get_location();
 }
 
 void get_location() {
-  left_encoder_isr();
-  right_encoder_isr();
-  err_count = (right_count - left_count);
+  //left_encoder_isr();
+  //right_encoder_isr();
+  //err_count = (right_count - left_count);
   S_l = ((M_PI * dia * left_count) / N_enc);
   S_r = ((M_PI * dia * right_count) / N_enc);
   theta = atan2(((S_r - S_l) / 2.0), (WB / 2.0));
@@ -123,26 +119,9 @@ void get_location() {
   loc[0] = x;
   loc[1] = y;
   loc[2] = theta;
-  Serial.print("  n_l:");
-  Serial.print(left_count);
-  Serial.print("  n_r:");
-  Serial.print(right_count);
-  Serial.print("  err_count:");
-  Serial.print(err_count);
-  Serial.print("  S_l:");
-  Serial.print(S_l);
-  Serial.print("  S_r:");
-  Serial.println(S_r);
 }
 
-/*
-  void set_refcounts() {
-  n_l_ref = (N_enc * S_l_ref) / (M_PI * dia);
-  n_r_ref = (N_enc * S_r_ref) / (M_PI * dia);
-  }
-*/
-
-void motor_control() {
+void check_point() {
   if ((S_l < S_l_ref) && (S_r < S_r_ref)) {
     throttle();
     //delay(100);
@@ -153,7 +132,6 @@ void motor_control() {
   }
   else {
     brake();
-    flag = flag + 1;
     Serial.end();
   }
 }
@@ -169,40 +147,42 @@ void brake() {
 }
 
 void go_straight() {
-  PWM_l = 200;
-  PWM_r = 200;
-  S_l_ref = 0.5;
-  S_r_ref = 0.5;
-  get_location();
-  PWM_l = PWM_l + w1 * (err_count);
-  PWM_r = PWM_r - w1 * (err_count);
-  motor_control();
-}
-
-void left_turn() {
-  PWM_l = 200;
-  PWM_r = 290;
-  S_l_ref = 0.83 / 2;
-  S_r_ref = 0.57 / 2;
-  get_location();
-  motor_control();
-  /*
-    if (left_count > right_count) {
-    PWM_l = PWM_l - w * (err_count);
-    }
-    else if (right_count > left_count) {
-    PWM_r = PWM_r - w * (err_count);
-    }
-  */
-}
-
-void right_turn() {
+  C = 1.0;
   PWM_l = 200;
   PWM_r = 200;
   S_l_ref = 1.0;
   S_r_ref = 1.0;
-  get_location();
-  PWM_l = PWM_l + w1 * (err_count);
-  PWM_r = PWM_r - w1 * (err_count);
-  motor_control();
+  
+  PD_controller();
+}
+
+void right_turn() {
+  C = -3.0;
+  PWM_l = 150;
+  PWM_r = 150;
+  S_l_ref = 0.35;
+  S_r_ref = 0.35;
+  
+  PD_controller();
+}
+
+void left_turn() {
+  C = 2.4;
+  PWM_l = 200;
+  PWM_r = 200;
+  S_l_ref = 0.75;
+  S_r_ref = 0.75;
+  
+  PD_controller();
+}
+
+void PD_controller(){
+  errdot_S = err_temp;
+  err_S = S_r - C*S_l;
+  err_temp = err_S;
+  del_S = K*err_S+B*errdot_S;
+  
+  PWM_l = PWM_l + del_S;
+  PWM_r = PWM_r - del_S;
+  check_point();
 }

@@ -18,8 +18,8 @@ void get_location();
 
 bool pd_active = false;
 long t_pd_updated = millis();
-long pd_update_delay = 30;
-MotorPd pd(0.3, -.1);
+long pd_update_delay = 50;
+MotorPd pd(0.2, -.13);
 //MotorPd pd(200, -100);
 double* correction = new double[2];
 
