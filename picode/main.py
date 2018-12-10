@@ -1,10 +1,21 @@
 
+import sys
+from Parsing.Parse import parseJsonAndReturnMap
+
 """
 This file handles administrative tasks for having a robot navigate an arbitrary roadway.
 It loads the map, initializes the robot, and passes user commands to the robot
 
 
 Concerns / other notes:
+ -changing speeds mid-action:
+  >right now, there are single actions (lane follow) which need to change speed based on where on the map the robot is
+  >how can these speed changes be performed?
+  >should be strongly tied to the map and map json
+  >for each action, associate a speed
+  >but then for lane following, how do we know how long to lane follow for until the speed changes?
+  >need a distance associated with lane following
+  >create LaneFollowForDistance
  -In actions executed via odometry by the arduino, where should the thread of control go?
   >arduino:
    -pi relinquishes control to arduino; writes the "go" command and then waits for arduino to respond with "done"
@@ -69,7 +80,7 @@ add [from=None] [to]:
 """
 
 port_ext = "ACM0"
-mapname = "map1.json"
+mapname = "Parsing/map.json"
 
 def get_commandline_args():
     global port_ext, mapname
@@ -85,11 +96,11 @@ def get_commandline_args():
             if i+1 < num_args:
                 mapname = sys.argv[i+1]
             else:
-                print("no value provided for -m; using default 'map1.json' instead")
+                print("no value provided for -m; using default 'map.json' instead")
     return (port_ext, mapname)
 
-def load_map():
-    pass
+def load_map(mapname):
+    return parseJsonAndReturnMap(mapname)
     
 def __main__():
     port_ext, mapname = get_commandline_args()

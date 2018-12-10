@@ -1,6 +1,7 @@
 class Robot:
     def __init__(self, map, port="/dev/ttyACM0"):
-        self.s = serial.Serial(port,115200,timeout=6)
+        #self.s = serial.Serial(port,115200,timeout=6)
+        self.s = None
         self.paused = False
         self.fsm = finite_state_machine(self, map)
         self.active = True
@@ -33,10 +34,10 @@ class Robot:
     def stop(self):
         self._send_to_arduino("5 0;".format())
         
-    def reset(new_state):
+    def reset(self, new_state):
         pass
     
-    def load_map(map):
+    def load_map(self, map):
         reset(None)
         self.fsm.map = map
         
@@ -51,7 +52,11 @@ class Robot:
     def enqueue_directions(self, start_location, end_location):
         return self.fsm.enqueue_directions(start_location, end_location)
         
-    def lane_follow(self, velocity):
+    # TODO: fine-tune this
+    def _is_turning(self, vision_error):
+        return vision_error > 200
+        
+    def lane_follow(self, velocity, stopping_condition):
         follow_lane = True
         self._send_to_arduino("4 {};".format( format(velocity, '.4f') ))
         
@@ -68,7 +73,13 @@ class Robot:
                 
                 self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 
-                follow_lane = not vision.saw_stop_sign()
+                if stopping_condition == "intersection":
+                    follow_lane = vision.isStopSign() < 0.0
+                if stopping_condition == "turn":
+                    follow_lane = not self._is_turning(error)
+                if stopping_condition == "straight":
+                    follow_lane = self._is_turning(error)
+
                 time.sleep(0.05)
             else:
                 time.sleep(0.5)
@@ -89,7 +100,7 @@ class Robot:
         self._send_to_arduino("0 {0};".format(velocity))
         cmd = self.s.read_until()
         
-    def action_is_safe(action):
+    def action_is_safe(self, action):
         #use ping, vision, etc to determine whether action is safe
         return not (vision.saw_stop_sign() and not vision.saw_green_light())
     
