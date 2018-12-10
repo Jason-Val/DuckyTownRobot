@@ -91,7 +91,7 @@ class Robot:
         
     def action_is_safe(action):
         #use ping, vision, etc to determine whether action is safe
-        return not (vision.saw_stop_sign and not vision.saw_green_light)
+        return not (vision.saw_stop_sign() and not vision.saw_green_light())
     
     """
     # TODO: implement this on the arduino side. Also, consider possibility of reading the wrong command
