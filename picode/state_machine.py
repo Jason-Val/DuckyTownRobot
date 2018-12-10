@@ -22,7 +22,7 @@ class finite_state_machine:
             if (not robot.paused):
                 next_state = self.get_next_state()
                 if next_state == None:
-                    self.robot.stop() #this may be unnecessary; the robot should only move under the influence of an action, and each action should relinquish control upon its completion
+                    self.robot.stop() 
                     continue
                 if next_state == self.current_state:
                     continue
@@ -35,11 +35,13 @@ class finite_state_machine:
                     self.robot.resume()
                     continue
                 for action in actions:
+                    if not robot.action_is_safe(action[0]):
+                        robot.stop()
                     while not robot.action_is_safe(action[0]):
                         time.sleep(0.05)
-                    self.make_action(action)    # blocks until actions is complete
+                    self.make_action(action)    # blocks until action is complete
                 self.current_state = next_state
-                robot.update_state()        # uses current state to update x,y,theta of robot
+                #robot.update_state()        # uses current state to update x,y,theta of robot
             else:
                 time.sleep(0.5)
         

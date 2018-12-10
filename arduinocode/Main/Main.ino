@@ -1,10 +1,13 @@
+#include <PinChangeInterrupt.h>
+#include <PinChangeInterruptBoards.h>
+#include <PinChangeInterruptPins.h>
+#include <PinChangeInterruptSettings.h>
+
 #include <string.h>
-#include <DualMC33926MotorShield.h>
-#include <PinChangeInt.h>
-#include "MotorPd.h"
+#include "Robot.h"
 
+#define INPUT_SIZE 32
 
-void compute_square_loop();
 void motor_setup();
 void set_motor();
 void ping_loop();
@@ -13,18 +16,17 @@ void get_ir();
 void get_current();
 void set_motor(double pwm_l, double pwm_r);
 void set_motor_vel();
-void get_location();
 
 
-bool pd_active = false;
-long t_pd_updated = millis();
-long pd_update_delay = 50;
-MotorPd pd(0.2, -.13);
-//MotorPd pd(200, -100);
-double* correction = new double[2];
+long time_since_pd_update = millis();
+long time_since_ping_update = millis();
+long pd_update_delay = 0;
+long ping_update_delay = 500;
 
-extern volatile long right_count;
-extern volatile long left_count;
+char terminate = ';';
+char input[INPUT_SIZE + 1];
+
+Robot robot;
 
 void setup() {
   // initialize serial communication:
@@ -33,67 +35,55 @@ void setup() {
   ir_setup();
 }
 
-float read_velocity()
+double read_velocity()
 {
-  
+  byte num_bytes_read = Serial.readBytesUntil(terminate, input, INPUT_SIZE);
+  // Add the final 0 to end the C string
+  input[num_bytes_read] = 0;
+  return atof(strtok(input, " "));
 }
 
 void loop() {
   int mode = -1;
-  if (pd_active && millis() - t_pd_updated > pd_update_delay) {
-    correction = pd.computeCorrection(correction);
-    set_motor(correction[0], correction[1]);
-    pd.resetInitPoint();
-    t_pd_updated = millis();
+  if (robot.isExecutingAction && millis() - time_since_pd_update > pd_update_delay) {
+    robot.adjustHeading();
+    time_since_pd_update = millis();
+    if (robot.completedAction())
+    {
+      robot.notifyPi();
+    }
   }
-  else if(millis() - t_pd_updated > pd_update_delay)
-  {
-    pd.resetInitPoint();
-    t_pd_updated = millis();
+  if (millis() - time_since_ping_update > pd_update_delay) {
+    robot.adjustVelWithPing();
+    time_since_ping_update = millis();
   }
   
   if (Serial.available()) {
     char input[1];
     Serial.readBytes(input, 1);
     mode = atoi(input);
-
-    //get vref_ideal from pi
-    //try to match vref_ideal
-    //if ping returns *slow_down*, slow down to less than vref_ideal
-
-    //todo: make this not happen every loop; delay it
-    vref_actual = ping_velocity();
     
     switch (mode) {
       case 0:
-        //ping_loop();
-        //drive straight
-        float velocity = get_velocity();
+        robot.driveStraight(read_velocity());
         break;
       case 1:
-        //set_motor();
-        //left turn
-        float velocity = get_velocity();
+        robot.turnLeft(read_velocity());
         break;
       case 2:
-        //get_ir();
-        //right turn
-        float velocity = get_velocity();
+        robot.turnRight(read_velocity());
         break;
       case 3:
-        pd_active = !pd_active;
+        robot.adjustMotors(read_velocity());
         break;
       case 4:
-        //set_motor_vel();
-        pd.setVelocity();
-        //delay(500);
+        robot.velIdeal = read_velocity();
         break;
       case 5:
-        set_motor_vel();
+        robot.setMotors(read_velocity());
         break;
       case 6:
-        get_location();
-      default:
+        get_ir();
         break;
     }
   }

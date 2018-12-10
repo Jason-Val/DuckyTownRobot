@@ -1,8 +1,7 @@
 class Robot:
     def __init__(self, map, port="/dev/ttyACM0"):
-        self.s = serial.Serial(port,115200,timeout=1)
+        self.s = serial.Serial(port,115200,timeout=6)
         self.paused = False
-        self.vref = 1.08
         self.fsm = finite_state_machine(self, map)
         self.active = True
         
@@ -32,7 +31,7 @@ class Robot:
         pass
         
     def stop(self):
-        pass
+        self._send_to_arduino("5 0;".format())
         
     def reset(new_state):
         pass
@@ -52,9 +51,9 @@ class Robot:
     def enqueue_directions(self, start_location, end_location):
         return self.fsm.enqueue_directions(start_location, end_location)
         
-    def lane_follow(self, distance=0):
+    def lane_follow(self, velocity):
         follow_lane = True
-        start_trans = self._get_translation()
+        self._send_to_arduino("4 {};".format( format(velocity, '.4f') ))
         
         while (follow_lane):
             if not paused:
@@ -67,17 +66,12 @@ class Robot:
                 
                 delta_v = -self.K*error -self.B*delta_error
                 
-                self._send_to_arduino("4 {}".format(delta_v/2))
-                
-                #self._activate_motors(self.vref + delta_v/2, self.vref - delta_v/2)
+                self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 
                 follow_lane = not vision.saw_stop_sign()
-                if distance > 0 and self._get_translation() - start_trans > distance:
-                    follow_lane = False
                 time.sleep(0.05)
             else:
                 time.sleep(0.5)
-        self._activate_motors(0, 0)
         
     """
     These commands write to arduino to execute the desired action, then wait until the action is completed
@@ -97,14 +91,16 @@ class Robot:
         
     def action_is_safe(action):
         #use ping, vision, etc to determine whether action is safe
-        pass
-        
+        return not (vision.saw_stop_sign and not vision.saw_green_light)
+    
+    """
     # TODO: implement this on the arduino side. Also, consider possibility of reading the wrong command
     def _get_translation(self):
         self._send_to_arduino("2")
         cmd, trans = self.s.read_until().split()
         return float(trans)
-        
+    """
+    
     def _activate_motors(self, v_l, v_r):
         self._send_to_arduino("5 {0} {1};".format(format(v_l, '.4f'), format(v_r, '.4f')))
         
