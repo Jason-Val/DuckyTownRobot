@@ -81,7 +81,7 @@ void Robot::setMotors(double velocity)
 // applies the calculations performed by the pi
 void Robot::adjustMotors(double velocity)
 {
-  md.setSpeeds(velActual + velocity, velActual - velocity);
+  md.setSpeeds(convertVelToPWM_L(velActual + velocity), convertVelToPWM_L(velActual - velocity));
 }
 
 void Robot::adjustVelWithPing()
@@ -96,7 +96,7 @@ void Robot::adjustHeading()
   double errorDot = error - prevError;
   prevError = error;
   double deltaPWM = K*error + B*errorDot;
-  md.setSpeeds(velActual + deltaPWM, velActual - deltaPWM);
+  md.setSpeeds(convertVelToPWM_L(velActual) + deltaPWM, convertVelToPWM_L(velActual) - deltaPWM);
 }
 
 void Robot::updateLocation(long leftCount, long rightCount)
@@ -121,9 +121,19 @@ void Robot::updateStartTranslation()
 //TODO: finish these
 double Robot::convertVelToPWM_L(double velocity)
 {
-  return velocity;
+  if (velocity == 0)
+  {
+    return 0;
+  }
+  //return 675.09*vLeft + 79.807;
+  return 665.09*velocity + 79.807;
+  //return 650.09*vLeft + 79.807;
 }
 double Robot::convertVelToPWM_R(double velocity)
 {
-  return velocity;
+  if (velocity == 0)
+  {
+    return 0;
+  }
+  return 695.55*velocity + 66.464;
 }

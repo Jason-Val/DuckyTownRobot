@@ -96,6 +96,9 @@ def stopWindow():
 
     return(x_start, x_end, y_start, y_end)
 
+def saw_green_light():
+    return True
+
 def isStopSign(num_to_process=10):
     x_start, x_end, y_start, y_end = stopWindow()
 

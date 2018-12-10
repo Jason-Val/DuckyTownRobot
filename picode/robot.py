@@ -1,14 +1,20 @@
+import threading
+import vision
+import time
+import serial
+from state_machine import FiniteStateMachine
+
 class Robot:
     def __init__(self, map, port="/dev/ttyACM0"):
-        #self.s = serial.Serial(port,115200,timeout=6)
-        self.s = None
+        self.s = serial.Serial(port,115200,timeout=6)
         self.paused = False
-        self.fsm = finite_state_machine(self, map)
+        self.fsm = FiniteStateMachine(self, map)
         self.active = True
+        self.stopped = True
         
         # threads for vision etc
         self.vision_thread = threading.Thread(target=vision.start_thread, name="vision_thread")
-        self.fsm_thread = threading.Thread(target=fsm.fsm_loop, name="fsm_thread")
+        self.fsm_thread = threading.Thread(target=self.fsm.fsm_loop, name="fsm_thread")
         self.serial_sem = threading.Semaphore()
         
         # visual pd constants
@@ -29,9 +35,13 @@ class Robot:
             time.sleep(0.1)
         
     def shutdown(self):
-        pass
+        self.stop()
+        self.active = False
+        time.sleep(1)
+        self.s.close()
         
     def stop(self):
+        self.stopped = True
         self._send_to_arduino("5 0;".format())
         
     def reset(self, new_state):
@@ -61,7 +71,7 @@ class Robot:
         self._send_to_arduino("4 {};".format( format(velocity, '.4f') ))
         
         while (follow_lane):
-            if not paused:
+            if not self.paused:
                 error = vision.get_error()
                 if(error == None):
                     continue
@@ -102,7 +112,7 @@ class Robot:
         
     def action_is_safe(self, action):
         #use ping, vision, etc to determine whether action is safe
-        return not (vision.saw_stop_sign() and not vision.saw_green_light())
+        return not (vision.isStopSign() >= 0 and not vision.saw_green_light())
     
     """
     # TODO: implement this on the arduino side. Also, consider possibility of reading the wrong command

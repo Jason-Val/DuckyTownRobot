@@ -1,6 +1,6 @@
 import json
-from Node import Node
-from NodeMap import NodeMap
+from Parsing.Node import Node
+from Parsing.NodeMap import NodeMap
 
 # def sampleLaneFollow():
 # 	print("Lane Following")

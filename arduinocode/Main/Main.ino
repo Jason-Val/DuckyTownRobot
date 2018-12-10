@@ -1,10 +1,11 @@
-#include <PinChangeInterrupt.h>
-#include <PinChangeInterruptBoards.h>
-#include <PinChangeInterruptPins.h>
-#include <PinChangeInterruptSettings.h>
+#include <DualMC33926MotorShield.h>
+
+#include <PinChangeInt.h>
+
 
 #include <string.h>
 #include "Robot.h"
+
 
 #define INPUT_SIZE 32
 

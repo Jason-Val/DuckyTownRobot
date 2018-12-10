@@ -1,5 +1,5 @@
-
 import sys
+from robot import Robot
 from Parsing.Parse import parseJsonAndReturnMap
 
 """
@@ -106,11 +106,16 @@ def __main__():
     port_ext, mapname = get_commandline_args()
     
     port = "/dev/tty" + port_ext
+    print("loading map...")
     map = load_map(mapname)
+    print("map was loaded")
     
+    print("creating robot...")
     robot = Robot(map, port)
+    print("robot was created")
     run_program = True
     while run_program:
+        print("Waiting for command...")
         command = input().split(" ")
         if len(command) == 0:
             break
@@ -144,10 +149,12 @@ def __main__():
             start = None
             end = None
             if len(command) == 3:
-                robot.enque_directions(command[1], command[2])
+                robot.enqueue_directions(int(command[1]), int(command[2]))
             elif len(command) == 2:
-                robot.enque_directions(None, command[1])
+                robot.enqueue_directions(None, command[1])
             else:
                 print("Exactly one argument, the map filename, is expected.")
         else:
             print("Command not recognized")
+            
+__main__()
