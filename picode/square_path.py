@@ -33,7 +33,7 @@ class robot:
     def get_actual_translation(self):
         print("try to get translation")
         input()
-        self._send_to_arduino("2")
+        self._send_to_arduino("6")
         input()
         msg = self.s.read_until().decode('utf-8')
         print("received " + msg)
@@ -175,7 +175,7 @@ class robot:
             pass
         
     def activate_motors(self, left, right):
-        self.s.write("1 {0} {1}.".format(left, right).encode('utf-8'))
+        self.s.write("7 {0};".format(left).encode('utf-8'))
         self.s.flush()
         
     def _send_to_arduino(self,cmd):

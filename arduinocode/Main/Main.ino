@@ -1,14 +1,14 @@
-#include <DualMC33926MotorShield.h>
-
-#include <PinChangeInt.h>
-
+#include <PinChangeInterrupt.h>
+#include <PinChangeInterruptBoards.h>
+#include <PinChangeInterruptPins.h>
+#include <PinChangeInterruptSettings.h>
 
 #include <string.h>
 #include "Robot.h"
 
-
 #define INPUT_SIZE 32
 
+DualMC33926MotorShield md;
 void motor_setup();
 void set_motor();
 void ping_loop();
@@ -32,8 +32,8 @@ Robot robot;
 void setup() {
   // initialize serial communication:
   Serial.begin(115200);
-  motor_setup();
   ir_setup();
+  md.init();
 }
 
 double read_velocity()
@@ -54,7 +54,7 @@ void loop() {
       robot.notifyPi();
     }
   }
-  if (millis() - time_since_ping_update > pd_update_delay) {
+  if (false && millis() - time_since_ping_update > pd_update_delay) {
     robot.adjustVelWithPing();
     time_since_ping_update = millis();
   }
@@ -86,6 +86,9 @@ void loop() {
       case 6:
         get_ir();
         break;
+      case 7:
+        double pwm = read_velocity();
+        md.setSpeeds(pwm, pwm);
     }
   }
 }
