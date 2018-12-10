@@ -11,7 +11,7 @@ i = 0
 while (True):
     input()
     print("Taking Pic Number " + str(i))
-    name = '/home/pi/Desktop/PolPics/img'
+    name = '/home/pi/Desktop/StopLights/img'
     name += str(i)
     name += '.jpg'
     camera1.capture(name)

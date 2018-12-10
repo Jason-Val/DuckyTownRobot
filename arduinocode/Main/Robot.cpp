@@ -25,12 +25,11 @@ bool Robot::completedAction()
 {
   if (!(translation[0] - startTranslation[0] < distanceToTravel) && !(translation[1]  - startTranslation[1] < distanceToTravel))
   {
+    isExecutingAction = false;
     return true;
   }
   else
   {
-    isExecutingAction = false;
-    setMotors(0);
     return false;
   }
 }
@@ -125,9 +124,7 @@ double Robot::convertVelToPWM_L(double velocity)
   {
     return 0;
   }
-  //return 675.09*vLeft + 79.807;
-  return 665.09*velocity + 79.807;
-  //return 650.09*vLeft + 79.807;
+  return 670.29*velocity + 82.878;
 }
 double Robot::convertVelToPWM_R(double velocity)
 {
@@ -135,5 +132,5 @@ double Robot::convertVelToPWM_R(double velocity)
   {
     return 0;
   }
-  return 695.55*velocity + 66.464;
+  return 658.57*velocity + 77.307;
 }
