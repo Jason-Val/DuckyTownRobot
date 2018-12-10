@@ -31,10 +31,8 @@ class robot:
         self.r_rpm = 0
         
     def get_actual_translation(self):
-        print("try to get translation")
-        input()
+        #time.sleep(0.5)
         self._send_to_arduino("6")
-        input()
         msg = self.s.read_until().decode('utf-8')
         print("received " + msg)
         if msg == '':
@@ -44,32 +42,6 @@ class robot:
         r_distance = r_count*self.wheel_circumference/self.encoder_segments
         return (l_distance, r_distance)
         
-    """
-    def plot_pwm_vs_velocity(self, time_per_speed, pwm_list):
-        velocities = [[None, None] for x in pwm_list]
-        l_trans_start = 0
-        r_trans_start = 0
-        for i in range(len(pwm_list)):
-            self.activate_motors(0, 0)
-            time.sleep(5)
-            print("test pwm {}".format(pwm_list[i]))
-            pwm = pwm_list[i]
-            self.activate_motors(pwm, pwm)
-            time.sleep(2)
-            print("start sleeping...")
-            l_trans_start, r_trans_start = self.get_actual_translation()
-            start_time = time.time()
-            time.sleep(time_per_speed)
-            print("end sleeping")
-            l_trans, r_trans = self.get_actual_translation()
-            t = time.time()
-            
-            velocities[i][0] = (l_trans - l_trans_start)/(t - start_time)
-            velocities[i][1] = (r_trans - r_trans_start)/(t - start_time)
-
-        self.activate_motors(0, 0)
-        return velocities
-    """
     
     def plot_pwm_vs_velocity(self, time_per_speed, pwm_list):
         velocities = [[0,0] for x in pwm_list]
@@ -207,9 +179,9 @@ def __main__():
     speed = 1/4
     #rotations per second
     rotate_time = .5
-        
-    #pwm_list = [x for x in range(-400, 401, 50)]
-    pwm_list = [150, 200, 250]
+    
+    pwm_list = [x for x in range(0, 401, 50)]
+    #pwm_list = [150, 200, 250]
     #v_r = r.plot_pwm_vs_velocity_r(3, pwm_list)
     #v_l = r.plot_pwm_vs_velocity_l(3, pwm_list)
     

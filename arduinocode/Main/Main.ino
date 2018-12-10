@@ -1,7 +1,6 @@
-#include <PinChangeInterrupt.h>
-#include <PinChangeInterruptBoards.h>
-#include <PinChangeInterruptPins.h>
-#include <PinChangeInterruptSettings.h>
+#include <PinChangeInt.h>
+#include <DualMC33926MotorShield.h>
+
 
 #include <string.h>
 #include "Robot.h"

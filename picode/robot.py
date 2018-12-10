@@ -64,7 +64,7 @@ class Robot:
         
     # TODO: fine-tune this
     def _is_turning(self, vision_error):
-        return vision_error > 200
+        return vision_error > 350
         
     def lane_follow(self, velocity, stopping_condition):
         follow_lane = True

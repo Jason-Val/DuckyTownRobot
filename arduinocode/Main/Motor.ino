@@ -1,7 +1,5 @@
 #include <string.h>
 
-DualMC33926MotorShield md;
-
 
 //https://arduino.stackexchange.com/questions/1013/how-do-i-split-an-incoming-string
 #define INPUT_SIZE 32
