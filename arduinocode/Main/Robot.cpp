@@ -23,14 +23,9 @@ Robot::Robot()
 
 bool Robot::completedAction()
 {
-  Serial.print("trans: ");
-  Serial.print(translation[0] - startTranslation[0]);
-  Serial.print(", ");
-  Serial.println(translation[1] - startTranslation[1]);
   if (!(translation[0] - startTranslation[0] < distanceToTravel) || !(translation[1]  - startTranslation[1] < distanceToTravel))
   {
     isExecutingAction = false;
-    setMotors(0);
     return true;
   }
   else
@@ -46,7 +41,6 @@ void Robot::notifyPi()
 
 void Robot::driveStraight(double velocity)
 {
-  Serial.println("Try going straight");
   isExecutingAction = true;
   C = 1.0;
   distanceToTravel = 0.5;
@@ -101,16 +95,10 @@ void Robot::adjustVelWithPing()
 void Robot::adjustHeading()
 {
   double error = (translation[1] - startTranslation[1]) - C*(translation[0] - startTranslation[0]);
-  //double errorDot = error - prevError;
   double errorDot = prevError;
   prevError = error;
   double deltaPWM = K*error + B*errorDot;
-  //Serial.print("error: ");
-  //Serial.println(error);
-  //Serial.print("deltaPWM: ");
-  //Serial.println(deltaPWM);
-  //md.setSpeeds(convertVelToPWM_L(velActual) + deltaPWM, convertVelToPWM_L(velActual) - deltaPWM);
-  md.setSpeeds(200 + deltaPWM, 200 - deltaPWM);
+  md.setSpeeds(convertVelToPWM_L(velActual) + deltaPWM, convertVelToPWM_L(velActual) - deltaPWM);
 }
 
 void Robot::updateLocation(long leftCount, long rightCount)
@@ -128,10 +116,6 @@ void Robot::updateLocation(long leftCount, long rightCount)
 
 void Robot::updateStartTranslation()
 {
-  Serial.print("Translations: ");
-  Serial.print(translation[0]);
-  Serial.print(", ");
-  Serial.println(translation[1]);
   startTranslation[0] = translation[0];
   startTranslation[1] = translation[1];
 }
