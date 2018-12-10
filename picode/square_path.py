@@ -31,10 +31,12 @@ class robot:
         self.r_rpm = 0
         
     def get_actual_translation(self):
-        #time.sleep(0.5)
+        print("get translation: ")
+        input()
         self._send_to_arduino("6")
         msg = self.s.read_until().decode('utf-8')
         print("received " + msg)
+        input()
         if msg == '':
             return None
         _, l_count, r_count = map(int, msg.split(" "))
@@ -147,8 +149,9 @@ class robot:
             pass
         
     def activate_motors(self, left, right):
-        self.s.write("7 {0};".format(left).encode('utf-8'))
-        self.s.flush()
+        #self.s.write("7 {0};".format(left).encode('utf-8'))
+        #self.s.flush()
+        pass
         
     def _send_to_arduino(self,cmd):
         self.s.write(cmd.encode('utf-8'))
