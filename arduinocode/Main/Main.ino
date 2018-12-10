@@ -20,7 +20,7 @@ void set_motor_vel();
 
 long time_since_pd_update = millis();
 long time_since_ping_update = millis();
-long pd_update_delay = 0;
+long pd_update_delay = 30;
 long ping_update_delay = 500;
 
 char terminate = ';';

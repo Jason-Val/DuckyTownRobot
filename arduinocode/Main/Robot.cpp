@@ -23,9 +23,14 @@ Robot::Robot()
 
 bool Robot::completedAction()
 {
-  if (!(translation[0] - startTranslation[0] < distanceToTravel) && !(translation[1]  - startTranslation[1] < distanceToTravel))
+  Serial.print("trans: ");
+  Serial.print(translation[0] - startTranslation[0]);
+  Serial.print(", ");
+  Serial.println(translation[1] - startTranslation[1]);
+  if (!(translation[0] - startTranslation[0] < distanceToTravel) || !(translation[1]  - startTranslation[1] < distanceToTravel))
   {
     isExecutingAction = false;
+    setMotors(0);
     return true;
   }
   else
@@ -41,12 +46,14 @@ void Robot::notifyPi()
 
 void Robot::driveStraight(double velocity)
 {
+  Serial.println("Try going straight");
   isExecutingAction = true;
   C = 1.0;
-  distanceToTravel = 1;
+  distanceToTravel = 0.5;
   velIdeal = velocity;
   //md.setSpeeds(200, 200); //TODO: base this off of velocity
   updateStartTranslation();
+  prevError = 0;
 }
 
 void Robot::turnLeft(double velocity)
@@ -57,6 +64,7 @@ void Robot::turnLeft(double velocity)
   velIdeal = velocity;
   //md.setSpeeds(200, 200);
   updateStartTranslation();
+  prevError = 0;
 }
 
 void Robot::turnRight(double velocity)
@@ -67,6 +75,7 @@ void Robot::turnRight(double velocity)
   velIdeal = velocity;
   //md.setSpeeds(150, 150); //TODO: base this off of velocity
   updateStartTranslation();
+  prevError = 0;
 }
 
 void Robot::setMotors(double velocity)
@@ -91,11 +100,17 @@ void Robot::adjustVelWithPing()
 // The main computation for the encoder-based pd control
 void Robot::adjustHeading()
 {
-  double error = translation[0] - C*translation[1];
-  double errorDot = error - prevError;
+  double error = (translation[1] - startTranslation[1]) - C*(translation[0] - startTranslation[0]);
+  //double errorDot = error - prevError;
+  double errorDot = prevError;
   prevError = error;
   double deltaPWM = K*error + B*errorDot;
-  md.setSpeeds(convertVelToPWM_L(velActual) + deltaPWM, convertVelToPWM_L(velActual) - deltaPWM);
+  //Serial.print("error: ");
+  //Serial.println(error);
+  //Serial.print("deltaPWM: ");
+  //Serial.println(deltaPWM);
+  //md.setSpeeds(convertVelToPWM_L(velActual) + deltaPWM, convertVelToPWM_L(velActual) - deltaPWM);
+  md.setSpeeds(200 + deltaPWM, 200 - deltaPWM);
 }
 
 void Robot::updateLocation(long leftCount, long rightCount)
@@ -113,6 +128,10 @@ void Robot::updateLocation(long leftCount, long rightCount)
 
 void Robot::updateStartTranslation()
 {
+  Serial.print("Translations: ");
+  Serial.print(translation[0]);
+  Serial.print(", ");
+  Serial.println(translation[1]);
   startTranslation[0] = translation[0];
   startTranslation[1] = translation[1];
 }
