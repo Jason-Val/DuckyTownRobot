@@ -68,6 +68,15 @@ def isYellow(h,l,s):
     else:
         return True
 
+def isGreenLight(h,l,s):
+    if(h < 40.0 or h > 105.0):
+        #Hue is not green
+        return False
+    elif(l < 145):
+        return False
+    else:
+        return True
+
 def percentToNumPixels(x_min, x_max, y_min, y_max, percent):
     num_pix = (x_max-x_min) * (y_max-y_min)
     return (percent/100) * num_pix
@@ -88,25 +97,55 @@ def stopWindow():
 
     global x_max
 
-    x_start = x_max*0.4 # Useful for Yellow Line Following
-    x_end = x_max*0.6
+    x_start = x_max*0.45 # Useful for Yellow Line Following
+    x_end = x_max*0.55
 
     y_start = int(y_max*0.5)
     y_end = y_start + height
 
     return(x_start, x_end, y_start, y_end)
 
-def saw_green_light():
-    return True
+def greenLightWindow():
+    # height = int(y_max/5)
 
-def isStopSign(num_to_process=10):
+    x_start = x_max*0.3 # Useful for Yellow Line Following
+    x_end = x_max*0.7
+
+    y_start = y_max*0.8
+    y_end = y_max*1.0
+
+    return(x_start, x_end, y_start, y_end)
+
+def saw_green_light(num_to_process_x=7, num_to_process_y=7):
+    x_start, x_end, y_start, y_end = greenLightWindow()
+    # return True
+    num_positive = 0
+    
+    for i in range(x_start, x_end, num_to_process_x):
+        for j in range(y_start, y_end, num_to_process_y):
+            global img
+            h,l,s = colorsys.rgb_to_hls(img[i,j][0]/255.0, img[i,j][1]/255.0, img[i,j][2]/255.0)
+            h *= 240.0
+            l *= 240.0
+            s *= 240.0
+            if(isGreenLight(h,l,s)):
+                num_positive += num_to_process_x*num_to_process_y
+
+    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
+
+    if(num_positive > req_pixls and not num_positive == 0):
+        return True
+    else:
+        return False
+
+def isStopSign(num_to_process_x=7, num_to_process_y=7):
     x_start, x_end, y_start, y_end = stopWindow()
 
     y_avg = 0
     num_positive = 0
     
-    for i in range(int(x_start), int(x_end), int(num_to_process)):
-        for j in range(int(y_start), int(y_end)):
+    for i in range(x_start, x_end, num_to_process_x):
+        for j in range(y_start, y_end, num_to_process_y):
             global img
             h,l,s = colorsys.rgb_to_hls(img[i,j][0]/255.0, img[i,j][1]/255.0, img[i,j][2]/255.0)
             h *= 240.0
@@ -114,7 +153,7 @@ def isStopSign(num_to_process=10):
             s *= 240.0
             if(isRed(h,l,s)):
                 y_avg += j
-                num_positive += num_to_process
+                num_positive += num_to_process_x*num_to_process_y
 
     req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
 
