@@ -159,7 +159,7 @@ def isStopSign(num_to_process_x=12, num_to_process_y=12):
 
     if(num_positive*num_to_process_x*num_to_process_y > req_pixls and not num_positive == 0):
         y_avg = int(y_avg/num_positive)
-        print("------ Saw the stop sign {}".format(y_avg))
+        #print("------ Saw the stop sign {}".format(y_avg))
         return y_avg
     else:
         return -1

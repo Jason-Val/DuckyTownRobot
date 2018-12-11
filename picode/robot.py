@@ -70,13 +70,14 @@ class Robot:
         follow_lane = True
         print(format(float(velocity), '.4f'))
         self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
-        time.sleep(.5)
+        time.sleep(1)
         print("Begin lane following")
         
         stop_sign_seen = False
         while (follow_lane):
             if not self.paused:
                 error = vision.get_error()
+                #print("got error...")
                 if(error == None):
                     continue
                 error += self.error_offset #TODO: move this to the vision module
@@ -85,7 +86,7 @@ class Robot:
                 
                 delta_v = -self.K*error -self.B*delta_error
                 self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
-                
+                #print(delta_error)
                 if stopping_condition == "intersection":
                     follow_lane = vision.isStopSign() < 0.0
                     """
@@ -106,7 +107,7 @@ class Robot:
                 time.sleep(0.05)
             else:
                 time.sleep(0.5)
-        
+        print("detected stop sign")
     """
     These commands write to arduino to execute the desired action, then wait until the action is completed
     In the case of turning, this will be when the desired distance is covered
@@ -124,8 +125,8 @@ class Robot:
         #use ping, vision, etc to determine whether action is safe
         #print("Saw a green light: {}".format(vision.saw_green_light()))
         #print("returning ")
-        #return (not vision.isStopSign() >= 0) or vision.saw_green_light()
-        return vision.saw_green_light()
+        return (not vision.isStopSign() >= 0) or vision.saw_green_light()
+        #return vision.saw_green_light()
     
     """
     # TODO: implement this on the arduino side. Also, consider possibility of reading the wrong command
@@ -136,16 +137,21 @@ class Robot:
     """
     
     def _send_action_to_arduino(self, action, velocity):
+        print("send action {}".format(action))
         self._send_to_arduino("{0} {1};".format(action, format(float(velocity), '.4f')))
         cmd = ''
-        while cmd != '1':
+        t = time.time()
+        while cmd != b'1\r\n':
             cmd = self.s.read_until()
+            if time.time() - t > 10:
+                print("timed out")
+                break
     
     def _activate_motors(self, v_l, v_r):
         self._send_to_arduino("5 {0} {1};".format(format(float(v_l), '.4f'), format(float(v_r), '.4f')))
         
     def _send_to_arduino(self, cmd):
-        self.serial_sem.acquire()
+        #self.serial_sem.acquire()
         self.s.write(cmd.encode('utf-8'))
         self.s.flush()
-        self.serial_sem.release()
+        #self.serial_sem.release()

@@ -166,7 +166,7 @@ def __main__():
             robot.stop()
         elif command[0] == "lighttest":
             print("drive to a stop sign")
-            robot.lane_follow(.12, "intersection")
+            robot.lane_follow(.1, "intersection")
             print("saw stop sign")
             if (not robot.action_is_safe(0)):
                 robot.stop()
@@ -174,6 +174,7 @@ def __main__():
                 while (not robot.action_is_safe(0)):
                     time.sleep(.2)
             print("action is safe! resume driving!")
+            robot.drive_straight(.12)
             robot.stop()
         elif command[0] == "stoptest":
             print("drive to a stop sign")
