@@ -9,6 +9,7 @@ class Robot
   public:
     bool isExecutingAction;
     double velIdeal;
+    double velActual;
     
     Robot();
     void adjustHeading();
@@ -29,7 +30,7 @@ class Robot
     double wheelDiameter;
     double wheelBase;
     double C;
-    double velActual;
+    //double velActual;
     double distanceToTravel;
     double* loc;
     double* translation;

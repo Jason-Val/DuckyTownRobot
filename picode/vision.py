@@ -144,8 +144,8 @@ def isStopSign(num_to_process_x=7, num_to_process_y=7):
     y_avg = 0
     num_positive = 0
     
-    for i in range(x_start, x_end, num_to_process_x):
-        for j in range(y_start, y_end, num_to_process_y):
+    for i in range(int(x_start), int(x_end), int(num_to_process_x)):
+        for j in range(int(y_start), int(y_end), int(num_to_process_y)):
             global img
             h,l,s = colorsys.rgb_to_hls(img[i,j][0]/255.0, img[i,j][1]/255.0, img[i,j][2]/255.0)
             h *= 240.0

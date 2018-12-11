@@ -155,11 +155,24 @@ def __main__():
             else:
                 print("Exactly one argument, the map filename, is expected.")
         elif command[0] == "lanestop":
-            robot.lane_follow(cmd[1], "intersection")
+            robot.lane_follow(command[1], "intersection")
+            robot.stop()
         elif command[0] == "laneturn":
-            robot.lane_follow(cmd[1], "turn")
+            robot.lane_follow(command[1], "turn")
+            robot.stop()
         elif command[0] == "lanestraight":
-            robot.lane_follow(cmd[1], "straight")
+            robot.lane_follow(command[1], "straight")
+            robot.stop()
+        elif command[0] == "stoptest":
+            print("drive to a stop sign")
+            robot.lane_follow(.12, "intersection")
+            if (not robot.action_is_safe()):
+                robot.stop()
+                print("wait for the action to be safe...")
+                while (not robot.action_is_safe()):
+                    time.sleep(.2)
+            print("resume driving")
+            robot.lane_follow(.12, "intersection")
         else:
             print("Command not recognized")
             

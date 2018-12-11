@@ -53,8 +53,11 @@ void loop() {
       robot.notifyPi();
     }
   }
-  if (false && millis() - time_since_ping_update > ping_update_delay) {
+  if (millis() - time_since_ping_update > ping_update_delay) {
     robot.adjustVelWithPing();
+    //Serial.print(robot.velIdeal);
+    //Serial.print(", ");
+    //Serial.println(robot.velActual);
     time_since_ping_update = millis();
   }
   

@@ -68,8 +68,9 @@ class Robot:
         
     def lane_follow(self, velocity, stopping_condition):
         follow_lane = True
-        self._send_to_arduino("5 {};".format( format(velocity, '.4f') ))
-        
+        print(format(float(velocity), '.4f'))
+        self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
+        time.sleep(.5)
         print("Begin lane following")
         
         while (follow_lane):
@@ -82,9 +83,7 @@ class Robot:
                 self.prev_error = error
                 
                 delta_v = -self.K*error -self.B*delta_error
-                print(format(delta_v/2, '.4f'))
-                self._send_action_to_arduino(3, delta_v/2)
-                #self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
+                self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 
                 if stopping_condition == "intersection":
                     follow_lane = vision.isStopSign() < 0.0
@@ -125,13 +124,13 @@ class Robot:
     """
     
     def _send_action_to_arduino(self, action, velocity):
-        self._send_to_arduino("{0} {1};".format(action, format(velocity, '.4f')))
+        self._send_to_arduino("{0} {1};".format(action, format(float(velocity), '.4f')))
         cmd = ''
         while cmd != '1':
             cmd = self.s.read_until()
     
     def _activate_motors(self, v_l, v_r):
-        self._send_to_arduino("5 {0} {1};".format(format(v_l, '.4f'), format(v_r, '.4f')))
+        self._send_to_arduino("5 {0} {1};".format(format(float(v_l), '.4f'), format(float(v_r), '.4f')))
         
     def _send_to_arduino(self, cmd):
         self.serial_sem.acquire()
