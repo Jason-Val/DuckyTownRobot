@@ -68,7 +68,7 @@ class Robot:
         
     def lane_follow(self, velocity, stopping_condition):
         follow_lane = True
-        self._send_to_arduino("5 {};".format( format(0.108, '.4f') ))
+        self._send_to_arduino("5 {};".format( format(velocity, '.4f') ))
         
         print("Begin lane following")
         
@@ -83,7 +83,8 @@ class Robot:
                 
                 delta_v = -self.K*error -self.B*delta_error
                 print(format(delta_v/2, '.4f'))
-                self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
+                self._send_action_to_arduino(3, delta_v/2)
+                #self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 
                 if stopping_condition == "intersection":
                     follow_lane = vision.isStopSign() < 0.0
@@ -102,17 +103,14 @@ class Robot:
     These commands write to arduino to execute the desired action, then wait until the action is completed
     In the case of turning, this will be when the desired distance is covered
     """
+    def drive_straight(self, velocity):
+        self._send_action_to_arduino(0, velocity)
+    
     def make_left_turn(self, velocity):
-        self._send_to_arduino("1 {0};".format(velocity))
-        cmd = self.s.read_until()
+        self._send_action_to_arduino(1, velocity)
         
     def make_right_turn(self, velocity):
-        self._send_to_arduino("2 {0};".format(velocity))
-        cmd = self.s.read_until()
-        
-    def drive_straight(self, velocity):
-        self._send_to_arduino("0 {0};".format(velocity))
-        cmd = self.s.read_until()
+        self._send_action_to_arduino(2, velocity)
         
     def action_is_safe(self, action):
         #use ping, vision, etc to determine whether action is safe
@@ -125,6 +123,12 @@ class Robot:
         cmd, trans = self.s.read_until().split()
         return float(trans)
     """
+    
+    def _send_action_to_arduino(self, action, velocity):
+        self._send_to_arduino("{0} {1};".format(action, format(velocity, '.4f')))
+        cmd = ''
+        while cmd != '1':
+            cmd = self.s.read_until()
     
     def _activate_motors(self, v_l, v_r):
         self._send_to_arduino("5 {0} {1};".format(format(v_l, '.4f'), format(v_r, '.4f')))

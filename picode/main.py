@@ -154,6 +154,12 @@ def __main__():
                 robot.enqueue_directions(None, command[1])
             else:
                 print("Exactly one argument, the map filename, is expected.")
+        elif command[0] == "lanestop":
+            robot.lane_follow(cmd[1], "intersection")
+        elif command[0] == "laneturn":
+            robot.lane_follow(cmd[1], "turn")
+        elif command[0] == "lanestraight":
+            robot.lane_follow(cmd[1], "straight")
         else:
             print("Command not recognized")
             
