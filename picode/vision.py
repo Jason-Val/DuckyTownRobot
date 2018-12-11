@@ -100,7 +100,7 @@ def stopWindow():
     x_start = x_max*0.45 # Useful for Yellow Line Following
     x_end = x_max*0.55
 
-    y_start = int(y_max*0.5)
+    y_start = int(y_max*0.3)
     y_end = y_start + height
 
     return(x_start, x_end, y_start, y_end)
@@ -111,7 +111,7 @@ def greenLightWindow():
     x_start = x_max*0.3 # Useful for Yellow Line Following
     x_end = x_max*0.7
 
-    y_start = y_max*0.8
+    y_start = y_max*0.5
     y_end = y_max*1.0
 
     return(x_start, x_end, y_start, y_end)
@@ -121,8 +121,8 @@ def saw_green_light(num_to_process_x=7, num_to_process_y=7):
     # return True
     num_positive = 0
     
-    for i in range(x_start, x_end, num_to_process_x):
-        for j in range(y_start, y_end, num_to_process_y):
+    for i in range(int(x_start), int(x_end), int(num_to_process_x)):
+        for j in range(int(y_start), int(y_end), int(num_to_process_y)):
             global img
             h,l,s = colorsys.rgb_to_hls(img[i,j][0]/255.0, img[i,j][1]/255.0, img[i,j][2]/255.0)
             h *= 240.0
@@ -138,7 +138,7 @@ def saw_green_light(num_to_process_x=7, num_to_process_y=7):
     else:
         return False
 
-def isStopSign(num_to_process_x=7, num_to_process_y=7):
+def isStopSign(num_to_process_x=12, num_to_process_y=12):
     x_start, x_end, y_start, y_end = stopWindow()
 
     y_avg = 0
@@ -153,12 +153,13 @@ def isStopSign(num_to_process_x=7, num_to_process_y=7):
             s *= 240.0
             if(isRed(h,l,s)):
                 y_avg += j
-                num_positive += num_to_process_x*num_to_process_y
+                num_positive += 1
 
-    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 5)
+    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 3)
 
-    if(num_positive > req_pixls and not num_positive == 0):
+    if(num_positive*num_to_process_x*num_to_process_y > req_pixls and not num_positive == 0):
         y_avg = int(y_avg/num_positive)
+        print("------ Saw the stop sign {}".format(y_avg))
         return y_avg
     else:
         return -1

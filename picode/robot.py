@@ -87,15 +87,17 @@ class Robot:
                 self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 
                 if stopping_condition == "intersection":
-                    # follow_lane = vision.isStopSign() < 0.0
+                    follow_lane = vision.isStopSign() < 0.0
+                    """
                     if(not stop_sign_seen):
                         #Update if we have seen the stop sign
                         if(vision.isStopSign() > 0.0):
                             stop_sign_seen = True
                     else:
                         #Keep driving until it is where we want it to be
-                        if(vision.isStopSign() < vision.y_max - 200):
+                        if(vision.isStopSign() > vision.y_max - 400):
                             follow_lane = False
+                    """
                 if stopping_condition == "turn":
                     follow_lane = not self._is_turning(error)
                 if stopping_condition == "straight":
@@ -120,7 +122,10 @@ class Robot:
         
     def action_is_safe(self, action):
         #use ping, vision, etc to determine whether action is safe
-        return not (vision.isStopSign() >= 0 and not vision.saw_green_light())
+        #print("Saw a green light: {}".format(vision.saw_green_light()))
+        #print("returning ")
+        #return (not vision.isStopSign() >= 0) or vision.saw_green_light()
+        return vision.saw_green_light()
     
     """
     # TODO: implement this on the arduino side. Also, consider possibility of reading the wrong command

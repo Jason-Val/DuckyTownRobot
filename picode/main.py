@@ -1,5 +1,6 @@
 import sys
 from robot import Robot
+import time
 from Parsing.Parse import parseJsonAndReturnMap
 
 """
@@ -163,16 +164,22 @@ def __main__():
         elif command[0] == "lanestraight":
             robot.lane_follow(command[1], "straight")
             robot.stop()
-        elif command[0] == "stoptest":
+        elif command[0] == "lighttest":
             print("drive to a stop sign")
             robot.lane_follow(.12, "intersection")
-            if (not robot.action_is_safe()):
+            print("saw stop sign")
+            if (not robot.action_is_safe(0)):
                 robot.stop()
                 print("wait for the action to be safe...")
-                while (not robot.action_is_safe()):
+                while (not robot.action_is_safe(0)):
                     time.sleep(.2)
-            print("resume driving")
-            robot.lane_follow(.12, "intersection")
+            print("action is safe! resume driving!")
+            robot.stop()
+        elif command[0] == "stoptest":
+            print("drive to a stop sign")
+            robot.lane_follow(.1, "intersection")
+            print("saw stop sign")
+            robot.stop()
         else:
             print("Command not recognized")
             
