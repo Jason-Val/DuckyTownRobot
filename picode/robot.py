@@ -72,6 +72,7 @@ class Robot:
         
         print("Begin lane following")
         
+        stop_sign_seen = False
         while (follow_lane):
             if not self.paused:
                 error = vision.get_error()
@@ -87,9 +88,15 @@ class Robot:
                 #self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 
                 if stopping_condition == "intersection":
-                    follow_lane = vision.isStopSign() < 0.0
-                    print(vision.isStopSign())
-                    print(follow_lane)
+                    # follow_lane = vision.isStopSign() < 0.0
+                    if(not stop_sign_seen):
+                        #Update if we have seen the stop sign
+                        if(vision.isStopSign() > 0.0):
+                            stop_sign_seen = True
+                    else:
+                        #Keep driving until it is where we want it to be
+                        if(vision.isStopSign() < vision.y_max - 200):
+                            follow_lane = False
                 if stopping_condition == "turn":
                     follow_lane = not self._is_turning(error)
                 if stopping_condition == "straight":
