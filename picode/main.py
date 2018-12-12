@@ -169,15 +169,12 @@ def __main__():
             robot.drive_straight(.12)
             robot.stop()
         elif command[0] == "laneturn":
-            print("run lane turn detection")
+            print("run lane follow heading-based state change. Press enter to begin")
             while input() != "q":
                 print("lane follow...")
-                robot.lane_follow(command[1], "turn")
+                robot.lane_follow(command[1], "loc", command[2])
                 robot.stop()
-        elif command[0] == "lanestraight":
-            while input() != q:
-                robot.lane_follow(command[1], "straight")
-                robot.stop()
+                print("press enter to rerun or q to quit")
         elif command[0] == "lanefollow":
             while input() != "q":
                 robot.lane_follow(command[1], "intersection")

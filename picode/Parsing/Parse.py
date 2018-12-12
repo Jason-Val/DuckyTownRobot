@@ -35,7 +35,7 @@ from Parsing.NodeMap import NodeMap
 allowed_actions = ["", "LaneFollow", "Stop", "TurnLeft", "TurnRight"]
 allowed_stop_conds = ["", "StopSign", "Wait"]
 
-def validateData(location, children, weights, actions, speeds, num_nodes):
+def validateData(location, children, weights, actions, speeds, locations, num_nodes):
 	return True
 	# if(location < 0 or location >= num_nodes):
 	# 	return False
@@ -64,12 +64,13 @@ def parseJsonAndReturnMap(name = 'map.json'):
 		weights = thing["weights"]
 		actions = thing["actions"]
 		speeds = thing["speeds"]
+        locations = thing["locations"]
 
-		valid = validateData(location, children, weights, actions, speeds, len(obj))
+		valid = validateData(location, children, weights, actions, speeds, locations, len(obj))
 		if(not valid):
 			return None
 
-		n = Node(location, children, weights, actions, speeds)
+		n = Node(location, children, weights, actions, speeds, locations)
 		node_list.append(n)
 	return NodeMap(node_list)
 

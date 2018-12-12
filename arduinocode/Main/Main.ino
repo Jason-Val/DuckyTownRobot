@@ -86,7 +86,7 @@ void loop() {
         robot.setMotors(read_velocity());
         break;
       case 6:
-        get_ir();
+        Serial.println(robot.getHeading());
         break;
       case 7:
         double pwm = read_velocity();

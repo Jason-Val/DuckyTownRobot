@@ -58,10 +58,8 @@ class FiniteStateMachine:
     def make_action(self, action):
         if action[0] == "LaneFollowToStop":
             self.robot.lane_follow(action[1], "intersection")
-        elif action[0] == "LaneFollowToTurn":
-            self.robot.lane_follow(action[1], "turn")
-        elif action[0] == "LaneFollowToStraight":
-            self.robot.lane_follow(action[1], "straight")
+        elif action[0] == "LaneFollowToLoc":
+            self.robot.lane_follow(action[1], "loc", action[2])
         elif "Left" in action[0]:
             self.robot.make_left_turn(action[1])
         elif "Right" in action[0]:

@@ -15,6 +15,7 @@ class Robot
     void adjustHeading();
     void adjustVelWithPing(double dist);
     bool completedAction();
+    double getHeading();
     void driveStraight(double velocity);
     void turnLeft(double velocity);
     void turnRight(double velocity);
