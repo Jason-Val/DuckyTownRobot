@@ -16,7 +16,7 @@ long microsecondsToCentimeters(long microseconds) {
   return microseconds / 29 / 2;
 }
 
-void ping_loop() {
+double ping_loop() {
   // establish variables for duration of the ping, and the distance result
   // in inches and centimeters:
   long duration, inches, cm;
@@ -40,9 +40,10 @@ void ping_loop() {
   inches = microsecondsToInches(duration);
   cm = microsecondsToCentimeters(duration);
 
-  Serial.print("0 ");
-  Serial.print(inches);
-  Serial.print(" ");
-  Serial.println(cm);
-  Serial.flush();
+  //Serial.print("0 ");
+  //Serial.print(inches);
+  //Serial.print(" ");
+  //Serial.println(cm);
+  //Serial.flush();
+  return cm;
 }

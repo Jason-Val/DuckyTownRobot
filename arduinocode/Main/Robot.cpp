@@ -86,9 +86,15 @@ void Robot::adjustMotors(double velocity)
   md.setSpeeds(convertVelToPWM_L(velActual + velocity), convertVelToPWM_L(velActual - velocity));
 }
 
-void Robot::adjustVelWithPing()
+void Robot::adjustVelWithPing(double dist)
 {
+  if (dist > 20.0){
   velActual = velIdeal; //TODO: decrease velActual if necessary
+  }
+  else if (dist <= 20.0)
+  velActual = velIdeal - 2*velIdeal/sqrt(dist);
+  else if (dist <= 5.0)
+  velActual = 0.0;
 }
 
 // The main computation for the encoder-based pd control

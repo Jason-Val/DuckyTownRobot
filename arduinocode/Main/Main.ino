@@ -10,7 +10,7 @@
 DualMC33926MotorShield md;
 void motor_setup();
 void set_motor();
-void ping_loop();
+double ping_loop();
 void ir_setup();
 void get_ir();
 void get_current();
@@ -54,7 +54,7 @@ void loop() {
     }
   }
   if (millis() - time_since_ping_update > ping_update_delay) {
-    robot.adjustVelWithPing();
+    robot.adjustVelWithPing(ping_loop());
     //Serial.print(robot.velIdeal);
     //Serial.print(", ");
     //Serial.println(robot.velActual);
