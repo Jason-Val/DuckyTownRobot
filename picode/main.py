@@ -155,15 +155,6 @@ def __main__():
                 robot.enqueue_directions(None, command[1])
             else:
                 print("Exactly one argument, the map filename, is expected.")
-        elif command[0] == "lanestop":
-            robot.lane_follow(command[1], "intersection")
-            robot.stop()
-        elif command[0] == "laneturn":
-            robot.lane_follow(command[1], "turn")
-            robot.stop()
-        elif command[0] == "lanestraight":
-            robot.lane_follow(command[1], "straight")
-            robot.stop()
         elif command[0] == "lighttest":
             print("drive to a stop sign")
             robot.lane_follow(.1, "intersection")
@@ -178,7 +169,9 @@ def __main__():
             robot.drive_straight(.12)
             robot.stop()
         elif command[0] == "laneturn":
+            print("run lane turn detection")
             while input() != "q":
+                print("lane follow...")
                 robot.lane_follow(command[1], "turn")
                 robot.stop()
         elif comman[0] == "lanestraight":
