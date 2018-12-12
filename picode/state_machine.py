@@ -14,9 +14,12 @@ class FiniteStateMachine:
             if (not self.robot.paused):
                 actions, next_state = self.get_next_state_and_actions()
                 if next_state == None:
+                    self.robot.stop()
+                    """
                     if not self.robot.stopped:
                         self.robot.stop()
                     continue
+                    """
                 if next_state == self.current_state:
                     continue
                 print("Current state is {0}. Next state is {1}".format(self.current_state, next_state))
