@@ -81,11 +81,11 @@ class NodeMap:
 		for n_index in range(len(lst)-1):
 			n = lst[n_index]
 			p = lst[n_index+1]
-            
-            actions = n.children_actions[n.children.index(p.location)]
-            speeds = n.children_action_speeds[n.children.index(p.location)]
-            locations = n.children_action_locations[n.children.index(p.location)]
+			
+			actions = n.children_actions[n.children.index(p.location)]
+			speeds = n.children_action_speeds[n.children.index(p.location)]
+			locations = n.children_action_locations[n.children.index(p.location)]
 			elem = (list(zip(actions, speeds, locations)), p.location)
 			ret_lst.append(elem)
-        
+		
 		return ret_lst

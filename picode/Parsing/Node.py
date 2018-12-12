@@ -17,7 +17,7 @@ class Node:
 		self.children_weights = childrn_weights
 		self.children_actions = childrn_actions
 		self.children_action_speeds = childrn_action_speeds
-        self.children_action_locations = childrn_action_locations
+		self.children_action_locations = childrn_action_locations
 
 	def reset(self):
 		self.parent_node = None
@@ -35,7 +35,7 @@ class Node:
 		print("Children Weights: " + str(self.children_weights))
 		print("Children Actions: " + str(self.children_actions))
 		print("Children Action Speeds: " + str(self.children_action_speeds))
-        print("Children Action Locations: " + str(self.childrn_action_locations))
+		print("Children Action Locations: " + str(self.childrn_action_locations))
 		print("Parent: " + str(self.parent_node))
 		print("Total Weight: " + str(self.total_weight))
 		print()

@@ -64,7 +64,7 @@ def parseJsonAndReturnMap(name = 'map.json'):
 		weights = thing["weights"]
 		actions = thing["actions"]
 		speeds = thing["speeds"]
-        locations = thing["locations"]
+		locations = thing["locations"]
 
 		valid = validateData(location, children, weights, actions, speeds, locations, len(obj))
 		if(not valid):
