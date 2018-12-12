@@ -18,6 +18,7 @@ Robot::Robot()
   translation = new double[2];
   startTranslation = new double[2];
   prevError = 0.0;
+  lastAdjustment = 0;
 }
 
 
@@ -48,7 +49,7 @@ void Robot::driveStraight(double velocity)
 {
   isExecutingAction = true;
   C = 1.0;
-  distanceToTravel = 2;
+  distanceToTravel = 10;
   velIdeal = velocity;
   //md.setSpeeds(200, 200); //TODO: base this off of velocity
   updateStartTranslation();
@@ -88,7 +89,15 @@ void Robot::setMotors(double velocity)
 // applies the calculations performed by the pi
 void Robot::adjustMotors(double velocity)
 {
-  md.setSpeeds(convertVelToPWM_L(velActual + velocity), convertVelToPWM_L(velActual - velocity));
+  if (velocity < 0)
+  {
+    md.setSpeeds(convertVelToPWM_L(velActual + lastAdjustment), convertVelToPWM_L(velActual - lastAdjustment));
+  }
+  else 
+  {
+    lastAdjustment = velocity;
+    md.setSpeeds(convertVelToPWM_L(velActual + velocity), convertVelToPWM_L(velActual - velocity));
+  }
 }
 
 void Robot::adjustVelWithPing(double dist)
@@ -96,10 +105,10 @@ void Robot::adjustVelWithPing(double dist)
   if (dist >= 40.0){
     velActual = velIdeal; //TODO: decrease velActual if necessary
   }
-  else if ((dist < 40.0) && (dist > 10.0)){
+  else if ((dist < 40.0) && (dist > 15.0)){
     velActual = velIdeal - 2*velIdeal/sqrt(dist);
   }
-  else if (dist <= 10.0){
+  else if (dist <= 15.0){
     velActual = velIdeal*0.0;
   }
 }

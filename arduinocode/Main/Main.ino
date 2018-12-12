@@ -58,6 +58,7 @@ void loop() {
     //Serial.print(robot.velIdeal);
     //Serial.print(", ");
     //Serial.println(robot.velActual);
+    //robot.adjustMotors(-1);
     time_since_ping_update = millis();
   }
   
