@@ -13,7 +13,8 @@
     "children" : [4,12],
     "weights" : [5,4],
     "actions" : [["IntersectionLeft", "LaneFollowToStop"], ["IntersectionStraight", "LaneFollowToStop"]],
-    "speeds" : [[0.108, 0.108],[0.108, 0.108]]
+    "speeds" : [[0.108, 0.108],[0.108, 0.108]],
+    "locations" : []
   },
 
   {
@@ -60,16 +61,18 @@
     "location" : 7,
     "children" : [1,10],
     "weights" : [5,10],
-    "actions" : [["IntersectionLeft", "LaneFollowToStop"], ["IntersectionStraight", "LaneFollowToTurn", "LaneFollowToStraight", "LaneFollowToTurn", "LaneFollowToStop"]],
-    "speeds" : [[0.108, 0.108],[0.108, 0.108, 0.108, 0.2, 0.108]]
+    "actions" : [["IntersectionLeft", "LaneFollowToStop"], ["IntersectionStraight", "LaneFollowToLoc", "LaneFollowToLoc", "LaneFollowToStop"]],
+    "speeds" : [[0.108, 0.108],[0.108, 0.108, .2, 0.108]],
+    "locations" : [[0,0] , [0, 0, 0.5, 0]]
   },
 
   {
     "location" : 8,
     "children" : [6,10],
     "weights" : [5,12],
-    "actions" : [["IntersectionRight", "LaneFollowToStop"], ["IntersectionLeft", "LaneFollowToTurn", "LaneFollowToStraight", "LaneFollowToTurn", "LaneFollowToStop"]],
-    "speeds" : [[0.108, 0.108],[0.108, 0.108, 0.108, 0.2, 0.108]]
+    "actions" : [["IntersectionRight", "LaneFollowToStop"], ["IntersectionLeft", "LaneFollowToLoc", "LaneFollowToLoc", "LaneFollowToStop"]],
+    "speeds" : [[0.108, 0.108],[0.108, 0.108, .2, 0.108]],
+    "locations" : [[0,0] , [0, 0, 0.5, 0]]
   },
 
   {
@@ -92,16 +95,18 @@
     "location" : 11,
     "children" : [2,9],
     "weights" : [3,9],
-    "actions" : [["IntersectionRight", "LaneFollowToStop"], ["IntersectionStraight", "LaneFollowToTurn", "LaneFollowToStraight", "LaneFollowToTurn", "LaneFollowToStop"]],
-    "speeds" : [[0.108, 0.108],[0.108, 0.108, 0.108, 0.2, 0.108]]
+    "actions" : [["IntersectionRight", "LaneFollowToStop"], ["IntersectionStraight", "LaneFollowToLoc", "LaneFollowToLoc", "LaneFollowToStop"]],
+    "speeds" : [[0.108, 0.108],[0.108, 0.108, 0.2, .108]],
+    "locations" : [[0,0] , [0, 1, 0.5, 0]]
   },
 
   {
     "location" : 12,
     "children" : [5,9],
     "weights" : [10,9],
-    "actions" : [["IntersectionLeft", "LaneFollowToStop"], ["IntersectionRight", "LaneFollowToTurn", "LaneFollowToStraight", "LaneFollowToTurn", "LaneFollowToStop"]],
-    "speeds" : [[0.108, 0.108],[0.108, 0.108, 0.108, 0.2, 0.108]]
+    "actions" : [["IntersectionLeft", "LaneFollowToStop"], ["IntersectionRight", "LaneFollowToLoc", "LaneFollowToLoc", "LaneFollowToStop"]],
+    "speeds" : [[0.108, 0.108],[0.108, 0.108, 0.2, .108]],
+    "locations" : [[0,0] , [0, 1, 0.5, 0]]
   }
 
 ]

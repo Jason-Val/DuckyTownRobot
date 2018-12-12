@@ -2,6 +2,7 @@ import threading
 import vision
 import time
 import serial
+import math
 from state_machine import FiniteStateMachine
 
 class Robot:
@@ -68,12 +69,16 @@ class Robot:
     def _is_turning(self, vision_error):
         return vision_error > 200
         
-    def lane_follow(self, velocity, stopping_condition):
+    def lane_follow(self, velocity, stopping_condition, location=0):
         follow_lane = True
         print(format(float(velocity), '.4f'))
         self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
-        time.sleep(1)
+        time.sleep(0.5)
         print("Begin lane following")
+        heading_epsilon = 2*math.pi/64
+        
+        slow_speed = 0.108
+        notified_slow = False
         
         t = time.time()
         
@@ -81,6 +86,12 @@ class Robot:
         while (follow_lane):
             if not self.paused:
                 error = vision.get_error()
+                if (not notified_slow and error > 200):
+                    notified_slow = True
+                    self._send_to_arduino("4 {};".format( format(float(slow_speed), '.4f') ))
+                elif (notified_slow and not error > 200):
+                    notified_slow = False
+                    self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
                 #print("got error...")
                 if(error == None):
                     continue
@@ -103,15 +114,17 @@ class Robot:
                         if(vision.isStopSign() > vision.y_max - 400):
                             follow_lane = False
                     """
-                if stopping_condition == "turn":
-                    follow_lane = not self._is_turning(error)
-                if stopping_condition == "straight":
-                    follow_lane = self._is_turning(error)
-
+                if stopping_condition == "loc":
+                    actual_heading = self._get_heading()
+                    print("actual heading: {}".format(actual_heading))
+                    follow_lane =  abs((actual_heading % 2*math.pi) - location) > heading_epsilon:
+                    
                 time.sleep(0.05)
             else:
                 time.sleep(0.5)
         print("detected state change")
+        
+        
     """
     These commands write to arduino to execute the desired action, then wait until the action is completed
     In the case of turning, this will be when the desired distance is covered
@@ -139,6 +152,11 @@ class Robot:
         cmd, trans = self.s.read_until().split()
         return float(trans)
     """
+    def _get_heading(self):
+        self._send_to_arduino("6")
+        response = self.s.read_until()
+        print(response)
+        return float(response.decode('utf-8'))
     
     def _send_action_to_arduino(self, action, velocity):
         self._send_to_arduino("{0} {1};".format(action, format(float(velocity), '.4f')))

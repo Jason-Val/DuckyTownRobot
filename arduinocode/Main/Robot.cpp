@@ -34,6 +34,11 @@ bool Robot::completedAction()
   }
 }
 
+double getHeading()
+{
+  return loc[2];
+}
+
 void Robot::notifyPi()
 {
   Serial.println("1");
