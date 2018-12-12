@@ -131,7 +131,7 @@ def saw_green_light(num_to_process_x=7, num_to_process_y=7):
             if(isGreenLight(h,l,s)):
                 num_positive += num_to_process_x*num_to_process_y
 
-    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 1)
+    req_pixls = percentToNumPixels(x_start, x_end, y_start, y_end, 0.2)
 
     if(num_positive > req_pixls and not num_positive == 0):
         return True
