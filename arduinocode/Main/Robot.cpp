@@ -53,7 +53,7 @@ void Robot::driveStraight(double velocity)
 void Robot::turnLeft(double velocity)
 {
   isExecutingAction = true;
-  C = 2.4;
+  C = 1.75;
   distanceToTravel = 0.75;
   velIdeal = velocity;
   //md.setSpeeds(200, 200);

@@ -174,7 +174,7 @@ def __main__():
                 print("lane follow...")
                 robot.lane_follow(command[1], "turn")
                 robot.stop()
-        elif comman[0] == "lanestraight":
+        elif command[0] == "lanestraight":
             while input() != q:
                 robot.lane_follow(command[1], "straight")
                 robot.stop()
@@ -182,6 +182,14 @@ def __main__():
             while input() != "q":
                 robot.lane_follow(command[1], "intersection")
             robot.stop()
+        elif command[0] == "left":
+            while input() != 'q':
+                robot.make_left_turn(.108)
+                robot.stop()
+        elif command[0] == "right":
+            while input() != 'q':
+                robot.make_right_turn(.108)
+                robot.stop()
         else:
             print("Command not recognized")
             
