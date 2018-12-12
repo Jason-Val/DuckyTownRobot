@@ -86,16 +86,16 @@ class Robot:
         while (follow_lane):
             if not self.paused:
                 error = vision.get_error()
+                #print("got error...")
+                if(error == None):
+                    continue
+                error += self.error_offset #TODO: move this to the vision module
                 if (not notified_slow and error > 200):
                     notified_slow = True
                     self._send_to_arduino("4 {};".format( format(float(slow_speed), '.4f') ))
                 elif (notified_slow and not error > 200):
                     notified_slow = False
                     self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
-                #print("got error...")
-                if(error == None):
-                    continue
-                error += self.error_offset #TODO: move this to the vision module
                 delta_error = error - self.prev_error
                 self.prev_error = error
                 

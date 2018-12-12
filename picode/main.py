@@ -183,6 +183,7 @@ def __main__():
             while input() != 'q':
                 robot.make_left_turn(.108)
                 robot.stop()
+                robot.stop()
         elif command[0] == "right":
             while input() != 'q':
                 robot.make_right_turn(.108)

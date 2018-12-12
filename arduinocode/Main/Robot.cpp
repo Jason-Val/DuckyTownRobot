@@ -48,7 +48,7 @@ void Robot::driveStraight(double velocity)
 {
   isExecutingAction = true;
   C = 1.0;
-  distanceToTravel = 0.5;
+  distanceToTravel = 2;
   velIdeal = velocity;
   //md.setSpeeds(200, 200); //TODO: base this off of velocity
   updateStartTranslation();
@@ -93,14 +93,14 @@ void Robot::adjustMotors(double velocity)
 
 void Robot::adjustVelWithPing(double dist)
 {
-  if (dist > 20.0){
-  velActual = velIdeal; //TODO: decrease velActual if necessary
+  if (dist >= 40.0){
+    velActual = velIdeal; //TODO: decrease velActual if necessary
   }
-  else if (dist <= 20.0){
-  velActual = velIdeal - 2*velIdeal/sqrt(dist);
+  else if ((dist < 40.0) && (dist > 10.0)){
+    velActual = velIdeal - 2*velIdeal/sqrt(dist);
   }
-  else if (dist <= 5.0){
-  velActual = 0.0;
+  else if (dist <= 10.0){
+    velActual = velIdeal*0.0;
   }
 }
 
