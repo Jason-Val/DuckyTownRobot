@@ -11,6 +11,7 @@ class Robot:
         self.fsm = FiniteStateMachine(self, map)
         self.active = True
         self.stopped = True
+        self.fsm_active = False
         
         # threads for vision etc
         self.vision_thread = threading.Thread(target=vision.start_thread, name="vision_thread")
@@ -60,6 +61,7 @@ class Robot:
         self.paused = False
         
     def enqueue_directions(self, start_location, end_location):
+        self.fsm_active = True
         return self.fsm.enqueue_directions(start_location, end_location)
         
     # TODO: fine-tune this
@@ -72,6 +74,8 @@ class Robot:
         self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
         time.sleep(1)
         print("Begin lane following")
+        
+        t = time.time()
         
         stop_sign_seen = False
         while (follow_lane):
@@ -88,7 +92,7 @@ class Robot:
                 self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 #print(delta_error)
                 if stopping_condition == "intersection":
-                    follow_lane = vision.isStopSign() < 0.0
+                    follow_lane = not ( time.time() - t > 1 and vision.isStopSign() >= 0.0)
                     """
                     if(not stop_sign_seen):
                         #Update if we have seen the stop sign
@@ -107,7 +111,7 @@ class Robot:
                 time.sleep(0.05)
             else:
                 time.sleep(0.5)
-        print("detected stop sign")
+        print("detected state change")
     """
     These commands write to arduino to execute the desired action, then wait until the action is completed
     In the case of turning, this will be when the desired distance is covered
@@ -137,7 +141,6 @@ class Robot:
     """
     
     def _send_action_to_arduino(self, action, velocity):
-        print("send action {}".format(action))
         self._send_to_arduino("{0} {1};".format(action, format(float(velocity), '.4f')))
         cmd = ''
         t = time.time()

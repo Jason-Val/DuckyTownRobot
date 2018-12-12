@@ -172,14 +172,22 @@ def __main__():
                 robot.stop()
                 print("wait for the action to be safe...")
                 while (not robot.action_is_safe(0)):
-                    time.sleep(.2)
+                    print("...")
+                    time.sleep(.05)
             print("action is safe! resume driving!")
             robot.drive_straight(.12)
             robot.stop()
-        elif command[0] == "stoptest":
-            print("drive to a stop sign")
-            robot.lane_follow(.1, "intersection")
-            print("saw stop sign")
+        elif command[0] == "laneturn":
+            while input() != "q":
+                robot.lane_follow(command[1], "turn")
+                robot.stop()
+        elif comman[0] == "lanestraight":
+            while input() != q:
+                robot.lane_follow(command[1], "straight")
+                robot.stop()
+        elif command[0] == "lanefollow":
+            while input() != "q":
+                robot.lane_follow(command[1], "intersection")
             robot.stop()
         else:
             print("Command not recognized")

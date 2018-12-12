@@ -13,7 +13,7 @@ class FiniteStateMachine:
         while (self.robot.active):
             if (not self.robot.paused):
                 actions, next_state = self.get_next_state_and_actions()
-                if next_state == None:
+                if self.robot.fsm_active and next_state == None:
                     self.robot.stop()
                     """
                     if not self.robot.stopped:

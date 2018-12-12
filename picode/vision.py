@@ -100,7 +100,7 @@ def stopWindow():
     x_start = x_max*0.45 # Useful for Yellow Line Following
     x_end = x_max*0.55
 
-    y_start = int(y_max*0.3)
+    y_start = int(y_max*0.4)
     y_end = y_start + height
 
     return(x_start, x_end, y_start, y_end)
@@ -268,13 +268,13 @@ def get_error():
 
     elif(yellow_pos > min_num_pixels and white_pos <= min_num_pixels):
         #Only see Yellow line
-        lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2)
+        lane_avg = yellow_avg_x + (lane_width_approx_in_pixels/2 + 100)
         #print("Case 2 Lane Avg: %s" + str(lane_avg))
         #print("Only Yellow: {}".format(robot_avg - lane_avg + adjust_const))
 
     elif(yellow_pos <= min_num_pixels and white_pos > min_num_pixels):
         #Only see White line
-        lane_avg = white_avg_x - (lane_width_approx_in_pixels/2)
+        lane_avg = white_avg_x - (lane_width_approx_in_pixels/2 + 100)
         #print("Case 3 Lane Avg: %s" + str(lane_avg))
         #print("Only White: {}".format(robot_avg - lane_avg + adjust_const))
 
