@@ -5,7 +5,7 @@ class Node:
 	children_weights = []
 	children_actions = []
 	children_action_speeds = []
-    children_action_locations = []
+	children_action_locations = []
 
 	#Used in Djikstras
 	parent_node = None

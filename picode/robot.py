@@ -115,9 +115,10 @@ class Robot:
                             follow_lane = False
                     """
                 if stopping_condition == "loc":
-                    actual_heading = self._get_heading()
-                    print("actual heading: {}".format(actual_heading))
-                    follow_lane =  abs((actual_heading % 2*math.pi) - location) > heading_epsilon:
+                    follow_lane = True
+                    #actual_heading = self._get_heading()
+                    #print("actual heading: {}".format(actual_heading))
+                    #follow_lane =  abs((actual_heading % 2*math.pi) - location) > heading_epsilon:
                     
                 time.sleep(0.05)
             else:

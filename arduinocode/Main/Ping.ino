@@ -1,4 +1,4 @@
-const int pingPin = 7;
+const int pingPin = 13;
 
 long microsecondsToInches(long microseconds) {
   // According to Parallax's datasheet for the PING))), there are 73.746
