@@ -54,7 +54,10 @@ void loop() {
     }
   }
   if (millis() - time_since_ping_update > ping_update_delay) {
-    robot.adjustVelWithPing(ping_loop());
+    if (!robot.isExecutingAction)
+    {
+      robot.adjustVelWithPing(ping_loop());
+    }
     //Serial.print(robot.velIdeal);
     //Serial.print(", ");
     //Serial.println(robot.velActual);
