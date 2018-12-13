@@ -50,7 +50,7 @@ void Robot::driveStraight(double velocity)
 {
   isExecutingAction = true;
   C = 1.0;
-  distanceToTravel = 10;
+  distanceToTravel = 0.5;
   velIdeal = velocity;
   //md.setSpeeds(200, 200); //TODO: base this off of velocity
   updateStartTranslation();
@@ -104,6 +104,7 @@ void Robot::adjustVelWithPing(double dist)
   else if (dist <= 15.0){
     velActual = velIdeal*0.0;
   }
+  velActual = velIdeal;
 }
 
 // The main computation for the encoder-based pd control

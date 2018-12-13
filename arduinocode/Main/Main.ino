@@ -54,7 +54,7 @@ void loop() {
     }
   }
   // TODO* adding "false" here disables ping. remove it to re-enable
-  if (false && millis() - time_since_ping_update > ping_update_delay) {
+  if (millis() - time_since_ping_update > ping_update_delay) {
     robot.adjustVelWithPing(ping_loop());
     //Serial.print(robot.velIdeal);
     //Serial.print(", ");
