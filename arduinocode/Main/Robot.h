@@ -13,6 +13,7 @@ class Robot
     
     Robot();
     void adjustHeading();
+    void setHeading(double heading);
     void adjustVelWithPing(double dist);
     bool completedAction();
     double getHeading();
@@ -31,6 +32,7 @@ class Robot
     double wheelDiameter;
     double wheelBase;
     double C;
+    double headingOffset;
     //double velActual;
     double distanceToTravel;
     double* loc;

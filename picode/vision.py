@@ -14,7 +14,7 @@ global_error = 0
 red = (255,0,0)
 white = (255,255,255)
 yellow = (255,255,0)
-
+robot = None
 
 def isColor(color, pixl, diff=250):
     total_diff = abs(pixl[0]-color[0]) + abs(pixl[1]-color[1]) + abs(pixl[2]-color[2])
@@ -297,7 +297,7 @@ def start_thread():
         stream = io.BytesIO()
         camera.resolution = (1024, 768)
         time.sleep(2)
-        while(True):
+        while(robot.active):
             stream = io.BytesIO()
             camera.capture(stream, format='jpeg', use_video_port=True)
             stream.seek(0)
@@ -307,4 +307,4 @@ def start_thread():
             img_sem.acquire()
             img = pix
             img_sem.release()
-        camera.end_preview()
+        camera.stop_preview()

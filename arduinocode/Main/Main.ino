@@ -90,8 +90,7 @@ void loop() {
         Serial.println(robot.getHeading());
         break;
       case 7:
-        double pwm = read_velocity();
-        md.setSpeeds(pwm, pwm);
+        robot.setHeading(read_velocity());
     }
   }
 }

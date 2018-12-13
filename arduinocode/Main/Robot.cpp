@@ -13,6 +13,7 @@ Robot::Robot()
   velIdeal = 0.0;
   velActual = 0.0;
   isExecutingAction = false;
+  headingOffset = 0;
   distanceToTravel = 0;
   loc = new double[3];
   translation = new double[2];
@@ -70,7 +71,7 @@ void Robot::turnLeft(double velocity)
 void Robot::turnRight(double velocity)
 {
   isExecutingAction = true;
-  C = -3.0;
+  C = -1.0;
   distanceToTravel = 0.35;
   velIdeal = velocity;
   //md.setSpeeds(150, 150); //TODO: base this off of velocity
@@ -103,6 +104,7 @@ void Robot::adjustVelWithPing(double dist)
   else if (dist <= 15.0){
     velActual = velIdeal*0.0;
   }
+  velActual = velIdeal;
 }
 
 // The main computation for the encoder-based pd control
@@ -112,7 +114,13 @@ void Robot::adjustHeading()
   double errorDot = prevError;
   prevError = error;
   double deltaPWM = K*error + B*errorDot;
-  md.setSpeeds(convertVelToPWM_L(velActual) + deltaPWM, convertVelToPWM_L(velActual) - deltaPWM);
+  md.setSpeeds(convertVelToPWM_L(velActual) + deltaPWM, convertVelToPWM_R(velActual) - deltaPWM);
+}
+
+void Robot::setHeading(double heading)
+{
+  headingOffset = heading - loc[2];
+  loc[2] = heading;
 }
 
 void Robot::updateLocation(long leftCount, long rightCount)
@@ -125,7 +133,7 @@ void Robot::updateLocation(long leftCount, long rightCount)
   
   loc[0] = del_x * cos(theta);
   loc[1] = del_x * sin(theta);
-  loc[2] = theta;
+  loc[2] = theta + headingOffset;
 }
 
 void Robot::updateStartTranslation()

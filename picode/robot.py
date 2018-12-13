@@ -13,7 +13,7 @@ class Robot:
         self.active = True
         self.stopped = True
         self.fsm_active = False
-        
+        vision.robot = self
         # threads for vision etc
         self.vision_thread = threading.Thread(target=vision.start_thread, name="vision_thread")
         self.fsm_thread = threading.Thread(target=self.fsm.fsm_loop, name="fsm_thread")
@@ -21,10 +21,12 @@ class Robot:
         
         # visual pd constants
         scaleK = 5.40*1000
-        scaleB = 4.85*1000
-        self.error_offset = 5
-        self.K = 1.0/scaleK
-        self.B = 1.0/scaleB
+        scaleB = 4.80*1000
+        self.error_offset = 50
+        self.Kslow = 1.0/scaleK
+        self.Bslow = 1.0/scaleB
+        self.Kfast = 1.0/(5.40*1000)
+        self.Bfast = 1.0/(4.5*1000)
         self.prev_error = 0.0
         
         self.vision_thread.start()
@@ -65,10 +67,6 @@ class Robot:
         self.fsm_active = True
         return self.fsm.enqueue_directions(start_location, end_location)
         
-    # TODO: fine-tune this
-    def _is_turning(self, vision_error):
-        return vision_error > 200
-        
     def lane_follow(self, velocity, stopping_condition, location=0):
         follow_lane = True
         print(format(float(velocity), '.4f'))
@@ -79,8 +77,17 @@ class Robot:
         
         slow_speed = 0.108
         notified_slow = False
+        velocity = float(velocity)
         
         t = time.time()
+        K = 0
+        B = 0
+        if velocity <=.12:
+            K = self.Kslow
+            B = self.Bslow
+        else:
+            K = self.Kfast
+            B = self.Bfast
         
         stop_sign_seen = False
         while (follow_lane):
@@ -91,17 +98,23 @@ class Robot:
                 error += self.error_offset #TODO: move this to the vision module
                 if (not notified_slow and error > 200):
                     notified_slow = True
-                    print("send slow to arduino")
+                    K = self.Kslow
+                    B = self.Bslow
+                    #print("send slow to arduino")
                     self._send_to_arduino("4 {};".format( format(float(slow_speed), '.4f') ))
                 elif (notified_slow and not error > 200):
                     notified_slow = False
-                    print("send regular to arduino")
+                    if (velocity > 0.15):
+                        K = self.Kfast
+                        B = self.Bfast
+                    #print("send regular to arduino")
                     self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
                 delta_error = error - self.prev_error
+                #print(error)
                 self.prev_error = error
                 
-                delta_v = -self.K*error -self.B*delta_error
-                print("send correction {} to arduino".format(delta_v))
+                delta_v = -K*error -B*delta_error
+                #print("send correction {} to arduino".format(delta_v))
                 self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 #print(delta_error)
                 if stopping_condition == "intersection":
@@ -117,10 +130,10 @@ class Robot:
                             follow_lane = False
                     """
                 if stopping_condition == "loc":
-                    follow_lane = True
-                    #actual_heading = self._get_heading()
-                    #print("actual heading: {}".format(actual_heading))
-                    #follow_lane =  abs((actual_heading % 2*math.pi) - location) > heading_epsilon:
+                    #follow_lane = True
+                    actual_heading = self._get_heading()
+                    print("actual: {}, desired: {}".format(actual_heading, location))
+                    follow_lane = abs((actual_heading % 2*math.pi) - location) > heading_epsilon
                     
                 time.sleep(0.05)
             else:
@@ -148,6 +161,9 @@ class Robot:
         return (not vision.isStopSign() >= 0) or vision.saw_green_light()
         #return vision.saw_green_light()
     
+    def set_heading(self, heading):
+        self._send_to_arduino("7 {};".format(format(float(heading), '.4f')))
+    
     """
     # TODO: implement this on the arduino side. Also, consider possibility of reading the wrong command
     def _get_translation(self):
@@ -158,7 +174,6 @@ class Robot:
     def _get_heading(self):
         self._send_to_arduino("6")
         response = self.s.read_until()
-        print(response)
         return float(response.decode('utf-8'))
     
     def _send_action_to_arduino(self, action, velocity):
