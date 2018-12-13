@@ -53,12 +53,12 @@ void loop() {
       robot.notifyPi();
     }
   }
-  if (millis() - time_since_ping_update > ping_update_delay) {
+  // TODO* adding "false" here disables ping. remove it to re-enable
+  if (false && millis() - time_since_ping_update > ping_update_delay) {
     robot.adjustVelWithPing(ping_loop());
     //Serial.print(robot.velIdeal);
     //Serial.print(", ");
     //Serial.println(robot.velActual);
-    //robot.adjustMotors(-1);
     time_since_ping_update = millis();
   }
   
