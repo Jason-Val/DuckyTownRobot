@@ -100,8 +100,11 @@ def stopWindow():
     x_start = x_max*0.45 # Useful for Yellow Line Following
     x_end = x_max*0.55
 
-    y_start = int(y_max*0.4)
+    y_start = int(y_max*0.55)
     y_end = y_start + height
+    
+    if(y_end > y_max):
+        y_end = y_max
 
     return(x_start, x_end, y_start, y_end)
 
