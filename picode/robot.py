@@ -101,7 +101,7 @@ class Robot:
                 self.prev_error = error
                 
                 delta_v = -self.K*error -self.B*delta_error
-                print("send correction to arduino")
+                print("send correction {} to arduino".format(delta_v))
                 self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 #print(delta_error)
                 if stopping_condition == "intersection":

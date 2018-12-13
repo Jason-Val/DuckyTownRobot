@@ -89,15 +89,7 @@ void Robot::setMotors(double velocity)
 // applies the calculations performed by the pi
 void Robot::adjustMotors(double velocity)
 {
-  if (velocity < 0)
-  {
-    md.setSpeeds(convertVelToPWM_L(velActual + lastAdjustment), convertVelToPWM_L(velActual - lastAdjustment));
-  }
-  else 
-  {
-    lastAdjustment = velocity;
-    md.setSpeeds(convertVelToPWM_L(velActual + velocity), convertVelToPWM_L(velActual - velocity));
-  }
+  md.setSpeeds(convertVelToPWM_L(velActual + velocity), convertVelToPWM_R(velActual - velocity));
 }
 
 void Robot::adjustVelWithPing(double dist)

@@ -21,7 +21,7 @@ void set_motor_vel();
 long time_since_pd_update = millis();
 long time_since_ping_update = millis();
 long pd_update_delay = 30;
-long ping_update_delay = 100;
+long ping_update_delay = 200;
 
 char terminate = ';';
 char input[INPUT_SIZE + 1];
@@ -54,10 +54,7 @@ void loop() {
     }
   }
   if (millis() - time_since_ping_update > ping_update_delay) {
-    if (!robot.isExecutingAction)
-    {
-      robot.adjustVelWithPing(ping_loop());
-    }
+    robot.adjustVelWithPing(ping_loop());
     //Serial.print(robot.velIdeal);
     //Serial.print(", ");
     //Serial.println(robot.velActual);
