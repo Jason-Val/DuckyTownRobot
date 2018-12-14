@@ -67,9 +67,9 @@ class Robot:
         self.fsm_active = True
         self.fsm.enqueue_directions(start_location, end_location)
 
-    def enqueue_all_directions(self, states):
+    def enqueue_all_directions(self, states, skip=0):
         self.fsm_active = True
-        self.fsm.enqueue_all_directions(states)
+        self.fsm.enqueue_all_directions(states, skip)
         
     def lane_follow(self, velocity, stopping_condition, location=0):
         follow_lane = True

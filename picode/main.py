@@ -166,6 +166,15 @@ def __main__():
                 else:
                     print("Exactly one argument, the map filename, is expected.")
                 print("Done")
+            elif command[0] == "addallskip":
+                start = None
+                end = None
+                if len(command) >= 4:
+                    lst = list(map(lambda x : int(x), command[2:]))
+                    robot.enqueue_all_directions(lst, int(command[1]))
+                else:
+                    print("Exactly one argument, the map filename, is expected.")
+                print("Done")
             elif command[0] == "lighttest":
                 print("drive to a stop sign")
                 robot.lane_follow(.1, "intersection")
