@@ -73,8 +73,8 @@ class Robot:
         
     def lane_follow(self, velocity, stopping_condition, location=0):
         follow_lane = True
-        if stopping_condition == "loc":
-            return
+        #if stopping_condition == "loc":
+        #    return
         print(format(float(velocity), '.4f'))
         self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
         time.sleep(0.5)

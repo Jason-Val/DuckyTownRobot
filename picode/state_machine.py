@@ -1,4 +1,5 @@
 import time
+import math
 from Parsing.Node import Node
 from Parsing.NodeMap import NodeMap
     
@@ -31,6 +32,15 @@ class FiniteStateMachine:
                     print("Make action {0} at velocity {1}".format(action[0], action[1]))
                     self.make_action(action)    # blocks until action is complete
                 self.current_state = next_state
+                if (self.current_state == "11" or self.current_state == "7"):
+                    print("Update heading to down")
+                    robot.set_heading(math.pi*3/2)
+                if (self.current_state == "12"):
+                    print("Update heading to left")
+                    robot.set_heading(0)
+                if (self.current_state == "8"):
+                    print("Update heading to right")
+                    robot.set_heading(math.pi)
                 #robot.update_state()        # uses current state to update x,y,theta of robot
             else:
                 time.sleep(0.5)
