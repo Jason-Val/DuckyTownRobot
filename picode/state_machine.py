@@ -55,6 +55,24 @@ class FiniteStateMachine:
             return
         self.command_queue = self.command_queue + directions
     
+    def enqueue_all_direcions(self, states):
+        #This
+        if states[0] == None:
+            states[0] = self.current_state
+        if self.current_state == None:
+            self.current_state = start_state
+
+
+        directions = []
+
+        for i in range(len(states)-1):
+            directions.append(self.map.getStatesQueue(i, i+1))
+
+        if directions == None or len(directions) == 0:
+            print("Enqueuing new directions failed")
+            return
+        self.command_queue = self.command_queue + directions
+
     def make_action(self, action):
         if action[0] == "LaneFollowToStop":
             self.robot.lane_follow(action[1], "intersection")
