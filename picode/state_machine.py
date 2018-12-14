@@ -12,7 +12,6 @@ class FiniteStateMachine:
     def fsm_loop(self):
         while (self.robot.active):
             if (not self.robot.paused):
-                print(self.get_next_state_and_actions())
                 actions, next_state = self.get_next_state_and_actions()
                 if self.robot.fsm_active and next_state == None:
                     self.robot.stop()
@@ -67,6 +66,8 @@ class FiniteStateMachine:
         for i in range(len(states)-1):
             directions.append(self.map.getStatesQueue(states[i], states[i+1]))
 
+        print("Directions: ")
+        print(directions)
         if directions == None or len(directions) == 0:
             return
         self.command_queue = self.command_queue + directions
