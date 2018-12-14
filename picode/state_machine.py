@@ -55,7 +55,7 @@ class FiniteStateMachine:
             return
         self.command_queue = self.command_queue + directions
     
-    def enqueue_all_directions(self, states):
+    def enqueue_all_directions(self, states, skip=0):
         if states[0] == None:
             states[0] = self.current_state
         if self.current_state == None:
@@ -73,6 +73,12 @@ class FiniteStateMachine:
 
         if directions == None or len(directions) == 0:
             return
+
+        if (skip > 0):
+            for i in range(skip):
+                directions[0][0].pop(0)
+                #Remove 2nd [0] if this doesn't work
+
         self.command_queue = self.command_queue + directions
 
     def make_action(self, action):
