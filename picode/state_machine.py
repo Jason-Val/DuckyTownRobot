@@ -64,7 +64,7 @@ class FiniteStateMachine:
         directions = []
 
         for i in range(len(states)-1):
-            dirs += self.map.getStatesQueue(states[i], states[i+1])
+            dirs = self.map.getStatesQueue(states[i], states[i+1])
             for d in dirs:
                 directions += d
 
