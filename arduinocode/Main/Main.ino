@@ -21,7 +21,7 @@ void set_motor_vel();
 long time_since_pd_update = millis();
 long time_since_ping_update = millis();
 long pd_update_delay = 30;
-long ping_update_delay = 200;
+long ping_update_delay = 600;
 
 char terminate = ';';
 char input[INPUT_SIZE + 1];
@@ -75,7 +75,8 @@ void loop() {
         robot.turnLeft(read_velocity());
         break;
       case 2:
-        robot.turnRight(read_velocity());
+        read_velocity();
+        robot.turnRight(0.15);
         break;
       case 3:
         robot.adjustMotors(read_velocity());
