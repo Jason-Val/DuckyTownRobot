@@ -109,11 +109,11 @@ def __main__():
     
     port = "/dev/tty" + port_ext
     print("loading map...")
-    map = load_map(mapname)
+    nmap = load_map(mapname)
     print("map was loaded")
     
     print("creating robot...")
-    robot = Robot(map, port)
+    robot = Robot(nmap, port)
     print("robot was created")
     run_program = True
     try:
@@ -140,11 +140,11 @@ def __main__():
             # load
             elif command[0] == "load":
                 if len(command) == 2:
-                    map = load_map(command[1])
-                    if map == None:
+                    nmap = load_map(command[1])
+                    if nmap == None:
                         print("Could not find map named {}".format(command[1]))
                     else:
-                        robot.load_map(map)
+                        robot.load_map(nmap)
                 else:
                     print("Exactly one argument, the map filename, is expected.")
             # add
@@ -161,11 +161,8 @@ def __main__():
                 start = None
                 end = None
                 if len(command) >= 3:
-                    print("Main - In correct case")
                     lst = list(map(lambda x : int(x), command[1:]))
-                    print(lst)
                     robot.enqueue_all_direcions(lst)
-                    print("Enqueued")
                 else:
                     print("Exactly one argument, the map filename, is expected.")
                 print("Done")

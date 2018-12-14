@@ -69,7 +69,6 @@ class Robot:
 
     def enqueue_all_directions(self, states):
         self.fsm_active = True
-        print("EAD Robot returning")
         return self.fsm.enqueue_all_directions(states)
         
     def lane_follow(self, velocity, stopping_condition, location=0):
