@@ -60,7 +60,7 @@ class FiniteStateMachine:
         if states[0] == None:
             states[0] = self.current_state
         if self.current_state == None:
-            self.current_state = start_state
+            self.current_state = states[0]
 
         directions = []
 
