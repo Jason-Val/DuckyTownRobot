@@ -160,12 +160,14 @@ def __main__():
             elif command[0] == "addall":
                 start = None
                 end = None
+                # command = command[1:]
                 if len(command) >= 3:
-                    lst = list(map(lambda x : int(x), command[1:]))
-                    robot.enqueue_all_directions(lst)
+                    robot.enqueue_directions(int(command[1]), int(command[2]))
+                    command = command[3:]
+                    for cmd in command:
+                        robot.enqueue_directions(None, cmd)
                 else:
-                    print("Exactly one argument, the map filename, is expected.")
-                print("Done")
+                    print("Invalid Input, need >2 arguments.")
             elif command[0] == "lighttest":
                 print("drive to a stop sign")
                 robot.lane_follow(.1, "intersection")
