@@ -65,7 +65,7 @@ class FiniteStateMachine:
         directions = []
 
         for i in range(len(states)-1):
-            directions.append(self.map.getStatesQueue(i, i+1))
+            directions.append(self.map.getStatesQueue(states[i], states[i+1]))
 
         if directions == None or len(directions) == 0:
             print("Enqueuing new directions failed")
