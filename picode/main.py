@@ -161,10 +161,14 @@ def __main__():
                 start = None
                 end = None
                 if len(command) >= 3:
+                    print("Main - In correct case")
                     lst = list(map(lambda x : int(x), command[1:]))
+                    print(lst)
                     robot.enqueue_all_direcions(lst)
+                    print("Enqueued")
                 else:
                     print("Exactly one argument, the map filename, is expected.")
+                print("Done")
             elif command[0] == "lighttest":
                 print("drive to a stop sign")
                 robot.lane_follow(.1, "intersection")

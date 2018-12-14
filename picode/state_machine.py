@@ -3,9 +3,9 @@ from Parsing.Node import Node
 from Parsing.NodeMap import NodeMap
     
 class FiniteStateMachine:
-    def __init__(self, robot, map):
+    def __init__(self, robot, mp):
         self.robot = robot
-        self.map = map
+        self.map = mp
         self.current_state = None
         self.command_queue = []
         
@@ -57,20 +57,25 @@ class FiniteStateMachine:
     
     def enqueue_all_direcions(self, states):
         #This
+        print("State Machine Enqueue All")
         if states[0] == None:
             states[0] = self.current_state
         if self.current_state == None:
             self.current_state = start_state
 
         directions = []
+        print(directions)
 
         for i in range(len(states)-1):
             directions.append(self.map.getStatesQueue(states[i], states[i+1]))
+
+        print(directions)
 
         if directions == None or len(directions) == 0:
             print("Enqueuing new directions failed")
             return
         self.command_queue = self.command_queue + directions
+        print(self.command_queue)
 
     def make_action(self, action):
         if action[0] == "LaneFollowToStop":
