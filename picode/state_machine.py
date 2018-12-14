@@ -55,7 +55,7 @@ class FiniteStateMachine:
             return
         self.command_queue = self.command_queue + directions
     
-    def enqueue_all_direcions(self, states):
+    def enqueue_all_directions(self, states):
         #This
         if states[0] == None:
             states[0] = self.current_state
