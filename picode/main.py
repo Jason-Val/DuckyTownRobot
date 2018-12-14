@@ -161,7 +161,7 @@ def __main__():
                 start = None
                 end = None
                 if len(command) >= 3:
-                    lst = list(map(lambda x : int(x), lst[1:]))
+                    lst = list(map(lambda x : int(x), command[1:]))
                     robot.enqueue_all_direcions(lst)
                 else:
                     print("Exactly one argument, the map filename, is expected.")
