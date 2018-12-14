@@ -12,6 +12,7 @@ class FiniteStateMachine:
     def fsm_loop(self):
         while (self.robot.active):
             if (not self.robot.paused):
+                print(self.get_next_state_and_actions())
                 actions, next_state = self.get_next_state_and_actions()
                 if self.robot.fsm_active and next_state == None:
                     self.robot.stop()
