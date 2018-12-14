@@ -79,7 +79,9 @@ class Robot:
         self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
         time.sleep(0.5)
         print("Begin lane following")
-        heading_epsilon = 2*math.pi/64
+        heading_epsilon = 2*math.pi/16
+        print("location is {}".format(location))
+        location = float(location)*math.pi % (2*math.pi)
         
         slow_speed = 0.108
         notified_slow = False
@@ -88,7 +90,7 @@ class Robot:
         t = time.time()
         K = 0
         B = 0
-        if velocity <=.12:
+        if velocity <= 0.12:
             K = self.Kslow
             B = self.Bslow
         else:
@@ -102,13 +104,13 @@ class Robot:
                 if(error == None):
                     continue
                 error += self.error_offset #TODO: move this to the vision module
-                if (not notified_slow and error > 200):
+                if (not notified_slow and error > 150):
                     notified_slow = True
                     K = self.Kslow
                     B = self.Bslow
                     #print("send slow to arduino")
                     self._send_to_arduino("4 {};".format( format(float(slow_speed), '.4f') ))
-                elif (notified_slow and not error > 200):
+                elif (notified_slow and not error > 150):
                     notified_slow = False
                     if (velocity > 0.15):
                         K = self.Kfast
@@ -124,7 +126,7 @@ class Robot:
                 self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
                 #print(delta_error)
                 if stopping_condition == "intersection":
-                    follow_lane = not ( time.time() - t > 1 and vision.isStopSign() >= 0.0)
+                    follow_lane = not ( time.time() - t > 2 and vision.isStopSign() >= 0.0)
                     """
                     if(not stop_sign_seen):
                         #Update if we have seen the stop sign
@@ -138,7 +140,9 @@ class Robot:
                 if stopping_condition == "loc":
                     #follow_lane = True
                     actual_heading = self._get_heading()
-                    print("actual: {}, desired: {}".format(actual_heading, location))
+                    if actual_heading == None:
+                        continue
+                    print("actual: {}, desired: {}".format(actual_heading % 2*math.pi, location))
                     follow_lane = abs((actual_heading % 2*math.pi) - location) > heading_epsilon
                     
                 time.sleep(0.05)
@@ -178,9 +182,14 @@ class Robot:
         return float(trans)
     """
     def _get_heading(self):
-        self._send_to_arduino("6")
-        response = self.s.read_until()
-        return float(response.decode('utf-8'))
+        heading = None
+        try:
+            self._send_to_arduino("6")
+            response = self.s.read_until()
+            heading = float(response.decode('utf-8'))
+        except:
+            print("failed to parse response: {}".format(response))
+        return heading
     
     def _send_action_to_arduino(self, action, velocity):
         self._send_to_arduino("{0} {1};".format(action, format(float(velocity), '.4f')))

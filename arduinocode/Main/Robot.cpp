@@ -102,8 +102,8 @@ void Robot::adjustMotors(double velocity)
 
 void Robot::adjustVelWithPing(double dist)
 {
-  //velActual = velIdeal;
-  //return;
+  velActual = velIdeal;
+  return;
   if (dist >= 40.0){
     velActual = velIdeal; //TODO: decrease velActual if necessary
   }
