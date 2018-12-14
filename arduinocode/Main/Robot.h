@@ -40,6 +40,7 @@ class Robot
     double* startTranslation;
     DualMC33926MotorShield md;
     double lastAdjustment;
+    double *newTranslation;
 
     void updateStartTranslation();
     double convertVelToPWM_L(double velocity);

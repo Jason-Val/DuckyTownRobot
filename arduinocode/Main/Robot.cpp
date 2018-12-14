@@ -17,7 +17,14 @@ Robot::Robot()
   distanceToTravel = 0;
   loc = new double[3];
   translation = new double[2];
+  translation[0] = 0;
+  translation[1] = 0;
   startTranslation = new double[2];
+  startTranslation[0] = 0;
+  startTranslation[1] = 0;
+  newTranslation = new double[2];
+  newTranslation[0] = 0;
+  newTranslation[1] = 0;
   prevError = 0.0;
   lastAdjustment = 0;
 }
@@ -120,21 +127,24 @@ void Robot::adjustHeading()
 
 void Robot::setHeading(double heading)
 {
-  headingOffset = heading - loc[2];
   loc[2] = heading;
 }
 
 void Robot::updateLocation(long leftCount, long rightCount)
 {
-  translation[0] = ((M_PI * wheelDiameter * leftCount) / encoderSegments);
-  translation[1] = ((M_PI * wheelDiameter * rightCount) / encoderSegments);
+  newTranslation[0] = ((M_PI * wheelDiameter * leftCount) / encoderSegments);
+  newTranslation[1] = ((M_PI * wheelDiameter * rightCount) / encoderSegments);
 
-  double theta = atan2(((translation[1] - translation[0]) / 2.0), (wheelBase / 2.0));
+  double theta = atan2(((newTranslation[1] - translation[1] - (newTranslation[0] - translation[0])) / 2.0), (wheelBase / 2.0));
+  
+  translation[0] = newTranslation[0];
+  translation[1] = newTranslation[1];
+  
   double del_x = (translation[0] + translation[1]) / 2;
   
   loc[0] = del_x * cos(theta);
   loc[1] = del_x * sin(theta);
-  loc[2] = theta + headingOffset;
+  loc[2] = loc[2] + theta;
 }
 
 void Robot::updateStartTranslation()
