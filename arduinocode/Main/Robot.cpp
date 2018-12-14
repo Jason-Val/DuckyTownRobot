@@ -128,12 +128,12 @@ void Robot::updateLocation(long leftCount, long rightCount)
   translation[0] = ((M_PI * wheelDiameter * leftCount) / encoderSegments);
   translation[1] = ((M_PI * wheelDiameter * rightCount) / encoderSegments);
 
-  double theta = 2.0 * atan2(((translation[1] - translation[0]) / 2.0), (wheelBase / 2.0));
+  double theta = atan2(((translation[1] - translation[0]) / 2.0), (wheelBase / 2.0));
   double del_x = (translation[0] + translation[1]) / 2;
   
   loc[0] = del_x * cos(theta);
   loc[1] = del_x * sin(theta);
-  loc[2] = theta + loc[2];
+  loc[2] = theta + headingOffset;
 }
 
 void Robot::updateStartTranslation()

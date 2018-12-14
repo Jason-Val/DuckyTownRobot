@@ -72,12 +72,9 @@ class Robot:
         return self.fsm.enqueue_all_directions(states)
         
     def lane_follow(self, velocity, stopping_condition, location=0):
-        # TODO* this disables the "location" state transition, so the robot will just lane follow at slow speed always
-        if stopping_condition == "loc":
-            follow_lane = False
-        
-        
         follow_lane = True
+        if stopping_condition == "loc":
+            return
         print(format(float(velocity), '.4f'))
         self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
         time.sleep(0.5)
