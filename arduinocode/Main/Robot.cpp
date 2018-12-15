@@ -112,16 +112,16 @@ void Robot::adjustVelWithPing(double dist)
     velActual = velIdeal - 2*velIdeal/sqrt(dist);
   }
   */
-  /*
+  
   if (dist <= 25.0){
-    velActual = velIdeal*0.0;
+    velActual = 0.0;
   }
   else
   {
     velActual = velIdeal;
   }
-  */
-  velActual = velIdeal;
+  
+  //velActual = velIdeal;
 }
 
 // The main computation for the encoder-based pd control

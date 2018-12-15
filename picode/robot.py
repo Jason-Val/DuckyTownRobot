@@ -80,8 +80,7 @@ class Robot:
         time.sleep(0.5)
         print("Begin lane following")
         heading_epsilon = 2*math.pi/28
-        #print("location is {}".format(location))
-        location = float(location)*math.pi % (2*math.pi)
+
         # 1 12 9 4 7 12 8 3 11 5 6 9 5
         slow_speed = 0.108
         notified_slow = False
@@ -124,7 +123,6 @@ class Robot:
                 delta_v = -K*error -B*delta_error
                 #print("send correction {} to arduino".format(delta_v))
                 self._send_to_arduino("3 {};".format(format(delta_v/2), '.4f'))
-                #print(delta_error)
                 if stopping_condition == "intersection":
                     follow_lane = not ( time.time() - t > 2 and vision.isStopSign() >= 0.0)
                     """
