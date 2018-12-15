@@ -102,17 +102,26 @@ void Robot::adjustMotors(double velocity)
 
 void Robot::adjustVelWithPing(double dist)
 {
-  velActual = velIdeal;
-  return;
+  //velActual = velIdeal;
+  //return;
+  /*
   if (dist >= 40.0){
     velActual = velIdeal; //TODO: decrease velActual if necessary
   }
   else if ((dist < 40.0) && (dist > 15.0)){
     velActual = velIdeal - 2*velIdeal/sqrt(dist);
   }
-  else if (dist <= 15.0){
+  */
+  /*
+  if (dist <= 25.0){
     velActual = velIdeal*0.0;
   }
+  else
+  {
+    velActual = velIdeal;
+  }
+  */
+  velActual = velIdeal;
 }
 
 // The main computation for the encoder-based pd control

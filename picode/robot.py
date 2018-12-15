@@ -7,7 +7,7 @@ from state_machine import FiniteStateMachine
 
 class Robot:
     def __init__(self, map, port="/dev/ttyACM0"):
-        self.s = serial.Serial(port,115200,timeout=6)
+        self.s = serial.Serial(port,115200,timeout=.5)
         self.paused = False
         self.fsm = FiniteStateMachine(self, map)
         self.active = True
@@ -73,16 +73,16 @@ class Robot:
         
     def lane_follow(self, velocity, stopping_condition, location=0):
         follow_lane = True
-        #if stopping_condition == "loc":
-        #    return
+        if stopping_condition == "loc":
+            return
         print(format(float(velocity), '.4f'))
         self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
         time.sleep(0.5)
         print("Begin lane following")
-        heading_epsilon = 2*math.pi/16
-        print("location is {}".format(location))
+        heading_epsilon = 2*math.pi/28
+        #print("location is {}".format(location))
         location = float(location)*math.pi % (2*math.pi)
-        
+        # 1 12 9 4 7 12 8 3 11 5 6 9 5
         slow_speed = 0.108
         notified_slow = False
         velocity = float(velocity)
@@ -108,14 +108,14 @@ class Robot:
                     notified_slow = True
                     K = self.Kslow
                     B = self.Bslow
-                    #print("send slow to arduino")
+                    print("send slow to arduino")
                     self._send_to_arduino("4 {};".format( format(float(slow_speed), '.4f') ))
                 elif (notified_slow and not error > 150):
                     notified_slow = False
                     if (velocity > 0.15):
                         K = self.Kfast
                         B = self.Bfast
-                    #print("send regular to arduino")
+                    print("send regular to arduino")
                     self._send_to_arduino("4 {};".format( format(float(velocity), '.4f') ))
                 delta_error = error - self.prev_error
                 #print(error)
